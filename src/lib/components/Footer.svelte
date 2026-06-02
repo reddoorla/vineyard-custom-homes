@@ -24,11 +24,19 @@
         <img src={logomark} class='mt-12 mb-32 w-32' alt='vch logomark'/>
 
         <div class='w-full flex flex-col gap-5 items-start'>
-            <a href='/'><img src={logo} class='h-6 md:h-9 w-auto hover:opacity-80 transition-opacity mb-5' alt='home' /></a>
+            <a href='/'><img src={logo} class='h-6 md:h-9 w-auto hover:opacity-80 transition-opacity mb-5' alt='Vineyard Custom Homes — custom home builder in Eagle, Idaho' /></a>
             <a href='/about' class='text-white hover:text-light transition'>ABOUT VINEYARD</a>
             <a href='/gallery' class='text-white hover:text-light transition'>Our Work</a>
             <a href='/contact' class='text-white hover:text-light transition'>CONTACT US</a>
         </div>
+
+        <address class='sr-only not-italic'>
+            <span>Vineyard Custom Homes</span>
+            <span>Custom home builder serving Eagle &amp; the Treasure Valley, Idaho</span>
+            <span>12 N. Echohawk Lane, No. 102, Eagle, ID 83616</span>
+            <a href='tel:+12087244034'>(208) 724-4034</a>
+        </address>
+
         <div class='my-16 copyright text-white'>{'Copyright © '+ new Date().getFullYear() +' Vineyard Custom Homes'}</div>
     </ContentWidth>
 
