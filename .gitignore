@@ -27,3 +27,15 @@ pnpm-debug.log*
 
 # Vite cache
 .vite
+
+# canonical entries from @reddoorla/maintenance sync-configs
+dist/
+coverage/
+.vitest-cache/
+playwright-report/
+test-results/
+.lighthouseci/
+.tsbuildinfo
+*.log
+.vercel/
+.reddoor-a11y/
