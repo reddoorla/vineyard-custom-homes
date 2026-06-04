@@ -12,10 +12,7 @@ type PickContentRelationshipFieldData<
     | prismic.CustomTypeModelFetchGroupLevel2,
   TData extends Record<
     string,
-    | prismic.AnyRegularField
-    | prismic.GroupField
-    | prismic.NestedGroupField
-    | prismic.SliceZone
+    prismic.AnyRegularField | prismic.GroupField | prismic.NestedGroupField | prismic.SliceZone
   >,
   TLang extends string,
 > =
@@ -28,25 +25,19 @@ type PickContentRelationshipFieldData<
       TSubRelationship["customtypes"],
       TLang
     >;
-  } & // Group
-  {
+  } & {
+    // Group
     [TGroup in Extract<
       TRelationship["fields"][number],
-      | prismic.CustomTypeModelFetchGroupLevel1
-      | prismic.CustomTypeModelFetchGroupLevel2
-    > as TGroup["id"]]: TData[TGroup["id"]] extends prismic.GroupField<
-      infer TGroupData
-    >
-      ? prismic.GroupField<
-          PickContentRelationshipFieldData<TGroup, TGroupData, TLang>
-        >
+      prismic.CustomTypeModelFetchGroupLevel1 | prismic.CustomTypeModelFetchGroupLevel2
+    > as TGroup["id"]]: TData[TGroup["id"]] extends prismic.GroupField<infer TGroupData>
+      ? prismic.GroupField<PickContentRelationshipFieldData<TGroup, TGroupData, TLang>>
       : never;
-  } & // Other fields
-  {
-    [TFieldKey in Extract<
-      TRelationship["fields"][number],
-      string
-    >]: TFieldKey extends keyof TData ? TData[TFieldKey] : never;
+  } & {
+    // Other fields
+    [TFieldKey in Extract<TRelationship["fields"][number], string>]: TFieldKey extends keyof TData
+      ? TData[TFieldKey]
+      : never;
   };
 
 type ContentRelationshipFieldWithData<
@@ -55,10 +46,7 @@ type ContentRelationshipFieldWithData<
     | readonly (prismic.CustomTypeModelFetchCustomTypeLevel2 | string)[],
   TLang extends string = string,
 > = {
-  [ID in Exclude<
-    TCustomType[number],
-    string
-  >["id"]]: prismic.ContentRelationshipField<
+  [ID in Exclude<TCustomType[number], string>["id"]]: prismic.ContentRelationshipField<
     ID,
     TLang,
     PickContentRelationshipFieldData<
@@ -119,9 +107,7 @@ interface ContractorTestimonialsDocumentData {
    * - **Tab**: Main
    * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
    */
-  testimonials: prismic.GroupField<
-    Simplify<ContractorTestimonialsDocumentDataTestimonialsItem>
-  >;
+  testimonials: prismic.GroupField<Simplify<ContractorTestimonialsDocumentDataTestimonialsItem>>;
 
   /**
    * Slice Zone field in *contractor testimonials*
@@ -350,12 +336,11 @@ interface GalleryDocumentData {
  *
  * @typeParam Lang - Language API ID of the document.
  */
-export type GalleryDocument<Lang extends string = string> =
-  prismic.PrismicDocumentWithoutUID<
-    Simplify<GalleryDocumentData>,
-    "gallery",
-    Lang
-  >;
+export type GalleryDocument<Lang extends string = string> = prismic.PrismicDocumentWithoutUID<
+  Simplify<GalleryDocumentData>,
+  "gallery",
+  Lang
+>;
 
 /**
  * Item in *instagram features → feature*
@@ -397,9 +382,7 @@ interface InstagramFeaturesDocumentData {
    * - **Tab**: Main
    * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
    */
-  feature: prismic.GroupField<
-    Simplify<InstagramFeaturesDocumentDataFeatureItem>
-  >;
+  feature: prismic.GroupField<Simplify<InstagramFeaturesDocumentDataFeatureItem>>;
 
   /**
    * Slice Zone field in *instagram features*
@@ -540,8 +523,11 @@ interface PageDocumentData {
  *
  * @typeParam Lang - Language API ID of the document.
  */
-export type PageDocument<Lang extends string = string> =
-  prismic.PrismicDocumentWithUID<Simplify<PageDocumentData>, "page", Lang>;
+export type PageDocument<Lang extends string = string> = prismic.PrismicDocumentWithUID<
+  Simplify<PageDocumentData>,
+  "page",
+  Lang
+>;
 
 type ProjectDocumentDataSlicesSlice = RichTextSlice | ContentWidthMediaSlice;
 
@@ -733,12 +719,11 @@ interface ProjectDocumentData {
  *
  * @typeParam Lang - Language API ID of the document.
  */
-export type ProjectDocument<Lang extends string = string> =
-  prismic.PrismicDocumentWithUID<
-    Simplify<ProjectDocumentData>,
-    "project",
-    Lang
-  >;
+export type ProjectDocument<Lang extends string = string> = prismic.PrismicDocumentWithUID<
+  Simplify<ProjectDocumentData>,
+  "project",
+  Lang
+>;
 
 /**
  * Item in *ownerTestimonials → testimonial*
@@ -800,9 +785,7 @@ interface TestimonialsDocumentData {
    * - **Tab**: Main
    * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
    */
-  testimonials: prismic.GroupField<
-    Simplify<TestimonialsDocumentDataTestimonialsItem>
-  >;
+  testimonials: prismic.GroupField<Simplify<TestimonialsDocumentDataTestimonialsItem>>;
 
   /**
    * Slice Zone field in *ownerTestimonials*
@@ -856,12 +839,11 @@ interface TestimonialsDocumentData {
  *
  * @typeParam Lang - Language API ID of the document.
  */
-export type TestimonialsDocument<Lang extends string = string> =
-  prismic.PrismicDocumentWithoutUID<
-    Simplify<TestimonialsDocumentData>,
-    "testimonials",
-    Lang
-  >;
+export type TestimonialsDocument<Lang extends string = string> = prismic.PrismicDocumentWithoutUID<
+  Simplify<TestimonialsDocumentData>,
+  "testimonials",
+  Lang
+>;
 
 export type AllDocumentTypes =
   | ContractorTestimonialsDocument
@@ -981,9 +963,7 @@ export type ContentWidthMediaSliceTwoCol = prismic.SharedSliceVariation<
 /**
  * Slice variation for *ContentWidthMedia*
  */
-type ContentWidthMediaSliceVariation =
-  | ContentWidthMediaSliceDefault
-  | ContentWidthMediaSliceTwoCol;
+type ContentWidthMediaSliceVariation = ContentWidthMediaSliceDefault | ContentWidthMediaSliceTwoCol;
 
 /**
  * ContentWidthMedia Shared Slice
@@ -1037,10 +1017,7 @@ type RichTextSliceVariation = RichTextSliceDefault;
  * - **Description**: RichText
  * - **Documentation**: https://prismic.io/docs/slices
  */
-export type RichTextSlice = prismic.SharedSlice<
-  "rich_text",
-  RichTextSliceVariation
->;
+export type RichTextSlice = prismic.SharedSlice<"rich_text", RichTextSliceVariation>;
 
 declare module "@prismicio/client" {
   interface CreateClient {

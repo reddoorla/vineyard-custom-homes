@@ -13,7 +13,9 @@
   <meta name="robots" content="noindex" />
 </svelte:head>
 
-<section class="text-dark flex min-h-[60vh] flex-col items-center justify-center gap-4 px-6 py-32 text-center">
+<section
+  class="text-dark flex min-h-[60vh] flex-col items-center justify-center gap-4 px-6 py-32 text-center"
+>
   <h2>Error {page.status}</h2>
   <h1>{headline}</h1>
   <p class="max-w-150">{message}</p>

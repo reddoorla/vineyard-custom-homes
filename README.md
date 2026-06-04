@@ -22,20 +22,19 @@ This library will grow as we require new interactive functions or layouts, and a
 
 ## How to Use
 
-1) clone this repo
+1. clone this repo
 
-2) terminal npm i
+2. terminal npm i
 
-3) npm audit fix
+3. npm audit fix
 
-4) initiate new prismic repo
+4. initiate new prismic repo
 
-5) change slicemachine.config.json to new prismic name
+5. change slicemachine.config.json to new prismic name
 
-6) start dev server and push changes to prismic
+6. start dev server and push changes to prismic
 
-7) build site, using slices if complex cms or custom types if not
-
+7. build site, using slices if complex cms or custom types if not
 
 ## Next steps
 

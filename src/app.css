@@ -1,4 +1,3 @@
-
 /* Tailwind CSS v4 configuration */
 @import "tailwindcss";
 
@@ -7,18 +6,18 @@
   --screen-md: 768px;
   --screen-lg: 1024px;
   --screen-xl: 1340px;
-  
+
   --color-transparent: transparent;
   --color-current: currentColor;
   --color-black: #000;
   --color-white: #fff;
   --color-light: #7ba0c4;
   --color-dark: #00263e;
-  
+
   --transition-in-expo: cubic-bezier(0.95, 0.05, 0.795, 0.035);
   --transition-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
-  --transition-fast-slow: cubic-bezier(.5, 0, 0, 1);
-  
+  --transition-fast-slow: cubic-bezier(0.5, 0, 0, 1);
+
   --height-screen-75: 75vh;
   --height-screen-50: 50vh;
   --height-screen-25: 25vh;
@@ -35,256 +34,223 @@
   --height-640: 160rem;
 }
 
-
-
-body{
-    font-family: "proxima-nova", "helvetica", sans-serif;
-    transition-property: all;
-    transition-timing-function: cubic-bezier(.5,0,0,1);
-    transition-duration: 500ms;
-    max-width: 100vw;
-    overflow-x: clip;
-    scrollbar-width: none !important;
-    overflow-y: auto;
-    margin:0;
-    font-size: 17px;
-    font-style: normal;
-    font-weight: 300;
-    line-height: 170%; /* 28.9px */
+body {
+  font-family: "proxima-nova", "helvetica", sans-serif;
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.5, 0, 0, 1);
+  transition-duration: 500ms;
+  max-width: 100vw;
+  overflow-x: clip;
+  scrollbar-width: none !important;
+  overflow-y: auto;
+  margin: 0;
+  font-size: 17px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 170%; /* 28.9px */
 }
 
-body::-webkit-scrollbar { 
-    display: none !important;  /* Safari and Chrome */
+body::-webkit-scrollbar {
+  display: none !important; /* Safari and Chrome */
 }
 body::-webkit-scrollbar {
-    width: 0 !important;  /* Remove scrollbar space */  /* Optional: just make scrollbar invisible */
+  width: 0 !important; /* Remove scrollbar space */ /* Optional: just make scrollbar invisible */
 }
 
-.bump, .negative-bump{
-    transition: transform 300ms ease-out;
+.bump,
+.negative-bump {
+  transition: transform 300ms ease-out;
 }
 
-.bump:active{
-    transform: translateY(-8px);
+.bump:active {
+  transform: translateY(-8px);
 }
 
-.negative-bump:active{
-    transform: translateY(8px);
+.negative-bump:active {
+  transform: translateY(8px);
 }
 
 @keyframes pos-y-wiggle {
-    0% {
-        transform: translateY(1px);
-    }
-    50% {
-        transform: translateY(-1px);
-    }
-    100% {
-        transform: translateY(1px);
-    }
+  0% {
+    transform: translateY(1px);
+  }
+  50% {
+    transform: translateY(-1px);
+  }
+  100% {
+    transform: translateY(1px);
+  }
 }
 .bob-on-hover:hover {
-    animation-name: pos-y-wiggle;
-    animation-play-state: running;
+  animation-name: pos-y-wiggle;
+  animation-play-state: running;
 }
 
-.bob-always{
-
-    animation: 1s infinite forwards pos-y-wiggle ease-out;
+.bob-always {
+  animation: 1s infinite forwards pos-y-wiggle ease-out;
 }
 
 @keyframes pulse-scale {
-    0% {
-        transform: scale(1.01);
-    }
-    50% {
-        transform: scale(0.99);
-    }
-    100% {
-        transform: scale(1.01);
-    }
+  0% {
+    transform: scale(1.01);
+  }
+  50% {
+    transform: scale(0.99);
+  }
+  100% {
+    transform: scale(1.01);
+  }
 }
 
-.pulse-always{
-    animation: 1.5s infinite forwards pulse-scale ease-out;
+.pulse-always {
+  animation: 1.5s infinite forwards pulse-scale ease-out;
 }
 
-
-a, button{
-    cursor: pointer;
+a,
+button {
+  cursor: pointer;
 }
 
-
-
-h1{
-
-    font-family: 'museo-sans', sans-serif;
-    font-size: 36px;
-    font-style: normal;
-    font-weight: 250;
-    line-height: 150%; /* 54px */
-    letter-spacing: 2.88px;
-
-    }
-
-h2{
-    font-family: 'museo-sans', sans-serif;
-    font-size: 26px;
-    font-style: normal;
-    font-weight: 250;
-    line-height: 150%; /* 39px */
-    letter-spacing: 6.5px;
-
+h1 {
+  font-family: "museo-sans", sans-serif;
+  font-size: 36px;
+  font-style: normal;
+  font-weight: 250;
+  line-height: 150%; /* 54px */
+  letter-spacing: 2.88px;
 }
 
-h3{
-
-font-size: 17px;
-font-style: normal;
-font-weight: 400;
-line-height: 150%; /* 25.5px */
-letter-spacing: 4.25px;
-text-transform: uppercase;
+h2 {
+  font-family: "museo-sans", sans-serif;
+  font-size: 26px;
+  font-style: normal;
+  font-weight: 250;
+  line-height: 150%; /* 39px */
+  letter-spacing: 6.5px;
 }
 
-h4{
-    font-size: 22px;
-    font-style: normal;
-    font-weight: 300;
-    line-height: 140%; /* 30.8px */
-    }
-
-h5{
-   font-size: 1.5rem; 
-   line-height: 1.5em;
+h3 {
+  font-size: 17px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 25.5px */
+  letter-spacing: 4.25px;
+  text-transform: uppercase;
 }
 
-h6{
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: 24px; /* 171.429% */
-    letter-spacing: 1px;
-    text-transform: uppercase;
+h4 {
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 140%; /* 30.8px */
 }
 
-p{
-
-    font-size: 22px;
-    font-style: normal;
-    font-weight: 300;
-    line-height: 170%; /* 37.4px */
+h5 {
+  font-size: 1.5rem;
+  line-height: 1.5em;
 }
 
-.label, button, a{
-    font-family: "museo-sans", sans-serif;
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 300;
-    line-height: 140%; /* 16.8px */
-    letter-spacing: 3px;
-    text-transform: uppercase;
+h6 {
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px; /* 171.429% */
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
-.copyright{ 
-    font-family: "museo-sans", sans-serif;
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 300;
-    line-height: 150%; /* 18px */
-    letter-spacing: 0.6px;
+p {
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 170%; /* 37.4px */
 }
 
-span{
-    display: inline-block;
+.label,
+button,
+a {
+  font-family: "museo-sans", sans-serif;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 140%; /* 16.8px */
+  letter-spacing: 3px;
+  text-transform: uppercase;
 }
 
-@media only screen and (max-width:1024px) {
-    h1{
-        
-    }
-    
-    h2{
-        
-    }
-    
-    h3{
-        
-    }
-    
-    h4{
-        
-    }
-    
-    h5{
-       
-    }
-    
-    
-    p{
-        
-    }
-    
-
-
+.copyright {
+  font-family: "museo-sans", sans-serif;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 150%; /* 18px */
+  letter-spacing: 0.6px;
 }
 
-@media only screen and (max-width:786px) {
-    h1{
-        font-size: 24px;
-    }
-    
-    h2{
-        font-size: 19px;
-    }
-    
-    h3{
-        font-size:15px;
-    }
-    
-    h4{
-        
-    }
-    
-    h5{
-       
-    }
-    
-    
-    p{
-       font-size:16px;
-    }
-    
-
-    
+span {
+  display: inline-block;
 }
 
-@media only screen and (max-width:560px) {
-    h1{
-        
-    }
-    
-    h2{
-        
-    }
-    
-    h3{
-    }
-    
-    h4{
-        
-    }
-    
-    h5{
-       
-    }
-    
-    
-    p{
-        
-    }
-    
+@media only screen and (max-width: 1024px) {
+  h1 {
+  }
 
-    
+  h2 {
+  }
+
+  h3 {
+  }
+
+  h4 {
+  }
+
+  h5 {
+  }
+
+  p {
+  }
 }
 
+@media only screen and (max-width: 786px) {
+  h1 {
+    font-size: 24px;
+  }
+
+  h2 {
+    font-size: 19px;
+  }
+
+  h3 {
+    font-size: 15px;
+  }
+
+  h4 {
+  }
+
+  h5 {
+  }
+
+  p {
+    font-size: 16px;
+  }
+}
+
+@media only screen and (max-width: 560px) {
+  h1 {
+  }
+
+  h2 {
+  }
+
+  h3 {
+  }
+
+  h4 {
+  }
+
+  h5 {
+  }
+
+  p {
+  }
+}

@@ -1,36 +1,41 @@
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
+  <head>
+    <meta charset="utf-8" />
 
-		<link rel="icon" type="image/png" href="%sveltekit.assets%/favicon-96x96.png" sizes="96x96" />
-		<link rel="icon" type="image/svg+xml" href="%sveltekit.assets%/favicon.svg" />
-		<link rel="shortcut icon" href="%sveltekit.assets%/favicon.ico" />
-		<link rel="apple-touch-icon" sizes="180x180" href="%sveltekit.assets%/apple-touch-icon.png" />
-		<meta name="apple-mobile-web-app-title" content="VCH" />
-		<link rel="manifest" href="%sveltekit.assets%/site.webmanifest" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<script src="https://kit.fontawesome.com/78a9146bce.js" crossorigin="anonymous"></script>
-		<script src="https://player.vimeo.com/api/player.js"></script>
-		<link rel="stylesheet" href="https://use.typekit.net/fxo0bxc.css">
-		<meta name="google-site-verification" content="87E-i8oA9WZZOcS9ZdMeKnR9N52MXRSuxuJSy4cgxrY" />
-		
-		%sveltekit.head%
-	</head>
+    <link rel="icon" type="image/png" href="%sveltekit.assets%/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="%sveltekit.assets%/favicon.svg" />
+    <link rel="shortcut icon" href="%sveltekit.assets%/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="%sveltekit.assets%/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="VCH" />
+    <link rel="manifest" href="%sveltekit.assets%/site.webmanifest" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://kit.fontawesome.com/78a9146bce.js" crossorigin="anonymous"></script>
+    <script src="https://player.vimeo.com/api/player.js"></script>
+    <link rel="stylesheet" href="https://use.typekit.net/fxo0bxc.css" />
+    <meta name="google-site-verification" content="87E-i8oA9WZZOcS9ZdMeKnR9N52MXRSuxuJSy4cgxrY" />
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-TFRR48VGX5"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    %sveltekit.head%
+  </head>
 
-  gtag('config', 'G-TFRR48VGX5');
-</script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TFRR48VGX5"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
 
-	<body data-sveltekit-preload-data="hover">
-		<div style="display: contents">%sveltekit.body%</div>
-		<script async defer src="https://static.cdn.prismic.io/prismic.js?new=true&repo=vineyard-custom-homes"></script>
+    gtag("config", "G-TFRR48VGX5");
+  </script>
 
-	</body>
+  <body data-sveltekit-preload-data="hover">
+    <div style="display: contents">%sveltekit.body%</div>
+    <script
+      async
+      defer
+      src="https://static.cdn.prismic.io/prismic.js?new=true&repo=vineyard-custom-homes"
+    ></script>
+  </body>
 </html>
