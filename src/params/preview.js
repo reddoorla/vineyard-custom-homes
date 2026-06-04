@@ -1,3 +1,3 @@
 export function match(param) {
-	return param === 'preview';
+  return param === "preview";
 }

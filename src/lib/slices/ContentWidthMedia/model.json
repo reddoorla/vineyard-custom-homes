@@ -73,10 +73,7 @@
           "config": {
             "label": "image aspect",
             "placeholder": "",
-            "options": [
-              "9:16",
-              "1:1"
-            ],
+            "options": ["9:16", "1:1"],
             "default_value": "9:16"
           }
         }
