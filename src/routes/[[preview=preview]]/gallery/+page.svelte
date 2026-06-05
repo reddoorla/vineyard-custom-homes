@@ -17,17 +17,7 @@
 
   const setProjectFromId = (id: string | undefined): ProjectDocument | null => {
     if (typeof id === "undefined") return null;
-
-    let count = 0;
-    console.log("setProjectFromId", id, projects.length);
-
-    for (const proj of projects) {
-      console.log(count, ":", proj.id, id, count++);
-
-      if (proj.id === id) return proj;
-    }
-
-    throw new Error(`Project with id ${id} not found`);
+    return projects.find((proj) => proj.id === id) ?? null;
   };
 
   const projectOne: ProjectDocument | null = $derived(

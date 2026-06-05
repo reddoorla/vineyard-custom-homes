@@ -3,7 +3,7 @@
   import { PrismicImage } from "@prismicio/svelte";
   import type { ContentWidthMediaSlice } from "../../../prismicio-types";
 
-  export let slice: ContentWidthMediaSlice;
+  let { slice }: { slice: ContentWidthMediaSlice } = $props();
 </script>
 
 <ContentWidth class="mt-9 flex flex-col md:flex-row relative overflow-hidden">

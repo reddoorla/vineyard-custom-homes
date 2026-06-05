@@ -12,7 +12,7 @@ export async function load({ fetch, cookies }) {
   const filteredProjects: ProjectDocument<string>[] = [];
 
   projects.forEach((project) => {
-    if (!page.tags.includes("hide")) filteredProjects.push(project);
+    if (!project.tags.includes("hide")) filteredProjects.push(project);
   });
 
   return {

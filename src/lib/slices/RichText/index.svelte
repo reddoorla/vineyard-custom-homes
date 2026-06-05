@@ -1,10 +1,11 @@
-<script>
+<script lang="ts">
   import { PrismicRichText } from "@prismicio/svelte";
+  import type { RichTextSlice } from "../../../prismicio-types";
 
-  export let slice;
+  let { slice }: { slice: RichTextSlice } = $props();
 </script>
 
-<section class="container p-2 md:p8">
+<section class="container p-2 md:p-8">
   <PrismicRichText field={slice.primary.content} />
 </section>
 
