@@ -1,46 +1,65 @@
-# Reddoor Starter and Site Scaffold
+# Vineyard Custom Homes
 
-## Purpose
+Marketing site for [Vineyard Custom Homes](https://www.vineyardconstruction.com), a custom home
+builder in Eagle, Idaho. Built with SvelteKit 5, Prismic CMS, and Tailwind CSS v4, deployed to
+Netlify.
 
-To provide a forkable starting point for all SvelteKit, Tailwind + Prismic sites developed at Reddoor.
+## Stack
 
-## Contents
+- **SvelteKit 5** (runes) + **Vite 6**
+- **Prismic** CMS via `@prismicio/client` / `@prismicio/svelte` (Slice Machine for content modeling)
+- **Tailwind CSS v4** (`@tailwindcss/vite`)
+- **Netlify** (`@sveltejs/adapter-netlify`)
+- **pnpm** (`packageManager` is pinned — use pnpm, not npm/yarn)
+- Tooling/config synced from **`@reddoorla/maintenance`** (eslint, prettier, lighthouse, playwright-a11y)
 
-### Base configuration and boilerplate for a SvelteKit app integrated with Tailwind
+## Prerequisites
 
-SvelteKit has one of the best developer experiences of any framework, and is especially friendly to component-driven design. We combine it with Tailwind for implementation of CSS to pave the path to quickly devolping reactive, extensible, and data-driven frontends.
+- Node 22 (matches `netlify.toml` and CI)
+- pnpm (`corepack enable` or install globally)
 
-### Base configuration and boilerplate necessary to integrate SvelteKit with Prismic CMS
+## Getting started
 
-Prismic CMS allows flexible entry of data by content managers without exposing code, and can be integrated into any frontend design as necessary.
+```bash
+pnpm install
+pnpm dev        # vite dev + Slice Machine, concurrently
+```
 
-### Designed and extensible components to be used within Prismic Slices or as Prismic Slices
+- App: http://localhost:5173
+- Slice Machine: http://localhost:9999
 
-We've designed and implemented a library of responsive, functioning components to use first in the wireframing stage, and then to be customized for each site. Delivering these components as slices will allow both us and clients to quickly prototype and push new pages that remain within the design space originally conceived for the site.
+The Prismic repository name (`vineyard-custom-homes`) is set in `slicemachine.config.json` and used by
+`src/lib/prismicio.js`. It can be overridden locally with the `VITE_PRISMIC_ENVIRONMENT` env var.
 
-This library will grow as we require new interactive functions or layouts, and allow programmatic work from different projects to be easily accessible and carry over, rather than rebuilding components anew for each project.
+## Scripts
 
-## How to Use
+| Command        | What it does                                             |
+| -------------- | -------------------------------------------------------- |
+| `pnpm dev`     | Dev server + Slice Machine                               |
+| `pnpm build`   | Production build (prerenders pages from Prismic content) |
+| `pnpm preview` | Preview the production build locally                     |
+| `pnpm check`   | `svelte-kit sync` + `svelte-check` (type/Svelte checks)  |
+| `pnpm lint`    | Prettier check + ESLint                                  |
+| `pnpm format`  | Prettier write                                           |
 
-1. clone this repo
+## Project structure
 
-2. terminal npm i
+- `src/routes/[[preview=preview]]/` — public pages (home, `[uid]`, about, contact, gallery, gallery `[uid]`). The optional `[[preview=preview]]` segment enables Prismic preview routing.
+- `src/routes/sitemap.xml/` — dynamically generated sitemap (curated, honors the `hide` project tag).
+- `src/routes/dev/a11y-fixtures/` — stable a11y target for lhci/axe; `noindex`, not linked publicly.
+- `src/lib/slices/` — Prismic slices (`RichText`, `ContentWidthMedia`) rendered via `SliceZone`.
+- `src/lib/components/` — UI components (Nav, Footer, sliders, forms, animation helpers).
 
-3. npm audit fix
+## Content & previews
 
-4. initiate new prismic repo
+Content is authored in Prismic. Document `url`s resolve via the route resolver in
+`src/lib/prismicio.js`. Preview/edit routing is wired through `@prismicio/svelte/kit`
+(`src/routes/api/preview/` + the `[[preview=preview]]` param).
 
-5. change slicemachine.config.json to new prismic name
+## CI / deploy
 
-6. start dev server and push changes to prismic
-
-7. build site, using slices if complex cms or custom types if not
-
-## Next steps
-
-## TODO:
-
-- arrow sometimes sticks on bump
-- replace font awesome library with `<i>` syntax
-- rework slider logic into a more flexible component
-- review tailwind defaults
+- **CI** (`.github/workflows/ci.yml`): prettier → eslint → `svelte-check` → `pnpm build` →
+  Playwright a11y audit (`reddoor-maint audit --only a11y --fail-on-violations`).
+- **Renovate** (`.github/workflows/renovate.yml`, `renovate.json`): auto-merges patch/minor on a
+  Monday schedule; majors are held for manual review.
+- **Deploy**: Netlify builds `pnpm build` and publishes `build/` (see `netlify.toml`).

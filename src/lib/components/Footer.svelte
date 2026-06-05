@@ -8,7 +8,9 @@
 <footer class="w-screen pt-32 bg-dark relative">
   <div class="h-1/6 w-full absolute bottom-0 left-0 gradient"></div>
   <ContentWidth class="flex flex-col items-center justify-center text-center relative z-10">
-    <h1 class="text-white">BEGIN YOUR DREAM BUILD.</h1>
+    <h2 class="text-white text-[36px] tracking-[2.88px] max-md:text-[24px]">
+      BEGIN YOUR DREAM BUILD.
+    </h2>
     <svg
       class="my-12"
       xmlns="http://www.w3.org/2000/svg"
