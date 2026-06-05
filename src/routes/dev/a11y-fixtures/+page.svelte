@@ -1,5 +1,6 @@
 <svelte:head>
   <title>a11y fixtures — Reddoor</title>
+  <meta name="robots" content="noindex" />
   <meta
     name="description"
     content="Reddoor accessibility fixtures — semantic landmarks, heading hierarchy, and a stable target for @lhci/cli and Playwright + axe-core coverage. Not linked from the public site."

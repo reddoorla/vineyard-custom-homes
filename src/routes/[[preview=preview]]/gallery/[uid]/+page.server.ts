@@ -1,11 +1,14 @@
 import { createClient } from "$lib/prismicio";
 import { isFilled } from "@prismicio/client";
+import { error } from "@sveltejs/kit";
 import type { ProjectDocument } from "../../../../prismicio-types";
 
 export async function load({ params, fetch, cookies }) {
   const client = createClient({ fetch, cookies });
 
-  const page = await client.getByUID("project", params.uid);
+  const page = await client.getByUID("project", params.uid).catch(() => {
+    throw error(404, "Project not found");
+  });
 
   let recOne;
   let recTwo;

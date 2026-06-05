@@ -96,6 +96,7 @@
 
   onMount(() => {
     sliderInterval = setInterval(() => slideRight(), SLIDER_INTERVAL_IN_MS);
+    return () => clearInterval(sliderInterval);
   });
 
   const tripledItems = $derived(itemArray.concat(itemArray).concat(itemArray));

@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
-
   let isInView = $state(false);
   let el: HTMLElement | undefined = $state();
   let transitionDelay = $state(0);
@@ -13,31 +11,27 @@
     children,
   } = $props();
 
-  const checkViewport = () => {
-    if (window && el) {
-      let rect = el.getBoundingClientRect();
-      isInView = rect.bottom <= window.innerHeight + rect.height;
-      transitionDelay = transitionDelayMax * (rect.left / window.innerWidth);
-    }
-  };
-  let checking: ReturnType<typeof setTimeout>;
+  // Reveal once when the element scrolls into view. IntersectionObserver is
+  // passive (no scroll-handler jank) and stops observing after the first reveal.
+  $effect(() => {
+    if (!el) return;
+    const node = el;
 
-  onMount(() => {
-    checkViewport();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const rect = node.getBoundingClientRect();
+          transitionDelay = transitionDelayMax * (rect.left / window.innerWidth);
+          isInView = true;
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.15 },
+    );
 
-    checking = setInterval(() => {
-      checkViewport();
-    }, 4000);
-
-    window.addEventListener("scroll", checkViewport);
-  });
-
-  onDestroy(() => {
-    if (typeof window !== "undefined") {
-      window.removeEventListener("scroll", checkViewport);
-
-      if (checking) clearInterval(checking);
-    }
+    observer.observe(node);
+    return () => observer.disconnect();
   });
 </script>
 

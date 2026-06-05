@@ -14,7 +14,7 @@
     bump = true,
     class: passedClasses = "",
     children = undefined,
-    ..._others
+    ...rest
   }: ButtonProps = $props();
 
   const baseClasses =
@@ -23,11 +23,11 @@
 
 <div class:bump>
   {#if href}
-    <a {href} {onclick} class="{baseClasses} {passedClasses}">
+    <a {href} {onclick} class="{baseClasses} {passedClasses}" {...rest}>
       {@render children?.()}
     </a>
   {:else}
-    <button {onclick} class="{baseClasses} {passedClasses}">
+    <button {onclick} class="{baseClasses} {passedClasses}" {...rest}>
       {@render children?.()}
     </button>
   {/if}

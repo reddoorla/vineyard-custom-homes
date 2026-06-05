@@ -103,6 +103,7 @@
 
   onMount(() => {
     sliderInterval = setInterval(() => slideLeft(), SLIDER_INTERVAL_IN_MS);
+    return () => clearInterval(sliderInterval);
   });
 
   const tripledImages = imageArray.concat(imageArray).concat(imageArray);

@@ -6,14 +6,59 @@
   import { beforeNavigate } from "$app/navigation";
 
   let showMenu = $state(false);
+  let triggerButton: HTMLButtonElement | undefined = $state();
+
+  const closeMenu = () => {
+    showMenu = false;
+    triggerButton?.focus();
+  };
 
   beforeNavigate(() => (showMenu = false));
+
+  // While the overlay is open: focus the first item, keep Tab within the
+  // overlay, and close on Escape. Cleans up its listener on unmount.
+  function trapFocus(node: HTMLElement) {
+    const focusable = () =>
+      Array.from(node.querySelectorAll<HTMLElement>("a[href], button:not([disabled])"));
+
+    focusable()[0]?.focus();
+
+    const onKeydown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        closeMenu();
+        return;
+      }
+      if (event.key !== "Tab") return;
+
+      const items = focusable();
+      if (items.length === 0) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+
+    node.addEventListener("keydown", onKeydown);
+    return {
+      destroy() {
+        node.removeEventListener("keydown", onKeydown);
+      },
+    };
+  }
 </script>
 
 {#if showMenu}
   <div
+    id="mobile-menu"
     class="fixed top-0 left-0 w-screen h-screen bg-dark flex flex-col items-center justify-center gap-9 z-30 text-white"
     transition:fade
+    use:trapFocus
   >
     <nav class=" absolute z-10 top-0 left-0 w-screen">
       <ContentWidth
@@ -27,7 +72,7 @@
           /></a
         >
 
-        <button onclick={() => (showMenu = !showMenu)} aria-label="toggle menu" class="z-40 pr-2"
+        <button onclick={closeMenu} aria-label="close menu" class="z-40 pr-2"
           ><i
             class="fa-solid fa-sharp fa-bars fa-2xl text-white hover:text-light active:transition-none active:text-dark transition-colors duration-500"
           ></i></button
@@ -61,8 +106,11 @@
       <a href="/about" class="hover:text-light transition duration-300 ease-fast-slow">ABOUT US</a>
     </div>
     <button
+      bind:this={triggerButton}
       onclick={() => (showMenu = !showMenu)}
-      aria-label="toggle menu"
+      aria-label="open menu"
+      aria-expanded={showMenu}
+      aria-controls="mobile-menu"
       class="z-40 pr-2 block md:hidden"
       ><i
         class="fa-solid fa-sharp fa-bars fa-2xl text-white hover:text-light active:transition-none active:text-dark transition-colors duration-500"
