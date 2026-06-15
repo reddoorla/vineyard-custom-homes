@@ -1,0 +1,8 @@
+# pnpm 11 reads settings from here (the package.json "pnpm" field is no longer read).
+allowBuilds:
+  # migrate each package from the old onlyBuiltDependencies here as `name: true`
+  esbuild: true
+  sharp: true
+  "@scarf/scarf": false
+  protobufjs: true
+minimumReleaseAge: 0

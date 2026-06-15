@@ -2,7 +2,7 @@
   "name": "sveltekit-prismic-starter-t-lemos",
   "version": "1.0.0",
   "private": true,
-  "packageManager": "pnpm@10.33.1",
+  "packageManager": "pnpm@11.7.0",
   "scripts": {
     "dev": "concurrently \"pnpm:vite:dev\" \"pnpm:slicemachine\" --prefix-colors blue,magenta",
     "vite:dev": "vite dev --host",
@@ -45,12 +45,5 @@
     "@zerodevx/svelte-img": "^2.1.2",
     "svelte-gestures": "~5.1.4",
     "svelte-select": "^5.8.3"
-  },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@scarf/scarf",
-      "esbuild",
-      "sharp"
-    ]
   }
 }
