@@ -6,6 +6,9 @@
 
   import ContactForm from "$lib/components/FullWidth/ContactForm.svelte";
   import ScreenWidthMedia from "$lib/components/ScreenWidth/ScreenWidthMedia.svelte";
+  import type { ActionData, PageData } from "./$types";
+
+  let { data, form }: { data: PageData; form: ActionData } = $props();
 
   let viewpoortWidth = $state(1024);
 </script>
@@ -66,6 +69,6 @@
       </div>
     </div>
 
-    <ContactForm />
+    <ContactForm {form} formTs={data.formTs} />
   </ContentWidth>
 </section>

@@ -1,46 +1,87 @@
 <script lang="ts">
+  import { enhance } from "$app/forms";
   import DefaultButton from "../Buttons/DefaultButton.svelte";
+
+  let {
+    form,
+    formTs,
+  }: {
+    form?: { success?: boolean; error?: string } | null;
+    formTs?: number;
+  } = $props();
+  let submitting = $state(false);
 </script>
 
-<form
-  class="w-full max-w-[720px] flex flex-col gap-4 mt-16"
-  name="contact"
-  method="post"
-  netlify
-  netlify-honeypot="bot-field"
->
-  <input type="hidden" name="form-name" value="contact" />
+{#if form?.success}
+  <p
+    role="status"
+    class="w-full max-w-[720px] mt-16 text-dark border-1 border-light rounded-[3px] p-6 text-center"
+  >
+    Thanks — your message is on its way. We'll be in touch soon.
+  </p>
+{:else}
+  <form
+    class="w-full max-w-[720px] flex flex-col gap-4 mt-16"
+    method="POST"
+    use:enhance={() => {
+      submitting = true;
+      return async ({ update }) => {
+        await update();
+        submitting = false;
+      };
+    }}
+  >
+    {#if form?.error}
+      <p role="alert" class="text-dark border-1 border-light rounded-[3px] p-4 text-center">
+        {form.error}
+      </p>
+    {/if}
 
-  <label class="sr-only" for="contact-name">Your full name</label>
-  <input
-    id="contact-name"
-    class="w-full border-[1px] rounded-[3px] text-dark border-light h-10 pl-4 pt-[2.5px]"
-    name="name"
-    placeholder="Your full name"
-    type="text"
-    autocomplete="name"
-    required
-  />
+    <!-- Anti-bot: per-request timing token + a hidden honeypot. Naive bots
+         fill the honeypot; a too-fast fill is caught by the timing screen. -->
+    <input type="hidden" name="ts" value={formTs} />
+    <input
+      type="text"
+      name="bot-field"
+      tabindex="-1"
+      autocomplete="off"
+      aria-hidden="true"
+      class="hidden"
+    />
 
-  <label class="sr-only" for="contact-email">Email address</label>
-  <input
-    id="contact-email"
-    class="w-full border-[1px] rounded-[3px] text-dark border-light h-10 pl-4 pt-[2.5px]"
-    name="email"
-    placeholder="me@company.com"
-    type="email"
-    autocomplete="email"
-    required
-  />
+    <label class="sr-only" for="contact-name">Your full name</label>
+    <input
+      id="contact-name"
+      class="w-full border-[1px] rounded-[3px] text-dark border-light h-10 pl-4 pt-[2.5px]"
+      name="name"
+      placeholder="Your full name"
+      type="text"
+      autocomplete="name"
+      required
+    />
 
-  <label class="sr-only" for="contact-message">Your message</label>
-  <textarea
-    id="contact-message"
-    class="border-[1px] rounded-[3px] text-dark border-light h-48 pl-4 pt-[2.5px]"
-    placeholder="Your message..."
-    name="message"
-    required
-  ></textarea>
+    <label class="sr-only" for="contact-email">Email address</label>
+    <input
+      id="contact-email"
+      class="w-full border-[1px] rounded-[3px] text-dark border-light h-10 pl-4 pt-[2.5px]"
+      name="email"
+      placeholder="me@company.com"
+      type="email"
+      autocomplete="email"
+      required
+    />
 
-  <DefaultButton type="submit" class="w-full">Send Message</DefaultButton>
-</form>
+    <label class="sr-only" for="contact-message">Your message</label>
+    <textarea
+      id="contact-message"
+      class="border-[1px] rounded-[3px] text-dark border-light h-48 pl-4 pt-[2.5px]"
+      placeholder="Your message..."
+      name="message"
+      required
+    ></textarea>
+
+    <DefaultButton type="submit" class="w-full" disabled={submitting}>
+      {submitting ? "Sending…" : "Send Message"}
+    </DefaultButton>
+  </form>
+{/if}
