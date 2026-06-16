@@ -37,8 +37,8 @@ importers:
         specifier: ^1.60.0
         version: 1.60.0
       '@reddoorla/maintenance':
-        specifier: ^0.28.0
-        version: 0.28.0(jiti@2.7.0)(playwright-core@1.60.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(svelte@5.55.9(@typescript-eslint/types@8.60.1))(typescript@5.9.3)
+        specifier: ^0.40.0
+        version: 0.40.0(@sveltejs/kit@2.60.1(@sveltejs/vite-plugin-svelte@5.1.1(svelte@5.55.9(@typescript-eslint/types@8.60.1))(vite@6.4.2(@types/node@25.9.1)(jiti@2.7.0)(lightningcss@1.32.0)))(svelte@5.55.9(@typescript-eslint/types@8.60.1))(typescript@5.9.3)(vite@6.4.2(@types/node@25.9.1)(jiti@2.7.0)(lightningcss@1.32.0)))(jiti@2.7.0)(playwright-core@1.60.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(svelte@5.55.9(@typescript-eslint/types@8.60.1))(typescript@5.9.3)
       '@slicemachine/adapter-sveltekit':
         specifier: ^0.3.80
         version: 0.3.96(@sveltejs/kit@2.60.1(@sveltejs/vite-plugin-svelte@5.1.1(svelte@5.55.9(@typescript-eslint/types@8.60.1))(vite@6.4.2(@types/node@25.9.1)(jiti@2.7.0)(lightningcss@1.32.0)))(svelte@5.55.9(@typescript-eslint/types@8.60.1))(typescript@5.9.3)(vite@6.4.2(@types/node@25.9.1)(jiti@2.7.0)(lightningcss@1.32.0)))(prettier-plugin-svelte@3.5.2(prettier@3.8.3)(svelte@5.55.9(@typescript-eslint/types@8.60.1)))(prettier@3.8.3)(svelte@5.55.9(@typescript-eslint/types@8.60.1))
@@ -842,10 +842,15 @@ packages:
       react: ^18.0 || ^19.0 || ^19.0.0-rc
       react-dom: ^18.0 || ^19.0 || ^19.0.0-rc
 
-  '@reddoorla/maintenance@0.28.0':
-    resolution: {integrity: sha512-Lc4qWBWKG5ZLVWrNGH6oSBIYNtEcPaH54k9kXWa3SkTbMpdcm0JjZnFnw3G3FNA9rgllk2cpNcSHm+SosVAcwA==}
+  '@reddoorla/maintenance@0.40.0':
+    resolution: {integrity: sha512-MDXpnhy8s2lZKdx1ws7Cu4riU1gj3m8i08g5GJE8jKMmVl0Rm1TIpwzgZPHyfyNNxLloDDrrfFRQtRkiZFsVsw==}
     engines: {node: '>=20'}
     hasBin: true
+    peerDependencies:
+      '@sveltejs/kit': ^2.0.0
+    peerDependenciesMeta:
+      '@sveltejs/kit':
+        optional: true
 
   '@rollup/pluginutils@5.3.0':
     resolution: {integrity: sha512-5EdhGZtnu3V88ces7s53hhfK5KSASnJZv8Lulpc04cWO3REESroJXg73DFsOmgbU2BhwV0E20bu2IDZb3VKW4Q==}
@@ -4875,7 +4880,7 @@ snapshots:
       react-dom: 19.2.7(react@19.2.7)
       react-promise-suspense: 0.3.4
 
-  '@reddoorla/maintenance@0.28.0(jiti@2.7.0)(playwright-core@1.60.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(svelte@5.55.9(@typescript-eslint/types@8.60.1))(typescript@5.9.3)':
+  '@reddoorla/maintenance@0.40.0(@sveltejs/kit@2.60.1(@sveltejs/vite-plugin-svelte@5.1.1(svelte@5.55.9(@typescript-eslint/types@8.60.1))(vite@6.4.2(@types/node@25.9.1)(jiti@2.7.0)(lightningcss@1.32.0)))(svelte@5.55.9(@typescript-eslint/types@8.60.1))(typescript@5.9.3)(vite@6.4.2(@types/node@25.9.1)(jiti@2.7.0)(lightningcss@1.32.0)))(jiti@2.7.0)(playwright-core@1.60.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(svelte@5.55.9(@typescript-eslint/types@8.60.1))(typescript@5.9.3)':
     dependencies:
       '@axe-core/playwright': 4.11.3(playwright-core@1.60.0)
       '@eslint/js': 10.0.1(eslint@10.4.1(jiti@2.7.0))
@@ -4898,6 +4903,8 @@ snapshots:
       svix: 1.95.1
       tinyglobby: 0.2.16
       typescript-eslint: 8.60.1(eslint@10.4.1(jiti@2.7.0))(typescript@5.9.3)
+    optionalDependencies:
+      '@sveltejs/kit': 2.60.1(@sveltejs/vite-plugin-svelte@5.1.1(svelte@5.55.9(@typescript-eslint/types@8.60.1))(vite@6.4.2(@types/node@25.9.1)(jiti@2.7.0)(lightningcss@1.32.0)))(svelte@5.55.9(@typescript-eslint/types@8.60.1))(typescript@5.9.3)(vite@6.4.2(@types/node@25.9.1)(jiti@2.7.0)(lightningcss@1.32.0))
     transitivePeerDependencies:
       - bare-abort-controller
       - bare-buffer
