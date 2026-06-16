@@ -115,7 +115,7 @@ h1 {
   font-family: "museo-sans", sans-serif;
   font-size: 36px;
   font-style: normal;
-  font-weight: 250;
+  font-weight: 100;
   line-height: 150%; /* 54px */
   letter-spacing: 2.88px;
 }
@@ -124,7 +124,7 @@ h2 {
   font-family: "museo-sans", sans-serif;
   font-size: 26px;
   font-style: normal;
-  font-weight: 250;
+  font-weight: 100;
   line-height: 150%; /* 39px */
   letter-spacing: 6.5px;
 }
