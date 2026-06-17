@@ -4,6 +4,7 @@
 
   import ContentWidth from "./ContentWidth/ContentWidth.svelte";
   import { beforeNavigate } from "$app/navigation";
+  import { Menu } from "@lucide/svelte";
 
   let showMenu = $state(false);
   let triggerButton: HTMLButtonElement | undefined = $state();
@@ -73,9 +74,10 @@
         >
 
         <button onclick={closeMenu} aria-label="close menu" class="z-40 pr-2"
-          ><i
-            class="fa-solid fa-sharp fa-bars fa-2xl text-white hover:text-light active:transition-none active:text-dark transition-colors duration-500"
-          ></i></button
+          ><Menu
+            class="size-[2em] text-white hover:text-light active:transition-none active:text-dark transition-colors duration-500"
+            strokeWidth={2}
+          /></button
         >
 
         <div class="w-[0.75px] h-2.5 bg-white absolute left-0 -bottom-[5px]"></div>
@@ -112,9 +114,10 @@
       aria-expanded={showMenu}
       aria-controls="mobile-menu"
       class="z-40 pr-2 block md:hidden"
-      ><i
-        class="fa-solid fa-sharp fa-bars fa-2xl text-white hover:text-light active:transition-none active:text-dark transition-colors duration-500"
-      ></i></button
+      ><Menu
+        class="size-[2em] text-white hover:text-light active:transition-none active:text-dark transition-colors duration-500"
+        strokeWidth={2}
+      /></button
     >
 
     <div class="w-[0.75px] h-2.5 bg-white absolute left-0 -bottom-[5px]"></div>
