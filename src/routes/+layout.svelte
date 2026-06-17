@@ -7,7 +7,7 @@
   import Nav from "$lib/components/Nav.svelte";
   import Footer from "$lib/components/Footer.svelte";
 
-  let { children } = $props();
+  let { children, data } = $props();
 
   const SITE_NAME = "Vineyard Custom Homes";
   const SITE_URL = "https://www.vineyardconstruction.com";
@@ -87,4 +87,6 @@
   <Footer />
 </main>
 <LandscapeModal />
-<PrismicPreview {repositoryName} />
+{#if data.isPreviewSession}
+  <PrismicPreview {repositoryName} />
+{/if}
