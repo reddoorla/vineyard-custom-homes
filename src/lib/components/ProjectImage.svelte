@@ -34,7 +34,7 @@
     {#if project.data.hero_vimeo_id || project.data.preview_vimeo}
       <iframe
         title="background video"
-        src={`https://player.vimeo.com/video/${project.data.preview_vimeo || project.data.hero_vimeo_id}?background=1&muted=1&loop=1&autoplay=1`}
+        src={`https://player.vimeo.com/video/${project.data.preview_vimeo || project.data.hero_vimeo_id}?background=1&muted=1&loop=1&autoplay=1&dnt=1`}
         class="absolute top-1/2 left-1/2 -translate-1/2 pointer-events-none object-cover {isVertical
           ? 'w-[120%] aspect-[9/16]'
           : 'w-[120%] h-[120%]'}"
