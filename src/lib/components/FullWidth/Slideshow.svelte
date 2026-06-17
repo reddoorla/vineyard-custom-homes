@@ -4,6 +4,7 @@
   import type { ImageField } from "@prismicio/client";
   import { onMount } from "svelte";
   import placeholder from "$lib/assets/images/background_placeholder.svg";
+  import { ArrowLeft, ArrowRight } from "@lucide/svelte";
 
   let imageArray: (ImageField | string)[] = $state([placeholder, placeholder, placeholder]);
   let tripledImages: (ImageField | string)[] = $state([]);
@@ -84,10 +85,10 @@
 
     <div class="flex flex-row justify-between items-center absolute bottom-6 left-6 gap-12">
       <button class="bump" onclick={slideRight} aria-label="slide right">
-        <i class="fa-sharp fa-regular fa-arrow-left text-dark fa-2xl shadow-sm"></i>
+        <ArrowLeft class="size-[2em] text-dark shadow-sm" strokeWidth={1.75} />
       </button>
       <button class="bump" onclick={slideLeft} aria-label="slide left">
-        <i class="fa-sharp fa-regular fa-arrow-right text-dark fa-2xl shadow-sm"></i>
+        <ArrowRight class="size-[2em] text-dark shadow-sm" strokeWidth={1.75} />
       </button>
     </div>
   {:else}
