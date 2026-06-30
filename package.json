@@ -16,7 +16,6 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.3",
-    "@lhci/cli": "^0.15.1",
     "@playwright/test": "^1.60.0",
     "@reddoorla/maintenance": "^0.58.0",
     "@slicemachine/adapter-sveltekit": "^0.3.80",
