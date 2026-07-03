@@ -102,7 +102,6 @@
   const tripledItems = $derived(itemArray.concat(itemArray).concat(itemArray));
 </script>
 
-<svelte:head><title>Portfolios | Reddoor Wireframer</title></svelte:head>
 <svelte:window bind:innerWidth />
 
 <section class="pb-32 {passedClasses}">
