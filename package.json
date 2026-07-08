@@ -13,9 +13,7 @@
     "lint": "prettier --check . --plugin prettier-plugin-svelte . && eslint .",
     "format": "prettier --write . --plugin prettier-plugin-svelte .",
     "slicemachine": "start-slicemachine",
-    "test:smoke": "playwright install chromium && playwright test",
-    "test:unit": "vitest run",
-    "test": "vitest run"
+    "test:smoke": "playwright install chromium && playwright test"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.3",
