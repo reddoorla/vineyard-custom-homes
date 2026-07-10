@@ -23,6 +23,11 @@ export const actions: Actions = {
       message: form.get("message")?.toString(),
       // Full URL incl. query string so UTM/campaign params (?utm_source=…) are captured.
       sourceUrl: event.url.href,
+      // Synthetic end-to-end probe marker (the fleet `form-e2e` audit). Forwarded
+      // ONLY when the submitted form carries testMode=true — a real visitor never
+      // sets it. Rides through as an extraField (no schema change); central ingest
+      // recognizes it and routes the submission away from every real sink.
+      testMode: form.get("testMode")?.toString() === "true" || undefined,
     }),
   }),
 };
