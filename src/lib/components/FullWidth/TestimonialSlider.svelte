@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { swipe, type SwipeCustomEvent } from "svelte-gestures";
+  import { useSwipe, type SwipeCustomEvent } from "svelte-gestures";
   import { onMount } from "svelte";
   import featuredPlaceholder from "$lib/assets/images/background_placeholder.svg";
   import ContentWidth from "../ContentWidth/ContentWidth.svelte";
@@ -98,8 +98,11 @@
 <ContentWidth>
   <div
     class="w-full h-full overflow-hidden relative"
-    use:swipe={() => ({ timeframe: 300, minSwipeDistance: 100, touchAction: "pan-y" })}
-    onswipe={handleSwipe}
+    {...useSwipe(handleSwipe, () => ({
+      timeframe: 300,
+      minSwipeDistance: 100,
+      touchAction: "pan-y",
+    }))}
   >
     {#if tripledTestimonials.length > 0}
       <div

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { swipe } from "svelte-gestures";
+  import { useSwipe } from "svelte-gestures";
   import type { SwipeCustomEvent } from "svelte-gestures";
   import placeholder from "../../assets/images/background_placeholder.svg";
   import ContentWidth from "../ContentWidth/ContentWidth.svelte";
@@ -111,8 +111,7 @@
 
 <section>
   <div
-    use:swipe={() => ({ timeframe: 300, minSwipeDistance: 60 })}
-    onswipe={handleSwipe}
+    {...useSwipe(handleSwipe, () => ({ timeframe: 300, minSwipeDistance: 60 }))}
     class="h-[160vw] sm:h-[90vw] xl:h-[60vw] lg:max-h-screen relative overflow-hidden"
   >
     <div

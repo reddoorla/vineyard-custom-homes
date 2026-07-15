@@ -45,7 +45,7 @@
     "@prismicio/svelte": "^2.0.0",
     "@tailwindcss/vite": "^4.1.4",
     "@zerodevx/svelte-img": "^2.1.2",
-    "svelte-gestures": "~5.1.4",
+    "svelte-gestures": "~5.2.0",
     "svelte-select": "^5.8.3"
   }
 }
