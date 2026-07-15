@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { swipe, type SwipeCustomEvent } from "svelte-gestures";
+  import { useSwipe, type SwipeCustomEvent } from "svelte-gestures";
   import { PrismicImage } from "@prismicio/svelte";
   import type { ImageField } from "@prismicio/client";
   import { onMount } from "svelte";
@@ -53,8 +53,7 @@
 
 <div
   class="w-full h-full overflow-hidden relative"
-  use:swipe={() => ({ timeframe: 300, minSwipeDistance: 60 })}
-  onswipe={handleSwipe}
+  {...useSwipe(handleSwipe, () => ({ timeframe: 300, minSwipeDistance: 60 }))}
 >
   {#if tripledImages.length > 0}
     <div

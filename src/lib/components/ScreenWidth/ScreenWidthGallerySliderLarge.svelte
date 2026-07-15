@@ -3,10 +3,10 @@
 <!-- @migration-task Error while migrating Svelte code: $$props is used together with named props in a way that cannot be automatically migrated. -->
 <script lang="ts">
   import { onMount } from "svelte";
-  import { swipe } from "svelte-gestures";
+  import { useSwipe } from "svelte-gestures";
   import placeholder from "../../assets/images/image_placeholder.svg";
   import ContentWidth from "../ContentWidth/ContentWidth.svelte";
-  import type { SwipePointerEventDetail } from "svelte-gestures";
+  import type { SwipeCustomEvent } from "svelte-gestures";
 
   let {
     itemArray = [
@@ -82,7 +82,7 @@
 
   let sliderInterval: ReturnType<typeof setTimeout>;
 
-  const handleSwipe = (e: CustomEvent<SwipePointerEventDetail>) => {
+  const handleSwipe = (e: SwipeCustomEvent) => {
     if (e.detail.direction === "left") slideRight();
 
     if (e.detail.direction === "right") slideLeft();
@@ -106,8 +106,7 @@
 
 <section class="pb-32 {passedClasses}">
   <div
-    use:swipe={() => ({ timeframe: 300, minSwipeDistance: 60 })}
-    onswipe={handleSwipe}
+    {...useSwipe(handleSwipe, () => ({ timeframe: 300, minSwipeDistance: 60 }))}
     class="h-py-2 relative"
     style="height:{imageWidth * 0.95}px;"
   >

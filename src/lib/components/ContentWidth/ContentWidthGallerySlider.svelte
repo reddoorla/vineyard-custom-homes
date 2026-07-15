@@ -1,10 +1,10 @@
 <script lang="ts">
-  import { swipe } from "svelte-gestures";
+  import { useSwipe } from "svelte-gestures";
   import placeholder from "../../assets/images/background_placeholder.svg";
   import ContentWidth from "../ContentWidth/ContentWidth.svelte";
   import chevronLeft from "$lib/assets/icons/chevron-left.svg";
   import chevronRight from "$lib/assets/icons/chevron-right.svg";
-  import type { SwipePointerEventDetail } from "svelte-gestures";
+  import type { SwipeCustomEvent } from "svelte-gestures";
 
   let {
     imageArray = [placeholder, placeholder, placeholder, placeholder],
@@ -55,7 +55,7 @@
 
   let _sliderInterval: ReturnType<typeof setTimeout>;
 
-  const handleSwipe = (e: CustomEvent<SwipePointerEventDetail>) => {
+  const handleSwipe = (e: SwipeCustomEvent) => {
     if (e.detail.direction === "left") slideRight();
 
     if (e.detail.direction === "right") slideLeft();
@@ -68,8 +68,7 @@
 
 <section class="pb-32 {passedClasses}">
   <div
-    use:swipe={() => ({ timeframe: 300, minSwipeDistance: 60 })}
-    onswipe={handleSwipe}
+    {...useSwipe(handleSwipe, () => ({ timeframe: 300, minSwipeDistance: 60 }))}
     class="h-[320px] py-2 relative"
   >
     <div
