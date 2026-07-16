@@ -24,8 +24,8 @@ importers:
         specifier: ^2.1.2
         version: 2.1.2(rollup@4.62.2)(svelte@5.55.9(@typescript-eslint/types@8.60.1))
       svelte-gestures:
-        specifier: ~5.1.4
-        version: 5.1.4
+        specifier: ~5.2.0
+        version: 5.2.2
       svelte-select:
         specifier: ^5.8.3
         version: 5.8.3
@@ -2570,8 +2570,8 @@ packages:
   svelte-floating-ui@1.5.8:
     resolution: {integrity: sha512-dVvJhZ2bT+kQDHlE4Lep8t+sgEc0XD96fXLzAi2DDI2bsaegBbClxXVNMma0C2WsG+n9GJSYx292dTvA8CYRtw==}
 
-  svelte-gestures@5.1.4:
-    resolution: {integrity: sha512-gfSO/GqWLu9nRMCz12jqdyA0+NTsojYcIBcRqZjwWrpQbqMXr0zWPFpZBtzfYbRHtuFxZImMZp9MrVaFCYbhDg==}
+  svelte-gestures@5.2.2:
+    resolution: {integrity: sha512-Y+chXPaSx8OsPoFppUwPk8PJzgrZ7xoDJKXeiEc7JBqyKKzXer9hlf8F9O34eFuAWB4/WQEvccACvyBplESL7A==}
 
   svelte-select@5.8.3:
     resolution: {integrity: sha512-nQsvflWmTCOZjssdrNptzfD1Ok45hHVMTL5IHay5DINk7dfu5Er+8KsVJnZMJdSircqtR0YlT4YkCFlxOUhVPA==}
@@ -5235,7 +5235,7 @@ snapshots:
       '@floating-ui/core': 1.7.5
       '@floating-ui/dom': 1.7.6
 
-  svelte-gestures@5.1.4: {}
+  svelte-gestures@5.2.2: {}
 
   svelte-select@5.8.3:
     dependencies:

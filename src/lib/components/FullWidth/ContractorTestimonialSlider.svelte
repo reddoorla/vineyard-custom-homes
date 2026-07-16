@@ -3,7 +3,7 @@
   import { onMount, onDestroy } from "svelte";
   import ContentWidth from "../ContentWidth/ContentWidth.svelte";
   import type { ImageField } from "@prismicio/client";
-  import { swipe, type SwipeCustomEvent } from "svelte-gestures";
+  import { useSwipe, type SwipeCustomEvent } from "svelte-gestures";
 
   // Define the testimonial interface
   interface Testimonial {
@@ -119,8 +119,11 @@
     {#if testimonialArray.length > 0}
       <div
         class="h-129 md:h-92 relative overflow-hidden"
-        use:swipe={() => ({ timeframe: 300, minSwipeDistance: 100, touchAction: "pan-y" })}
-        onswipe={handleSwipe}
+        {...useSwipe(handleSwipe, () => ({
+          timeframe: 300,
+          minSwipeDistance: 100,
+          touchAction: "pan-y",
+        }))}
       >
         {#each testimonialArray as testimonial, i (i)}
           {#if i === currentIndex}
