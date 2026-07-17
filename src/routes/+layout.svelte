@@ -11,9 +11,12 @@
 
   const SITE_NAME = "Vineyard Custom Homes";
   const SITE_URL = "https://www.vineyardconstruction.com";
-  const DEFAULT_TITLE = `${SITE_NAME} | Custom Home Builder in Eagle, ID & the Treasure Valley`;
+  // Keep <= 70 chars for search-result display; the Treasure Valley service
+  // area still surfaces in DEFAULT_DESCRIPTION, the schema areaServed, and the
+  // gallery route title.
+  const DEFAULT_TITLE = `${SITE_NAME} | Custom Home Builder in Eagle, ID`;
   const DEFAULT_DESCRIPTION =
-    "Vineyard Custom Homes is a custom home builder in Eagle, Idaho, crafting luxury custom homes across the Treasure Valley with meticulous care and attention to detail.";
+    "Vineyard Custom Homes is a custom home builder in Eagle, Idaho, crafting luxury custom homes across the Treasure Valley with care and attention to detail.";
   const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.jpg`;
 
   // Distinct, keyword-aware titles for the core static routes (used only when the CMS has none)
@@ -33,7 +36,16 @@
     }
     if (mt) return mt;
     if (t) return t.toLowerCase().includes("vineyard") ? t : `${t} | ${SITE_NAME}`;
-    return ROUTE_TITLES[page.url.pathname] || DEFAULT_TITLE;
+    if (ROUTE_TITLES[page.url.pathname]) return ROUTE_TITLES[page.url.pathname];
+    // Last resort: derive a unique title from the URL slug so a CMS page with no
+    // title/meta_title doesn't collapse onto the homepage's DEFAULT_TITLE.
+    const slug = page.url.pathname
+      .replace(/^\/+|\/+$/g, "")
+      .split("/")
+      .pop();
+    if (slug)
+      return `${slug.replace(/[-_]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())} | ${SITE_NAME}`;
+    return DEFAULT_TITLE;
   });
   const description = $derived(page.data.meta_description || DEFAULT_DESCRIPTION);
   const ogImage = $derived(page.data.meta_image || DEFAULT_OG_IMAGE);
