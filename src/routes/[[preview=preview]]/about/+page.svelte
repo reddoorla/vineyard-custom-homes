@@ -77,7 +77,7 @@
       <div class="w-full lg:w-1/2 lg:pr-8 flex flex-col gap-8">
         <Img src={josiah} class="w-full aspect-[4/3] object-cover" />
         <div>
-          <h4 class="text-dark">Josiah Fredricksen</h4>
+          <h4 class="text-dark">Josiah Fredriksen</h4>
           <h3 class="text-light">CO-OWNER</h3>
         </div>
         <div>
