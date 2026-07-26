@@ -6,3 +6,8 @@ allowBuilds:
   "@scarf/scarf": false
   protobufjs: true
 minimumReleaseAge: 0
+overrides:
+  # GHSA-pxg6-pf52-xh8x — @sveltejs/kit (even latest) still declares cookie ^0.6.0
+  "cookie@<0.7.0": ^0.7.2
+  # GHSA-f88m-g3jw-g9cj — @zerodevx/svelte-img > vite-imagetools@6 > imagetools-core@6 pins sharp ^0.33.1
+  "sharp@<0.35.0": ^0.35.3
