@@ -1,6 +1,7 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
   import DefaultButton from "../Buttons/DefaultButton.svelte";
+  import TurnstileWidget from "../TurnstileWidget.svelte";
 
   let {
     form,
@@ -79,6 +80,12 @@
       name="message"
       required
     ></textarea>
+
+    <!-- Optional Cloudflare Turnstile (dark until PUBLIC_TURNSTILE_SITE_KEY is
+         set — the component gates itself). Mounted inside the form so the widget
+         injects its hidden cf-turnstile-response input here, which the ingest
+         action forwards; verification runs centrally in the dashboard. -->
+    <TurnstileWidget />
 
     <DefaultButton type="submit" class="w-full" disabled={submitting}>
       {submitting ? "Sending…" : "Send Message"}
