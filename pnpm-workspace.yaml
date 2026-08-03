@@ -1,4 +1,3 @@
-# pnpm 11 reads settings from here (the package.json "pnpm" field is no longer read).
 allowBuilds:
   # migrate each package from the old onlyBuiltDependencies here as `name: true`
   esbuild: true
@@ -8,6 +7,6 @@ allowBuilds:
 minimumReleaseAge: 0
 overrides:
   # GHSA-pxg6-pf52-xh8x — @sveltejs/kit (even latest) still declares cookie ^0.6.0
-  "cookie@<0.7.0": ^0.7.2
+  "cookie@<0.7.0": ^2.0.0
   # GHSA-f88m-g3jw-g9cj — @zerodevx/svelte-img > vite-imagetools@6 > imagetools-core@6 pins sharp ^0.33.1
   "sharp@<0.35.0": ^0.35.3
