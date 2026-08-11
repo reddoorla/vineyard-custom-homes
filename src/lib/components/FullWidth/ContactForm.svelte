@@ -78,8 +78,7 @@
       class="border-[1px] rounded-[3px] text-dark border-light h-48 pl-4 pt-[2.5px]"
       placeholder="Your message..."
       name="message"
-      required
-    ></textarea>
+      required></textarea>
 
     <!-- Optional Cloudflare Turnstile (dark until PUBLIC_TURNSTILE_SITE_KEY is
          set — the component gates itself). Mounted inside the form so the widget
