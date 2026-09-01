@@ -5,6 +5,7 @@
   import ContentWidth from "../ContentWidth/ContentWidth.svelte";
   import { PrismicImage } from "@prismicio/svelte";
   import type { ImageField } from "@prismicio/client";
+  import { cappedWidths } from "@reddoorla/maintenance/images";
 
   // Define the testimonial interface
   interface Testimonial {
@@ -133,6 +134,9 @@
             {#if typeof testimonial.image !== "string" && testimonial.image?.url}
               <PrismicImage
                 field={testimonial.image}
+                widths={cappedWidths(testimonial.image)}
+                sizes="(min-width: 1280px) 560px, (min-width: 1024px) 320px, 100vw"
+                loading="lazy"
                 class="h-2/5 lg:h-full w-full lg:w-[320px] xl:w-[560px] object-cover"
               />
             {:else if typeof testimonial.image === "string"}

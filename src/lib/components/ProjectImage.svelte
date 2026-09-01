@@ -2,6 +2,7 @@
   import { isFilled } from "@prismicio/client";
   import type { ProjectDocument } from "../../prismicio-types";
   import { PrismicImage } from "@prismicio/svelte";
+  import { cappedWidths } from "@reddoorla/maintenance/images";
 
   interface ProjectImageProps {
     project?: ProjectDocument | null;
@@ -27,6 +28,13 @@
       field={isFilled.image(project.data.preview_image)
         ? project.data.preview_image
         : project.data.hero_image}
+      widths={cappedWidths(
+        isFilled.image(project.data.preview_image)
+          ? project.data.preview_image
+          : project.data.hero_image,
+      )}
+      sizes="(min-width: 768px) 46vw, 92vw"
+      loading="lazy"
       class="h-full w-full object-cover absolute top-0 left-0 transition duration-1000 {isHovered
         ? 'scale-105'
         : ''}"

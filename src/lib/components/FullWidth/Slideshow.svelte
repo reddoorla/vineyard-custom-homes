@@ -5,6 +5,7 @@
   import { onMount } from "svelte";
   import placeholder from "$lib/assets/images/background_placeholder.svg";
   import { ArrowLeft, ArrowRight } from "@lucide/svelte";
+  import { cappedWidths } from "@reddoorla/maintenance/images";
 
   let imageArray: (ImageField | string)[] = $state([placeholder, placeholder, placeholder]);
   let tripledImages: (ImageField | string)[] = $state([]);
@@ -75,6 +76,8 @@
           {:else}
             <PrismicImage
               field={image}
+              widths={cappedWidths(image)}
+              sizes="100vw"
               class="min-h-full min-w-full absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 object-cover"
             />
           {/if}

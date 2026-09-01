@@ -3,6 +3,7 @@
 
   import { PrismicImage } from "@prismicio/svelte";
   import Img from "@zerodevx/svelte-img";
+  import { cappedWidths } from "@reddoorla/maintenance/images";
 
   let {
     src = placeholder,
@@ -48,6 +49,9 @@
     {#if field}
       <PrismicImage
         {field}
+        widths={cappedWidths(field)}
+        sizes="100vw"
+        fetchpriority="high"
         class="absolute bottom-0 h-full w-full object-cover -z-10 {passedClasses}"
         loading="eager"
       />
