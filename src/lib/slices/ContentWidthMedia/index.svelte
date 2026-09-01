@@ -2,6 +2,7 @@
   import ContentWidth from "$lib/components/ContentWidth/ContentWidth.svelte";
   import { PrismicImage } from "@prismicio/svelte";
   import type { ContentWidthMediaSlice } from "../../../prismicio-types";
+  import { cappedWidths } from "@reddoorla/maintenance/images";
 
   let { slice }: { slice: ContentWidthMediaSlice } = $props();
 </script>
@@ -9,7 +10,12 @@
 <ContentWidth class="mt-9 flex flex-col md:flex-row relative overflow-hidden">
   {#if slice.variation === "default"}
     <div class="aspect-[4/3] md:aspect-video w-full overflow-hidden">
-      <PrismicImage field={slice.primary.image} class="w-full h-full object-cover" />
+      <PrismicImage
+        field={slice.primary.image}
+        widths={cappedWidths(slice.primary.image)}
+        sizes="92vw"
+        class="w-full h-full object-cover"
+      />
       {#if slice.primary.vimeo_id}
         <iframe
           title="background video"
@@ -27,7 +33,13 @@
         ? 'md:aspect-[9/16]'
         : 'md:aspect-square'} md:w-1/2 md:pr-4.5 relative"
     >
-      <PrismicImage field={slice.primary.image_one} class="w-full h-full object-cover" />
+      <PrismicImage
+        field={slice.primary.image_one}
+        widths={cappedWidths(slice.primary.image_one)}
+        sizes="(min-width: 768px) 46vw, 92vw"
+        loading="lazy"
+        class="w-full h-full object-cover"
+      />
       {#if slice.primary.vimeo_id_one}
         <iframe
           title="background video"
@@ -46,7 +58,13 @@
         ? 'md:aspect-[9/16]'
         : 'md:aspect-square'} md:w-1/2 md:pl-4.5 relative overflow-hidden"
     >
-      <PrismicImage field={slice.primary.image_two} class="w-full h-full object-cover" />
+      <PrismicImage
+        field={slice.primary.image_two}
+        widths={cappedWidths(slice.primary.image_two)}
+        sizes="(min-width: 768px) 46vw, 92vw"
+        loading="lazy"
+        class="w-full h-full object-cover"
+      />
       {#if slice.primary.vimeo_id_two}
         <iframe
           title="background video"

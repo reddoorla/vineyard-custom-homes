@@ -9,6 +9,7 @@
   import ScreenWidthMedia from "$lib/components/ScreenWidth/ScreenWidthMedia.svelte";
 
   import { PrismicImage, PrismicLink } from "@prismicio/svelte";
+  import { cappedWidths } from "@reddoorla/maintenance/images";
 
   let { data } = $props();
 
@@ -123,7 +124,13 @@
           class="w-full md:w-1/3 xl:w-1/5 aspect-square hover:opacity-80 transition-opacity"
           aria-label="vch instagram photo"
         >
-          <PrismicImage field={insta.image} class="w-full h-full object-cover" />
+          <PrismicImage
+            field={insta.image}
+            widths={cappedWidths(insta.image)}
+            sizes="(min-width: 1280px) 18vw, (min-width: 768px) 30vw, 92vw"
+            loading="lazy"
+            class="w-full h-full object-cover"
+          />
         </PrismicLink>
       {/each}
     </div>
