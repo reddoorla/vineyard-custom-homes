@@ -28,8 +28,8 @@ importers:
         specifier: ~5.2.0
         version: 5.2.2
       svelte-select:
-        specifier: ^5.8.3
-        version: 5.8.3
+        specifier: ^6.0.0
+        version: 6.0.0(svelte@5.57.0(@typescript-eslint/types@8.69.0))
     devDependencies:
       '@axe-core/playwright':
         specifier: ^4.11.3
@@ -879,6 +879,7 @@ packages:
   '@slicemachine/adapter-sveltekit@0.3.98':
     resolution: {integrity: sha512-iZi1m5M6lO87vDqdCTtgbDfsTNj5VkHRypmkfWRrr428mOze35vlCMypSfjqMNiuzQrl+T/Yhfurm/NCWFVudQ==}
     engines: {node: '>=14.15.0'}
+    deprecated: Slice Machine is replaced by the Prismic CLI and the Type Builder. Existing projects are still supported. To move a project, see https://prismic.io/docs/slice-machine#migrate-to-the-type-builder
     peerDependencies:
       '@sveltejs/kit': ^1 || ^2
       prettier: '>=3'
@@ -893,6 +894,7 @@ packages:
   '@slicemachine/manager@0.27.5':
     resolution: {integrity: sha512-8vKyCyxnhPBWaw2ujrealZ+vHsPv3szjWF0dZ8WwgyYM+lABWslQzvnzy3+GtoQURzlxE9sT/lQ6KS3r/bwUmw==}
     engines: {node: '>=20.19.0'}
+    deprecated: Slice Machine is replaced by the Prismic CLI and the Type Builder. Existing projects are still supported. To move a project, see https://prismic.io/docs/slice-machine#migrate-to-the-type-builder
     peerDependencies:
       msw: '>=1.1.0'
     peerDependenciesMeta:
@@ -902,6 +904,7 @@ packages:
   '@slicemachine/plugin-kit@0.4.97':
     resolution: {integrity: sha512-3GnBWPkRmaeXBPCqV6H6pnwzUSS4JX4mD2O5wmCq4kT0etaubBIpXjIKYBj3uHjOZGPAIgJWJVGyOIAktJrhDA==}
     engines: {node: '>=14.15.0'}
+    deprecated: Slice Machine is replaced by the Prismic CLI and the Type Builder. Existing projects are still supported. To move a project, see https://prismic.io/docs/slice-machine#migrate-to-the-type-builder
 
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
@@ -2671,6 +2674,7 @@ packages:
   slice-machine-ui@2.21.5:
     resolution: {integrity: sha512-Xkt/Hk1rafKdRsGUS45wxtgx8wKUTJwvMFJu9GoALHYXaW/Pr7BSOaceMFMbIjEBNhmXxTTc3aVXAfSI01tBaw==}
     engines: {node: '>=20.19.0'}
+    deprecated: Slice Machine is replaced by the Prismic CLI and the Type Builder. Existing projects are still supported. To move a project, see https://prismic.io/docs/slice-machine#migrate-to-the-type-builder
     hasBin: true
 
   source-map-js@1.2.1:
@@ -2692,6 +2696,7 @@ packages:
   start-slicemachine@0.12.77:
     resolution: {integrity: sha512-DPZyz0SsHMhkPLyOrq6UqzMkuciem0onIHtSzm5GHmD3PM2T7HNSasFKgeahe9oo1S/ec+ExybvwcLiOr0B0Wg==}
     engines: {node: '>=20.19.0'}
+    deprecated: Slice Machine is replaced by the Prismic CLI and the Type Builder. Existing projects are still supported. To move a project, see https://prismic.io/docs/slice-machine#migrate-to-the-type-builder
     hasBin: true
 
   statuses@2.0.2:
@@ -2756,8 +2761,10 @@ packages:
   svelte-gestures@5.2.2:
     resolution: {integrity: sha512-Y+chXPaSx8OsPoFppUwPk8PJzgrZ7xoDJKXeiEc7JBqyKKzXer9hlf8F9O34eFuAWB4/WQEvccACvyBplESL7A==}
 
-  svelte-select@5.8.3:
-    resolution: {integrity: sha512-nQsvflWmTCOZjssdrNptzfD1Ok45hHVMTL5IHay5DINk7dfu5Er+8KsVJnZMJdSircqtR0YlT4YkCFlxOUhVPA==}
+  svelte-select@6.0.0:
+    resolution: {integrity: sha512-WJ1UDw0a1Z3I7oVFgaCS7G9D2rCSmYAPpufNEj/DNuk5Oyb2a5dju6F36o0urBVw9bTE3WkM9cZkI0x+Sfo8Bg==}
+    peerDependencies:
+      svelte: '>=5'
 
   svelte2tsx@0.7.61:
     resolution: {integrity: sha512-EpQ/+UHITBULeUojx/LLD3uTYasZXcX1BrqlrzfLUnT9vdUhaOWK59a3ryWcFU8L0sY1SP+gRhJ2Beiis98+qw==}
@@ -5560,8 +5567,9 @@ snapshots:
 
   svelte-gestures@5.2.2: {}
 
-  svelte-select@5.8.3:
+  svelte-select@6.0.0(svelte@5.57.0(@typescript-eslint/types@8.69.0)):
     dependencies:
+      svelte: 5.57.0(@typescript-eslint/types@8.69.0)
       svelte-floating-ui: 1.5.8
 
   svelte2tsx@0.7.61(svelte@5.57.0(@typescript-eslint/types@8.69.0))(typescript@6.0.3):
