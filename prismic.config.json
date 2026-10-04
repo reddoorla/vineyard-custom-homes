@@ -1,0 +1,5 @@
+{
+  "repositoryName": "vineyard-custom-homes",
+  "libraries": ["./src/lib/slices"],
+  "routes": []
+}

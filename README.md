@@ -7,7 +7,7 @@ Netlify.
 ## Stack
 
 - **SvelteKit 5** (runes) + **Vite 6**
-- **Prismic** CMS via `@prismicio/client` / `@prismicio/svelte` (Slice Machine for content modeling)
+- **Prismic** CMS via `@prismicio/client` / `@prismicio/svelte` (the Prismic CLI and Type Builder for content modeling)
 - **Tailwind CSS v4** (`@tailwindcss/vite`)
 - **Netlify** (`@sveltejs/adapter-netlify`)
 - **pnpm** (`packageManager` is pinned — use pnpm, not npm/yarn)
@@ -22,25 +22,27 @@ Netlify.
 
 ```bash
 pnpm install
-pnpm dev        # vite dev + Slice Machine, concurrently
+pnpm dev          # Vite
+pnpm prismic:gen  # regenerate prismicio-types.d.ts and the slice index after a model edit
 ```
 
 - App: http://localhost:5173
-- Slice Machine: http://localhost:9999
+- Models are edited in Prismic's Type Builder, which previews slices through `/slice-simulator` on the deployed site.
 
-The Prismic repository name (`vineyard-custom-homes`) is set in `slicemachine.config.json` and used by
+The Prismic repository name (`vineyard-custom-homes`) is set in `prismic.config.json` and used by
 `src/lib/prismicio.js`. It can be overridden locally with the `VITE_PRISMIC_ENVIRONMENT` env var.
 
 ## Scripts
 
-| Command        | What it does                                             |
-| -------------- | -------------------------------------------------------- |
-| `pnpm dev`     | Dev server + Slice Machine                               |
-| `pnpm build`   | Production build (prerenders pages from Prismic content) |
-| `pnpm preview` | Preview the production build locally                     |
-| `pnpm check`   | `svelte-kit sync` + `svelte-check` (type/Svelte checks)  |
-| `pnpm lint`    | Prettier check + ESLint                                  |
-| `pnpm format`  | Prettier write                                           |
+| Command            | What it does                                                  |
+| ------------------ | ------------------------------------------------------------- |
+| `pnpm dev`         | Dev server                                                    |
+| `pnpm build`       | Production build (prerenders pages from Prismic content)      |
+| `pnpm preview`     | Preview the production build locally                          |
+| `pnpm check`       | `svelte-kit sync` + `svelte-check` (type/Svelte checks)       |
+| `pnpm lint`        | Prettier check + ESLint                                       |
+| `pnpm format`      | Prettier write                                                |
+| `pnpm prismic:gen` | Regenerate `prismicio-types.d.ts` + `src/lib/slices/index.ts` |
 
 ## Project structure
 

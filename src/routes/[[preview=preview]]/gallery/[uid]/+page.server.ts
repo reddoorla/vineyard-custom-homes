@@ -1,7 +1,7 @@
 import { createClient } from "$lib/prismicio";
 import { isFilled } from "@prismicio/client";
 import { error } from "@sveltejs/kit";
-import type { ProjectDocument } from "../../../../prismicio-types";
+import type { ProjectDocument } from "../../../../../prismicio-types";
 
 export async function load({ params, fetch, cookies }) {
   const client = createClient({ fetch, cookies });

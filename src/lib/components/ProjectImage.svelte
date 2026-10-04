@@ -1,6 +1,6 @@
 <script lang="ts">
   import { isFilled } from "@prismicio/client";
-  import type { ProjectDocument } from "../../prismicio-types";
+  import type { ProjectDocument } from "../../../prismicio-types";
   import { PrismicImage } from "@prismicio/svelte";
   import { cappedWidths } from "@reddoorla/maintenance/images";
 
