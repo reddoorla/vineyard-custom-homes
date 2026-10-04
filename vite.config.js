@@ -8,7 +8,7 @@ export default defineConfig({
   server: {
     fs: {
       // Allow access to files from the project root.
-      allow: ["..", "./slicemachine.config.json"],
+      allow: ["..", "./prismic.config.json"],
     },
   },
 });

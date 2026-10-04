@@ -12,7 +12,7 @@ closest local equivalent; `pnpm test:smoke` is separate. `README.md` is the
 reference for setup, and it is stale on two points — it says Vite 6 and Node
 22, while `package.json` is on Vite 8 and `.nvmrc` / `netlify.toml` say Node 24.
 
-Two things that surprise people:
+Three things that surprise people:
 
 - **Only two Prismic slices exist** (`RichText`, `ContentWidthMedia`). Most of
   the page furniture is components under `src/lib/components/`, because this
@@ -22,6 +22,15 @@ Two things that surprise people:
   Prismic by CI on merge to `main`** (`.github/workflows/prismic-models.yml`).
   Its branch filters are load-bearing and the file itself says so — it is
   managed by `@reddoorla/maintenance`, so change it there, not here.
+- **`prismicio-types.d.ts` (project root) and `src/lib/slices/index.ts` are
+  generated** by the Prismic CLI (`pnpm prismic:gen`; Slice Machine is gone,
+  deprecated by Prismic 2026-09-18). Edit a model's JSON, regenerate, commit
+  both; the `prismic-codegen` job fails a PR whose generated files are stale.
+  Both are in `.prettierignore`. Run by an agent, the CLI refuses without
+  `--task-id` and `--user-intent`, so an agent runs `pnpm exec prismic task-id`
+  once, then `pnpm exec prismic gen types --task-id <id> --user-intent "<the ask>"`
+  and the same for `gen slice-index`. Never `prismic push` or `prismic pull`:
+  both delete to match.
 
 ## The work journal
 

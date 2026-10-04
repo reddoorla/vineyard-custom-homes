@@ -3,7 +3,7 @@
   import vchVideoThumb from "$lib/assets/images/homethumb.jpg?as=run";
   import ContentWidth from "$lib/components/ContentWidth/ContentWidth.svelte";
   import { isFilled } from "@prismicio/client";
-  import type { ProjectDocument } from "../../../prismicio-types.js";
+  import type { ProjectDocument } from "../../../../prismicio-types.js";
   import ProjectImage from "$lib/components/ProjectImage.svelte";
   import ScreenWidthMedia from "$lib/components/ScreenWidth/ScreenWidthMedia.svelte";
 

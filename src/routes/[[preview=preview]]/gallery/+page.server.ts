@@ -1,6 +1,6 @@
 import { createClient } from "$lib/prismicio";
 
-import type { ProjectDocument } from "../../../prismicio-types.js";
+import type { ProjectDocument } from "../../../../prismicio-types.js";
 
 export async function load({ fetch, cookies }) {
   const client = createClient({ fetch, cookies });

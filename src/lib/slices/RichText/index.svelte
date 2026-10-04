@@ -1,6 +1,6 @@
 <script lang="ts">
   import { PrismicRichText } from "@prismicio/svelte";
-  import type { RichTextSlice } from "../../../prismicio-types";
+  import type { RichTextSlice } from "../../../../prismicio-types";
 
   let { slice }: { slice: RichTextSlice } = $props();
 </script>

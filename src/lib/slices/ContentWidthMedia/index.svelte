@@ -1,7 +1,7 @@
 <script lang="ts">
   import ContentWidth from "$lib/components/ContentWidth/ContentWidth.svelte";
   import { PrismicImage } from "@prismicio/svelte";
-  import type { ContentWidthMediaSlice } from "../../../prismicio-types";
+  import type { ContentWidthMediaSlice } from "../../../../prismicio-types";
   import { cappedWidths } from "@reddoorla/maintenance/images";
 
   let { slice }: { slice: ContentWidthMediaSlice } = $props();
