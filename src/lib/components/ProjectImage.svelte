@@ -1,4 +1,5 @@
 <script lang="ts">
+  import VimeoGate from "$lib/components/VimeoGate.svelte";
   import { isFilled } from "@prismicio/client";
   import type { ProjectDocument } from "../../../prismicio-types";
   import { PrismicImage } from "@prismicio/svelte";
@@ -40,15 +41,17 @@
         : ''}"
     />
     {#if project.data.hero_vimeo_id || project.data.preview_vimeo}
-      <iframe
-        title="background video"
-        src={`https://player.vimeo.com/video/${project.data.preview_vimeo || project.data.hero_vimeo_id}?background=1&muted=1&loop=1&autoplay=1&dnt=1`}
-        class="absolute top-1/2 left-1/2 -translate-1/2 pointer-events-none object-cover {isVertical
-          ? 'w-[120%] aspect-[9/16]'
-          : 'w-[120%] h-[120%]'}"
-        frameborder="0"
-        allowfullscreen
-      ></iframe>
+      <VimeoGate>
+        <iframe
+          title="background video"
+          src={`https://player.vimeo.com/video/${project.data.preview_vimeo || project.data.hero_vimeo_id}?background=1&muted=1&loop=1&autoplay=1&dnt=1`}
+          class="absolute top-1/2 left-1/2 -translate-1/2 pointer-events-none object-cover {isVertical
+            ? 'w-[120%] aspect-[9/16]'
+            : 'w-[120%] h-[120%]'}"
+          frameborder="0"
+          allowfullscreen
+        ></iframe>
+      </VimeoGate>
     {/if}
     <div
       class="w-full h-full absolute top-0 left-0 bg-dark opacity-15 hover:opacity-0 transition-opacity duration-500"
