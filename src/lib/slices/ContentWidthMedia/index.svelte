@@ -1,4 +1,5 @@
 <script lang="ts">
+  import VimeoGate from "$lib/components/VimeoGate.svelte";
   import ContentWidth from "$lib/components/ContentWidth/ContentWidth.svelte";
   import { PrismicImage } from "@prismicio/svelte";
   import type { ContentWidthMediaSlice } from "../../../../prismicio-types";
@@ -17,13 +18,15 @@
         class="w-full h-full object-cover"
       />
       {#if slice.primary.vimeo_id}
-        <iframe
-          title="background video"
-          src={`https://player.vimeo.com/video/${slice.primary.vimeo_id}?background=1&muted=1&loop=1&autoplay=1&dnt=1`}
-          class="absolute top-1/2 left-1/2 -translate-1/2 h-full aspect-video"
-          frameborder="0"
-          allowfullscreen
-        ></iframe>
+        <VimeoGate>
+          <iframe
+            title="background video"
+            src={`https://player.vimeo.com/video/${slice.primary.vimeo_id}?background=1&muted=1&loop=1&autoplay=1&dnt=1`}
+            class="absolute top-1/2 left-1/2 -translate-1/2 h-full aspect-video"
+            frameborder="0"
+            allowfullscreen
+          ></iframe>
+        </VimeoGate>
       {/if}
     </div>
   {/if}
@@ -41,16 +44,18 @@
         class="w-full h-full object-cover"
       />
       {#if slice.primary.vimeo_id_one}
-        <iframe
-          title="background video"
-          src={`https://player.vimeo.com/video/${slice.primary.vimeo_id_one}?background=1&muted=1&loop=1&autoplay=1&dnt=1`}
-          class="absolute top-1/2 left-1/2 -translate-1/2 w-full {slice.primary.image_aspect ===
-          '9:16'
-            ? 'aspect-[9/16]'
-            : 'aspect-square'}"
-          frameborder="0"
-          allowfullscreen
-        ></iframe>
+        <VimeoGate>
+          <iframe
+            title="background video"
+            src={`https://player.vimeo.com/video/${slice.primary.vimeo_id_one}?background=1&muted=1&loop=1&autoplay=1&dnt=1`}
+            class="absolute top-1/2 left-1/2 -translate-1/2 w-full {slice.primary.image_aspect ===
+            '9:16'
+              ? 'aspect-[9/16]'
+              : 'aspect-square'}"
+            frameborder="0"
+            allowfullscreen
+          ></iframe>
+        </VimeoGate>
       {/if}
     </div>
     <div
@@ -66,16 +71,18 @@
         class="w-full h-full object-cover"
       />
       {#if slice.primary.vimeo_id_two}
-        <iframe
-          title="background video"
-          src={`https://player.vimeo.com/video/${slice.primary.vimeo_id_two}?background=1&muted=1&loop=1&autoplay=1&dnt=1`}
-          class="absolute top-1/2 left-1/2 -translate-1/2 w-full {slice.primary.image_aspect ===
-          '9:16'
-            ? 'aspect-[9/16]'
-            : 'aspect-square'}"
-          frameborder="0"
-          allowfullscreen
-        ></iframe>
+        <VimeoGate>
+          <iframe
+            title="background video"
+            src={`https://player.vimeo.com/video/${slice.primary.vimeo_id_two}?background=1&muted=1&loop=1&autoplay=1&dnt=1`}
+            class="absolute top-1/2 left-1/2 -translate-1/2 w-full {slice.primary.image_aspect ===
+            '9:16'
+              ? 'aspect-[9/16]'
+              : 'aspect-square'}"
+            frameborder="0"
+            allowfullscreen
+          ></iframe>
+        </VimeoGate>
       {/if}
       <div class="absolute h-full w-0 md:w-5 bg-white top-0 -left-0.5"></div>
     </div>

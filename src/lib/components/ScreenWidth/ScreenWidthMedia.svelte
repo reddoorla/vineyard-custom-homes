@@ -1,4 +1,5 @@
 <script lang="ts">
+  import VimeoGate from "$lib/components/VimeoGate.svelte";
   import placeholder from "../../assets/images/background_placeholder.svg";
   import { PrismicImage } from "@prismicio/svelte";
   import Img from "@zerodevx/svelte-img";
@@ -55,16 +56,18 @@
       />
     {/if}
     {#if vimeoId}
-      <iframe
-        title="background video"
-        src={`https://player.vimeo.com/video/${vimeoId}?background=1&muted=1&loop=1&autoplay=1&dnt=1`}
-        class="aspect-video absolute contrast-[1.15] -z-10"
-        style={((viewportHeight * percentHeight) / 100) * 16 > viewportWidth * 9
-          ? `height: ${percentHeight}lvh; min-width: 100%`
-          : `width: 100vw; min-height: ${percentHeight}lvh`}
-        frameborder="0"
-        allowfullscreen
-      ></iframe>
+      <VimeoGate>
+        <iframe
+          title="background video"
+          src={`https://player.vimeo.com/video/${vimeoId}?background=1&muted=1&loop=1&autoplay=1&dnt=1`}
+          class="aspect-video absolute contrast-[1.15] -z-10"
+          style={((viewportHeight * percentHeight) / 100) * 16 > viewportWidth * 9
+            ? `height: ${percentHeight}lvh; min-width: 100%`
+            : `width: 100vw; min-height: ${percentHeight}lvh`}
+          frameborder="0"
+          allowfullscreen
+        ></iframe>
+      </VimeoGate>
     {/if}
     {#if darken}
       <div
