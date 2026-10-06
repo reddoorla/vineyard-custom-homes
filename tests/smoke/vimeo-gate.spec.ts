@@ -44,6 +44,17 @@ test("a pointer press mounts the Vimeo player", async ({ page }) => {
   });
 });
 
+test("a wheel turn mounts the Vimeo player", async ({ page }) => {
+  await loadIdle(page);
+  await expectMountsAfter(page, () => page.mouse.wheel(0, 40));
+});
+
+test("a mouse move mounts the Vimeo player", async ({ page }) => {
+  await loadIdle(page);
+  let x = 10;
+  await expectMountsAfter(page, () => page.mouse.move((x += 7), 40));
+});
+
 test.describe("touch", () => {
   test.use({ hasTouch: true });
   test("a tap mounts the Vimeo player", async ({ page }) => {
