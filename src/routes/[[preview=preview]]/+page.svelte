@@ -10,6 +10,7 @@
 
   import { PrismicImage, PrismicLink } from "@prismicio/svelte";
   import { cappedWidths } from "@reddoorla/maintenance/images";
+  import { withFallbackAlt } from "$lib/image-alt";
 
   let { data } = $props();
 
@@ -30,7 +31,7 @@
 <section class="py-32">
   <ContentWidth>
     <h1 class="text-dark uppercase text-center max-w-[900px]">
-      Building custom homes in the Treasure Valley with the <span class="text-light"
+      Building custom homes in the Treasure Valley with the <span class="text-light-on-white"
         >utmost care</span
       > and attention to detail
     </h1>
@@ -40,9 +41,9 @@
       <div
         class="w-16 h-16 rounded-full border-1 border-light relative flex flex-col items-center justify-center gap-[3px]"
       >
-        <div class="label text-light translate-x-[0.5px]">01</div>
+        <div class="label text-dark translate-x-[0.5px]">01</div>
         <div class="h-[0.5px] w-full bg-light"></div>
-        <div class="label text-light translate-x-[0.5px]">V</div>
+        <div class="label text-dark translate-x-[0.5px]">V</div>
       </div>
     </div>
     <p class="text-center max-w-screen-sm text-dark mt-16">
@@ -125,7 +126,7 @@
           aria-label="vch instagram photo"
         >
           <PrismicImage
-            field={insta.image}
+            field={withFallbackAlt(insta.image, "Vineyard Custom Homes project photo on Instagram")}
             widths={cappedWidths(insta.image)}
             sizes="(min-width: 1280px) 18vw, (min-width: 768px) 30vw, 92vw"
             loading="lazy"
