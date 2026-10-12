@@ -139,11 +139,14 @@ The fix does less for a screen-reader user than the score suggests. Each tile li
 | `fallbackAlt=""` on a tile (marks it decorative)     | red: the empty-alt assertion                     |
 | `alt=""` on the testimonial image                    | red: the empty-alt assertion                     |
 | `.options()` after `.withRules()`                    | red: the scan ran every rule, not two            |
+| No `ignoreLength`, and the "V" back to `text-light`  | red: the "V" reported as skipped short text      |
 
-One limit: once the release is published, the grid call-site mutation goes green, because the content then supplies the alt. Nothing tests the medallions on the other four pages.
+Limits: once the release is published, the grid call-site mutation goes green, because the content then supplies the alt. The testimonial call site is never shown to matter: all three testimonial images carry alts today, so dropping its fallback leaves the suite green. Nothing tests the medallions on the other pages. Dropping `ignoreLength` alone also stays green, correctly: axe sets a one-character text aside only when it fails, and the navy "V" passes; the spec asserts that nothing is set aside, which goes red once the "V" fails too.
+
+Review ran two rounds of three lenses. Round 1 found the medallion inconsistency and the test flaws above. Round 2 found the regression round 1 had made on the project page, so under the fleet's two-dirty-rounds rule the PR went to the operator rather than a third round.
 
 The first mutation run was invalid. Its control restored `main`'s files with `git checkout <sha> -- <paths>`, which also writes the index, so each later mutation's `git checkout -- .` restored the control instead of the branch and every row read the same. Restoring from `HEAD` fixed it.
 
-Measured on a local `vite build` + `vite preview` with the nightly's code path: accessibility 1.00 in 3 of 3 runs. The playwright pinned here wants `chromium_headless_shell-1243`, which a cloud container does not have; a local config pointing `launchOptions.executablePath` at `$CHROME_PATH` ran the suite without `playwright install`.
+Measured with the nightly's code path: accessibility 1.00 in 3 of 3 runs on a local `vite build` + `vite preview`, and 1.00 in 3 of 3 on the PR's deploy preview at `8f327b5` (image-alt and color-contrast 1 in every run; its SEO 0.69 is the preview's noindex). The playwright pinned here wants `chromium_headless_shell-1243`, which a cloud container does not have; a local config pointing `launchOptions.executablePath` at `$CHROME_PATH` ran the suite without `playwright install`.
 
 Staging a Prismic release fires the site's "Prismic" Netlify build hook: production rebuilt at 02:54Z and 03:48Z, when the release was created and written, without any change to published content. Publishing the release will rebuild the prerendered home page in the same way.

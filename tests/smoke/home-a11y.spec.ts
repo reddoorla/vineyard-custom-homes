@@ -38,11 +38,13 @@ for (const width of [1280, 390]) {
   test(`the home page passes image-alt and color-contrast at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 844 });
     await page.goto("/", { waitUntil: "load" });
-    await expect(page.locator("section.overflow-hidden h3").first()).toBeAttached();
+    await expect(page.locator("section.overflow-hidden h3").first()).toBeAttached({
+      timeout: 30_000,
+    });
     const checkShortText = {
       checks: { "color-contrast": { options: { ignoreLength: true } } },
     } as unknown as Parameters<AxeBuilder["options"]>[0];
-    const { violations, passes } = await new AxeBuilder({ page })
+    const { violations, passes, incomplete } = await new AxeBuilder({ page })
       .options(checkShortText)
       .withRules(["image-alt", "color-contrast"])
       .analyze();
@@ -50,6 +52,10 @@ for (const width of [1280, 390]) {
       [],
     );
     expect(passes.map((p) => p.id).sort()).toEqual(["color-contrast", "image-alt"]);
+    const skippedShortText = incomplete
+      .flatMap((r) => r.nodes)
+      .filter((n) => n.any.some((c) => c.data?.messageKey === "shortTextContent"));
+    expect(skippedShortText.map((n) => n.target.join(" "))).toEqual([]);
     const contentAlts = await page
       .locator('a[aria-label="vch instagram photo"] img, section.overflow-hidden img')
       .evaluateAll((imgs) => imgs.map((img) => img.getAttribute("alt")?.trim() ?? ""));
