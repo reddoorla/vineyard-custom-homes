@@ -39,13 +39,17 @@ for (const width of [1280, 390]) {
     await page.setViewportSize({ width, height: 844 });
     await page.goto("/", { waitUntil: "load" });
     await expect(page.locator("section.overflow-hidden h3").first()).toBeAttached();
-    const { violations } = await new AxeBuilder({ page })
+    const checkShortText = {
+      checks: { "color-contrast": { options: { ignoreLength: true } } },
+    } as unknown as Parameters<AxeBuilder["options"]>[0];
+    const { violations, passes } = await new AxeBuilder({ page })
+      .options(checkShortText)
       .withRules(["image-alt", "color-contrast"])
-      .options({ checks: { "color-contrast": { options: { ignoreLength: true } } } })
       .analyze();
     expect(violations.flatMap((v) => v.nodes.map((n) => `${v.id}: ${n.target.join(" ")}`))).toEqual(
       [],
     );
+    expect(passes.map((p) => p.id).sort()).toEqual(["color-contrast", "image-alt"]);
     const contentAlts = await page
       .locator('a[aria-label="vch instagram photo"] img, section.overflow-hidden img')
       .evaluateAll((imgs) => imgs.map((img) => img.getAttribute("alt")?.trim() ?? ""));
