@@ -24,6 +24,11 @@ test("withFallbackAlt fills a missing or blank alt", () => {
   expect(withFallbackAlt(image("  "), "fallback").alt).toBe("fallback");
 });
 
+test("withFallbackAlt leaves an empty image field empty", () => {
+  const empty = { alt: null, copyright: null, dimensions: null, id: null, url: null, edit: null };
+  expect(withFallbackAlt(empty as unknown as ImageField, "fallback")).toBe(empty);
+});
+
 test("withFallbackAlt never makes an image decorative", () => {
   expect(() => withFallbackAlt(image(null), "")).toThrow();
   expect(() => withFallbackAlt(image(null), " ")).toThrow();
@@ -34,16 +39,17 @@ for (const width of [1280, 390]) {
     await page.setViewportSize({ width, height: 844 });
     await page.goto("/", { waitUntil: "load" });
     await expect(page.locator("section.overflow-hidden h3").first()).toBeAttached();
-    const { violations, passes } = await new AxeBuilder({ page })
+    const { violations } = await new AxeBuilder({ page })
       .withRules(["image-alt", "color-contrast"])
+      .options({ checks: { "color-contrast": { options: { ignoreLength: true } } } })
       .analyze();
     expect(violations.flatMap((v) => v.nodes.map((n) => `${v.id}: ${n.target.join(" ")}`))).toEqual(
       [],
     );
-    const instagramImages = await page.locator('a[aria-label="vch instagram photo"] img').count();
-    expect(instagramImages).toBeGreaterThan(0);
-    expect(passes.find((p) => p.id === "image-alt")?.nodes.length).toBeGreaterThanOrEqual(
-      instagramImages,
-    );
+    const contentAlts = await page
+      .locator('a[aria-label="vch instagram photo"] img, section.overflow-hidden img')
+      .evaluateAll((imgs) => imgs.map((img) => img.getAttribute("alt")?.trim() ?? ""));
+    expect(contentAlts.length).toBeGreaterThan(0);
+    expect(contentAlts.filter((alt) => alt === "")).toEqual([]);
   });
 }

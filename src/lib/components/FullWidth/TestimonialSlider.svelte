@@ -6,6 +6,7 @@
   import { PrismicImage } from "@prismicio/svelte";
   import type { ImageField } from "@prismicio/client";
   import { cappedWidths } from "@reddoorla/maintenance/images";
+  import { withFallbackAlt } from "$lib/image-alt";
 
   // Define the testimonial interface
   interface Testimonial {
@@ -133,7 +134,7 @@
             </div>
             {#if typeof testimonial.image !== "string" && testimonial.image?.url}
               <PrismicImage
-                field={testimonial.image}
+                field={withFallbackAlt(testimonial.image, "Vineyard Custom Homes project photo")}
                 widths={cappedWidths(testimonial.image)}
                 sizes="(min-width: 1280px) 560px, (min-width: 1024px) 320px, 100vw"
                 loading="lazy"

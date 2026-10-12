@@ -75,9 +75,9 @@
       <div
         class="w-16 h-16 rounded-full border-1 border-light relative flex flex-col items-center justify-center gap-[3px]"
       >
-        <div class="label text-light translate-x-[0.5px]">01</div>
+        <div class="label text-dark translate-x-[0.5px]">01</div>
         <div class="h-[0.5px] w-full bg-light"></div>
-        <div class="label text-light translate-x-[0.5px]">V</div>
+        <div class="label text-dark translate-x-[0.5px]">V</div>
       </div>
     </div>
   </ContentWidth>

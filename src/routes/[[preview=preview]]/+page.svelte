@@ -31,7 +31,7 @@
 <section class="py-32">
   <ContentWidth>
     <h1 class="text-dark uppercase text-center max-w-[900px]">
-      Building custom homes in the Treasure Valley with the <span class="text-light-on-white"
+      Building custom homes in the Treasure Valley with the <span class="text-light-display"
         >utmost care</span
       > and attention to detail
     </h1>
