@@ -38,9 +38,9 @@
       <div
         class="w-16 h-16 rounded-full border-1 border-light relative flex flex-col items-center justify-center gap-[3px]"
       >
-        <div class="label text-light translate-x-[0.5px]">V</div>
+        <div class="label text-dark translate-x-[0.5px]">V</div>
         <div class="h-[0.5px] w-full bg-light"></div>
-        <div class="label text-light translate-x-[0.5px]">02</div>
+        <div class="label text-dark translate-x-[0.5px]">02</div>
       </div>
       <div class="h-20 w-0 border-r-1 -translate-x-[0.5px] border-light"></div>
       <div class="h-0 w-3 border-light border-b-[1px] -translate-x-[0.5px]"></div>
