@@ -114,3 +114,29 @@ Measured from the build manifest as each node's static-import closure, gzipped, 
 There is no framing change. The site has no `hooks.server` and sets no X-Frame-Options or CSP anywhere, and `vite preview` showed neither header on any path before or after, including `/slice%2Dsimulator`.
 
 The proof is `tests/smoke/slice-simulator.spec.ts`, which reads the build manifest from disk. On `main` it failed the bundle check (1 of 3). On this branch it passes 3 of 3. With the plugin removed from `vite.config.js` and the site rebuilt, the bundle check fails again. The plugin is imported without an extension because `svelte-check` runs `checkJs` here.
+
+## 2026-10-12 — The home page clears image-alt and color-contrast (branch `fix/a11y-image-alt-contrast`, #76)
+
+The `fleet-lighthouse` nightly scored the home page 0.88 accessibility on 10-09, 10-10 and 10-11, the lowest in the fleet. Reproduced through the nightly's own `lighthouseAudit` deployed path against production at 02:45Z: 0.88 in 3 of 3 runs, with the same three nodes every time.
+
+**image-alt.** The first Instagram tile's Prismic image (`Screenshot2025-07-01at4.04.38PM.png`) has `alt: null`, and `PrismicImage` renders no `alt` attribute at all when the field's alt is empty and no `fallbackAlt` is given. The other three tiles carry alts ("bentley 42", "bentley 21", "hg 3") that pass the audit but read as filenames; they are left as they are. `withFallbackAlt` in `src/lib/image-alt.ts` fills a missing or blank alt with "Vineyard Custom Homes project photo on Instagram", and throws on an empty fallback so it cannot be used to mark an image decorative. `PrismicImage`'s own `fallbackAlt` only accepts `""`, which is why the fallback goes in through the field. The real description ("Vintage teal-and-white pickup truck with the Vineyard Custom Homes logo on its door, parked outside a home under construction") is staged in the Prismic release "Accessibility: alt text for the home page Instagram tile (P1-43)", for the operator to publish.
+
+**color-contrast.** Both nodes are `text-light` (#7ba0c4) on white, 2.73:1 as axe reports it. The h1's "utmost care" is 36px, so it needs 3:1. It moves to a new `light-on-white` token, #7196b9: the brand blue mixed 7.5% toward the brand navy in OKLab, 3.10:1, ΔE_ok 3.3 from the original, and not visible side by side. The "01 / V" medallion text is 12px and needs 4.5:1. The smallest same-hue tone that reaches it, #547899, is ΔE_ok 13 away, which is a visible change. So it uses the existing navy (`text-dark`, 15.6:1) instead of inventing a tone. The ring and rule stay light blue. `--color-light` itself is unchanged: it is 5.69:1 on the navy testimonial cards, and darkening it would have lowered that.
+
+**The instrument.** `tests/smoke/home-a11y.spec.ts` runs axe's `image-alt` and `color-contrast` rules on `/` at 1280 and 390, and pins the helper's three behaviours. It was red on `main`'s page and CSS, with all three nodes named, and green on the branch. Mutations:
+
+| Mutation                                           | Result                                                             |
+| -------------------------------------------------- | ------------------------------------------------------------------ |
+| Helper returns the field unchanged                 | red: the helper test and both page tests                           |
+| Call site passes `insta.image` straight through    | red: both page tests (image-alt)                                   |
+| "utmost care" back to `text-light`                 | red: `h1 > span`                                                   |
+| Medallion text back to `text-light`                | red: the "01" label                                                |
+| `--color-light-on-white` back to #7ba0c4           | red: `.text-light-on-white`                                        |
+| `withFallbackAlt(insta.image, "")`                 | red: the helper throws, the page does not render                   |
+| `fallbackAlt=""` on the tile (marks it decorative) | **green**: an empty alt satisfies axe, so only review catches this |
+
+Two limits, stated plainly. Once the release is published, the call-site mutation goes green too, because the content then supplies the alt. axe flags the "01" but never the "V", at either width, so the "V" is covered only because both share one class change.
+
+Measured on a local `vite build` + `vite preview` with the nightly's code path: accessibility 1.00 in 3 of 3 runs. The playwright pinned here wants `chromium_headless_shell-1243`, which a cloud container does not have; a local config pointing `launchOptions.executablePath` at `$CHROME_PATH` ran the suite without `playwright install`.
+
+Staging a Prismic release fires the site's "Prismic" Netlify build hook: production rebuilt at 02:54Z and 03:48Z, when the release was created and written, without any change to published content. Publishing the release will rebuild the prerendered home page in the same way.
