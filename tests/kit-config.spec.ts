@@ -233,6 +233,20 @@ test.describe("environment variables (kit 3 exposes only what src/env.ts declare
     expect(missing).toEqual([]);
   });
 
+  test("reads $app/env/* only in ways the scan above can check", () => {
+    // A namespace re-export (`export * as env from "$app/env/private"`) or a
+    // dynamic import hands the variables to code this scan cannot follow, so
+    // an undeclared read through either would pass "declares every variable".
+    const unscannable =
+      /export\s*\*\s*(?:as\s+\w+\s+)?from\s*["']\$app\/env\/|import\s*\(\s*["']\$app\/env\//;
+    // The instrument's own control.
+    expect(unscannable.test('export * as penv from "$app/env/private";')).toBe(true);
+    expect(unscannable.test('await import("$app/env/public");')).toBe(true);
+    expect(unscannable.test('import * as env from "$app/env/private";')).toBe(false);
+    const offenders = files.filter((file) => unscannable.test(readFileSync(file, "utf8")));
+    expect(offenders.map((f) => relative(repoRoot, f))).toEqual([]);
+  });
+
   test("imports nothing from $app/stores, whose stores throw app_stores_removed in kit 3", () => {
     const stores = files.filter((file) =>
       /(?:from|import\s*\()\s*["']\$app\/stores["']/.test(readFileSync(file, "utf8")),
@@ -271,7 +285,10 @@ test.describe("routing on kit 3", () => {
     // rejects in dev (goto_options_removed) and ignores in production
     // (the page jumps to the top). reddoor-starter#188.
     const offenders = walk(join(repoRoot, "src")).filter((file) =>
-      /import\s*\{[^}]*\bPrismicPreview\b[^}]*\}\s*from\s*["']@prismicio\/svelte\/kit["']/.test(
+      // A named import or re-export of it, or a namespace import of the
+      // module, which this site has no other reason for (its other imports
+      // from it are named: enableAutoPreviews, redirectToPreviewURL).
+      /(?:import|export)\s*\{[^}]*\bPrismicPreview\b[^}]*\}\s*from\s*["']@prismicio\/svelte\/kit["']|(?:import|export)\s*\*\s*as\s+\w+\s+from\s*["']@prismicio\/svelte\/kit["']/.test(
         readFileSync(file, "utf8"),
       ),
     );
