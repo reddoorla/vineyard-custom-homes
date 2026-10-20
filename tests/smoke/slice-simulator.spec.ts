@@ -7,7 +7,7 @@ const SIMULATOR_ROUTE = "/slice-simulator";
 
 const client = ".svelte-kit/output/client";
 const manifestPath = join(client, ".vite/manifest.json");
-const appPath = ".svelte-kit/generated/client-optimized/app.js";
+const appPath = ".svelte-kit/generated/build/client-optimized/app.js";
 const built = existsSync(manifestPath) && existsSync(appPath);
 
 type Chunk = { file: string; imports?: string[]; isEntry?: boolean };
