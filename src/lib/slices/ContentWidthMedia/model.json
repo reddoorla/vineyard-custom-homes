@@ -1,6 +1,6 @@
 {
-  "id": "content_width_media",
   "type": "SharedSlice",
+  "id": "content_width_media",
   "name": "ContentWidthMedia",
   "description": "ContentWidthMedia",
   "variations": [
@@ -73,7 +73,10 @@
           "config": {
             "label": "image aspect",
             "placeholder": "",
-            "options": ["9:16", "1:1"],
+            "options": [
+              "9:16",
+              "1:1"
+            ],
             "default_value": "9:16"
           }
         }
