@@ -1,14 +1,22 @@
 # CLAUDE.md
 
 The marketing site for Vineyard Custom Homes, a custom home builder in Eagle,
-Idaho — SvelteKit 5 (runes) on Prismic, Tailwind v4, pnpm, deployed to Netlify.
+Idaho — SvelteKit 3 / Svelte 5 (runes) on Prismic, Tailwind v4, pnpm, deployed to Netlify.
 Pages live in `src/routes/[[preview=preview]]/` (home, `about`, `contact`,
 `gallery` + `gallery/[uid]`, and a `[uid]` catch-all); the optional
 `[[preview=preview]]` segment is Prismic preview routing, not a real path.
 
 There is no `pnpm verify` here. CI runs prettier → eslint → `svelte-check` →
 `pnpm build` → the axe audit, so `pnpm lint && pnpm check && pnpm build` is the
-closest local equivalent; `pnpm test:smoke` is separate. `README.md` is the
+closest local equivalent; `pnpm test:smoke` is separate.
+`tests/kit-config.spec.ts` (in `test:smoke`, no browser) holds the SvelteKit 3
+config, which lives in `sveltekit.config.js` and reaches kit through
+`sveltekit(kitConfig)` in `vite.config.js`: no `svelte.config.js`, no
+`paths.origin`, every env var `src/` reads declared in `src/env.ts` (kit 3
+exposes only those; an undeclared read is `undefined` at runtime, which
+`svelte-check` also flags in every checked file (`checkJs` is on), and on the
+contact form that means leads stop), no `$app/stores`, and the `src/params.ts`
+matcher returning a value rather than a boolean. `README.md` is the
 reference for setup, and it is stale on two points — it says Vite 6 and Node
 22, while `package.json` is on Vite 8 and `.nvmrc` / `netlify.toml` say Node 24.
 
