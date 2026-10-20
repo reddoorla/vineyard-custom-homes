@@ -15,6 +15,11 @@
     "test:smoke": "playwright install chromium && playwright test",
     "prismic:gen": "prismic gen types && prismic gen slice-index"
   },
+  "reddoor": {
+    "absentFixtures": [
+      "/dev/animate-in"
+    ]
+  },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.3",
     "@playwright/test": "^1.60.0",
