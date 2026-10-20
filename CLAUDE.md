@@ -14,8 +14,8 @@ config, which lives in `sveltekit.config.js` and reaches kit through
 `sveltekit(kitConfig)` in `vite.config.js`: no `svelte.config.js`, no
 `paths.origin`, every env var `src/` reads declared in `src/env.ts` (kit 3
 exposes only those; an undeclared read is `undefined` at runtime, which
-`svelte-check` flags in `.ts` and `.svelte` files but nothing flags in a `.js`
-file, and on the contact form that means leads stop), no `$app/stores`, and the `src/params.ts`
+`svelte-check` also flags in every checked file (`checkJs` is on), and on the
+contact form that means leads stop), no `$app/stores`, and the `src/params.ts`
 matcher returning a value rather than a boolean. `README.md` is the
 reference for setup, and it is stale on two points — it says Vite 6 and Node
 22, while `package.json` is on Vite 8 and `.nvmrc` / `netlify.toml` say Node 24.

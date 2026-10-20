@@ -9,7 +9,7 @@
 //     CSRF check accepts, so the contact form answers 403 on every other host;
 //   - an environment variable read in src/ but not declared in src/env.ts,
 //     which kit 3 turns into `undefined` at runtime (svelte-check flags it in
-//     .ts and .svelte files, nothing flags it in a .js file);
+//     every checked file, so this holds the line when `pnpm check` is skipped);
 //   - a `$app/stores` import, whose stores throw `app_stores_removed`.
 //   - a matcher in src/params.ts returning a boolean, which kit 3 reads as a
 //     match whose value is `false`;
@@ -238,10 +238,11 @@ test.describe("environment variables (kit 3 exposes only what src/env.ts declare
     // dynamic import hands the variables to code this scan cannot follow, so
     // an undeclared read through either would pass "declares every variable".
     const unscannable =
-      /export\s*\*\s*(?:as\s+\w+\s+)?from\s*["']\$app\/env\/|import\s*\(\s*["']\$app\/env\//;
+      /export\s*\*\s*(?:as\s+\w+\s+)?from\s*["'`]\$app\/env\/|import\s*\(\s*["'`]\$app\/env\//;
     // The instrument's own control.
     expect(unscannable.test('export * as penv from "$app/env/private";')).toBe(true);
     expect(unscannable.test('await import("$app/env/public");')).toBe(true);
+    expect(unscannable.test("await import(`$app/env/public`);")).toBe(true);
     expect(unscannable.test('import * as env from "$app/env/private";')).toBe(false);
     const offenders = files.filter((file) => unscannable.test(readFileSync(file, "utf8")));
     expect(offenders.map((f) => relative(repoRoot, f))).toEqual([]);
@@ -284,13 +285,20 @@ test.describe("routing on kit 3", () => {
     // @prismicio/svelte 2.x passes { invalidateAll, noScroll }, which kit 3
     // rejects in dev (goto_options_removed) and ignores in production
     // (the page jumps to the top). reddoor-starter#188.
+    // A named import or re-export of it, or any star import or re-export of
+    // the module, which this site has no other reason for (its other imports
+    // from it are named: enableAutoPreviews, redirectToPreviewURL).
+    const upstream =
+      /(?:import|export)\s*\{[^}]*\bPrismicPreview\b[^}]*\}\s*from\s*["']@prismicio\/svelte\/kit["']|(?:import|export)\s*\*\s*(?:as\s+\w+\s+)?from\s*["']@prismicio\/svelte\/kit["']/;
+    // The instrument's own control.
+    expect(upstream.test('import { PrismicPreview } from "@prismicio/svelte/kit";')).toBe(true);
+    expect(upstream.test('export * from "@prismicio/svelte/kit";')).toBe(true);
+    expect(upstream.test('import * as kit from "@prismicio/svelte/kit";')).toBe(true);
+    expect(upstream.test('import { enableAutoPreviews } from "@prismicio/svelte/kit";')).toBe(
+      false,
+    );
     const offenders = walk(join(repoRoot, "src")).filter((file) =>
-      // A named import or re-export of it, or a namespace import of the
-      // module, which this site has no other reason for (its other imports
-      // from it are named: enableAutoPreviews, redirectToPreviewURL).
-      /(?:import|export)\s*\{[^}]*\bPrismicPreview\b[^}]*\}\s*from\s*["']@prismicio\/svelte\/kit["']|(?:import|export)\s*\*\s*as\s+\w+\s+from\s*["']@prismicio\/svelte\/kit["']/.test(
-        readFileSync(file, "utf8"),
-      ),
+      upstream.test(readFileSync(file, "utf8")),
     );
     expect(offenders.map((f) => relative(repoRoot, f))).toEqual([]);
     const local = readFileSync(join(repoRoot, "src/lib/components/PrismicPreview.svelte"), "utf8");
