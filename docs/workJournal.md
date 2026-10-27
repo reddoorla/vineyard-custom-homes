@@ -182,7 +182,7 @@ The rest is filed as #97: the gate still waits on the dev webServer, three rarer
 
 Round 2 ran one reviewer across all three lenses and found no major. The `NETLIFY` and `CONTEXT` guards each fail their own context. A guard placed only in `vite.config.js` still fails through `kitOptions`. `loadConfigFromFile` re-evaluates the config on every call, so nothing passes on a cached copy. A corrected belief, correcting this entry's round 1 paragraph: `svelte-check` does flag an undeclared read in a `.js` file, because `checkJs` is on. Nothing is silent in any checked file, and the gate's job is to hold the line when `pnpm check` is skipped. The minors are folded in: a backtick dynamic import of `$app/env/*` and a bare `export * from "@prismicio/svelte/kit"` now fail, each with a control line. Two more go to #97: a guard on a Netlify variable the gate does not set (`DEPLOY_ID`, `BUILD_ID`) still passes, and a dynamic `import("@prismicio/svelte/kit")` is not scanned.
 
-## 2026-10-27 — Ending a preview is asserted in a browser, not read from source (#TBD)
+## 2026-10-27 — Ending a preview is asserted in a browser, not read from source (#103)
 
 The fleet test audit (`reddoorla/reddoor-workspace` `audits/2026-10-26-fleet-test-audit/report.md`, batch D) found two tests here that break the template's test rule. Neither held a real catch that the change loses, so both changes stand; the audit's mutants for this site were all Playwright, which `mutate.mjs` cannot drive, so the proof below was run by hand.
 
