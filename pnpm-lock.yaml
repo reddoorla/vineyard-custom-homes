@@ -176,8 +176,8 @@ importers:
         specifier: ^7.18.0
         version: 7.22.3
       '@prismicio/svelte':
-        specifier: ^2.0.0
-        version: 2.2.4(@prismicio/client@7.22.3)(@sveltejs/kit@3.1.0(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.57.2(@typescript-eslint/types@8.72.1))(vite@8.3.5(@types/node@24.19.2)(jiti@2.7.0)))(svelte@5.57.2(@typescript-eslint/types@8.72.1))(typescript@6.0.3)(vite@8.3.5(@types/node@24.19.2)(jiti@2.7.0)))(svelte@5.57.2(@typescript-eslint/types@8.72.1))
+        specifier: ^3.0.0
+        version: 3.0.0(@prismicio/client@7.22.3)(@sveltejs/kit@3.1.0(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.57.2(@typescript-eslint/types@8.72.1))(vite@8.3.5(@types/node@24.19.2)(jiti@2.7.0)))(svelte@5.57.2(@typescript-eslint/types@8.72.1))(typescript@6.0.3)(vite@8.3.5(@types/node@24.19.2)(jiti@2.7.0)))(svelte@5.57.2(@typescript-eslint/types@8.72.1))
       '@zerodevx/svelte-img':
         specifier: ^2.1.2
         version: 2.1.2(@types/node@24.19.2)(svelte@5.57.2(@typescript-eslint/types@8.72.1))
@@ -554,13 +554,13 @@ packages:
     peerDependencies:
       '@prismicio/client': ^7
 
-  '@prismicio/svelte@2.2.4':
-    resolution: {integrity: sha512-6h562Vop4V5EBaRWM+IwwNwO8IXR1zwSLnFC3J79ZxW93XrfqtJ3XD+uDHYL8mLyl9wXxzC3Odv59gul49vMkA==}
+  '@prismicio/svelte@3.0.0':
+    resolution: {integrity: sha512-9G9mQ+0+k7Rt/LPETQg9P881xSK+VKglQSmEZBlRWBBuvSfcWBjYq/yPyd/BMb0K1qMJ/syyl7orBQRtTee22Q==}
     engines: {node: '>=22'}
     peerDependencies:
       '@prismicio/client': '>=7'
-      '@sveltejs/kit': ^2
-      svelte: ^5
+      '@sveltejs/kit': ^3.0.0
+      svelte: ^5.16.0
     peerDependenciesMeta:
       '@sveltejs/kit':
         optional: true
@@ -2099,7 +2099,7 @@ snapshots:
     dependencies:
       '@prismicio/client': 7.22.3
 
-  '@prismicio/svelte@2.2.4(@prismicio/client@7.22.3)(@sveltejs/kit@3.1.0(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.57.2(@typescript-eslint/types@8.72.1))(vite@8.3.5(@types/node@24.19.2)(jiti@2.7.0)))(svelte@5.57.2(@typescript-eslint/types@8.72.1))(typescript@6.0.3)(vite@8.3.5(@types/node@24.19.2)(jiti@2.7.0)))(svelte@5.57.2(@typescript-eslint/types@8.72.1))':
+  '@prismicio/svelte@3.0.0(@prismicio/client@7.22.3)(@sveltejs/kit@3.1.0(@sveltejs/vite-plugin-svelte@7.3.1(svelte@5.57.2(@typescript-eslint/types@8.72.1))(vite@8.3.5(@types/node@24.19.2)(jiti@2.7.0)))(svelte@5.57.2(@typescript-eslint/types@8.72.1))(typescript@6.0.3)(vite@8.3.5(@types/node@24.19.2)(jiti@2.7.0)))(svelte@5.57.2(@typescript-eslint/types@8.72.1))':
     dependencies:
       '@prismicio/client': 7.22.3
       '@prismicio/simulator': 0.2.4(@prismicio/client@7.22.3)
