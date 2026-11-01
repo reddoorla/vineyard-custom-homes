@@ -234,4 +234,6 @@ A second review round found two more majors, folded in. First, a Dropbox upload 
 
 A third round found one more major: in Claude Code, where nothing is attached, both routes would have asked about every photo as unmatched. Claude Code now takes the whole tagged set or folder and sees each photo from its asset URL. The minors were folded in too. Photos the Dropbox route finds already in the library now get their tags. Links are asked for by `id:` with a 900-second expiry, and a failed link call is split to find the bad entry. "Both tags" now reads "project tag and room tag, if any", in `rules.md` as well, which had said every photo gets two tags while also giving bedrooms none.
 
+A fourth round found one more major: in Claude Code, a photo uploaded from Dropbox is uploaded before it has been seen, so it had no room tag, and the after-pass tagged only photos already in the library. It now uploads with the project tag only and gets its room tag after it is seen. Three minors were folded in as well. Claude Code still searches by file name before uploading. A tagged asset or folder image that was not attached is listed and asked about, never dropped. "What it needs" says attachments are for claude.ai only.
+
 Usage: not readable from this repo; the workspace journal entry for this session carries it.

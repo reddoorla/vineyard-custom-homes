@@ -31,7 +31,8 @@ it before Step 3 and follow it exactly. When a rule and this file disagree,
 
 - **The Prismic connector**, signed in with write access to the
   `vineyard-custom-homes` repository.
-- **The photos, attached to the chat** in claude.ai, so you can see them,
+- **The photos, attached to the chat** (claude.ai only; Claude Code needs
+  no attachments, see the end of Step 2), so you can see them,
   and **also
   either already in the Prismic media library** (tagged with the client's
   surname) **or in a Dropbox folder**, so they can reach Prismic. Step 2
@@ -102,7 +103,8 @@ in a claude.ai chat those come from two different places:
     (a timed-out call may still have stored its files), then get fresh
     links for only the photos still missing. Never reuse a link.
 
-For every photo that was already in the library, on either route, add its
+For every photo whose room tag was not set at upload (one already in the
+library, on either route, or any photo uploaded in Claude Code), add its
 room tag (and the project tag, if missing) with `update_asset_tags`; it
 takes up to 10 tag names a call and is safe to repeat, so group photos by
 room tag. Alt text for those goes on the page's image fields in Step 4.
@@ -110,13 +112,18 @@ room tag. Alt text for those goes on the page's image fields in Step 4.
 Before calling a photo missing, `search_assets` by its file name: Tim may
 have uploaded it without the tag, or under another spelling. If an attached
 photo is in neither place, stop and ask Tim to drag it into Prismic's Media
-Library with the client's surname as a tag, then carry on.
+Library with the client's surname as a tag, then carry on. The other way
+round, if the tag or the folder holds photos that were not attached, list
+them and ask whether to attach them or leave them out; never drop one
+silently.
 
 **In Claude Code** nothing is attached. The photo set is every asset with
-the project tag, or every image in the Dropbox folder; skip the matching.
-Upload Dropbox photos without alt text, then see each photo by downloading
-its asset `url` and opening the file before you fill its row; Step 4 puts
-the alt text on the page.
+the project tag, or every image in the Dropbox folder: skip matching to
+attachments, but still `search_assets` by file name before any upload.
+Upload Dropbox photos with the project tag only and no alt text, then see
+each photo by downloading its asset `url` and opening the file before you
+fill its row. Its room tag is added as above, and Step 4 puts its alt text
+on the page.
 
 Every upload result gives an asset's `id`, `url`, `width` and `height`;
 keep them in the table.
