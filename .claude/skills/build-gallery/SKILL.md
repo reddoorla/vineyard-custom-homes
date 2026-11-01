@@ -21,7 +21,8 @@ it before Step 3 and follow it exactly. When a rule and this file disagree,
   published. The output is a new draft in a new release; a person publishes
   it.
 - **Never write alt text, or place a photo, without having seen it.** If a
-  photo can't be seen (see Step 2), stop and ask for it to be attached.
+  photo can't be seen (see Step 2), stop: in claude.ai ask for it to be
+  attached; in Claude Code name the file that would not open.
 - Never delete or rename anything in the media library.
 - **Never put a photo on any other host** (tmpfiles or the like), even
   though the Prismic upload tools suggest it for attached files: these are
@@ -85,12 +86,14 @@ in a claude.ai chat those come from two different places:
   - **Tim has already uploaded them** (the usual way: he drags them into
     Prismic's Media Library and tags them with the client's surname).
     `search_assets` with that tag, paging through `nextCursor` until it is
-    null, and match each attachment to its asset by file name. If the chat
-    doesn't show you an attachment's file name, list `/mnt/user-data/uploads`
-    with code execution. Ask about any photo you can't match; never guess.
-  - **They are in a Dropbox folder:** `list_folder` on the path and match
-    each image file to an attachment by name; ask about any you can't
-    match, never guess. `search_assets` by file name first, so a photo
+    null, and match each attachment to its asset by file name. Ask about
+    any photo you can't match; never guess.
+  - **They are in a Dropbox folder:** `list_folder` on the path, following
+    its cursor to the end, and keep only the image files directly in that
+    folder: `list_folder` also returns subfolders (a `Web/` or `Low-res/`
+    copy), which are left out unless the folder named is that subfolder.
+    Match each image file to an attachment by name; ask about any you
+    can't match, never guess. `search_assets` by file name first, so a photo
     already in the library isn't stored twice. Upload the rest 10 at a
     time: get `download_link`s for those 10 only, by their `id:` values,
     with `expiration_in_sec` 900, just before the call (each works once:
@@ -99,9 +102,12 @@ in a claude.ai chat those come from two different places:
     with its Dropbox file name as `filename` (otherwise Prismic names it
     from the link, and later searches by name miss it), its alt text, its
     project tag and its room tag, if it has one. If a call times out or an
-    item comes back `failed`, `search_assets` by file name before retrying
-    (a timed-out call may still have stored its files), then get fresh
-    links for only the photos still missing. Never reuse a link.
+    item comes back `failed`, wait a minute (a timed-out call may still be
+    storing its files), `search_assets` by file name, and retry only the
+    photos still missing, with fresh links. Never reuse a link.
+
+On either route, if the chat doesn't show you an attachment's file name,
+list `/mnt/user-data/uploads` with code execution.
 
 For every photo whose room tag was not set at upload (one already in the
 library, on either route, or any photo uploaded in Claude Code), add its
@@ -118,8 +124,10 @@ them and ask whether to attach them or leave them out; never drop one
 silently.
 
 **In Claude Code** nothing is attached. The photo set is every asset with
-the project tag, or every image in the Dropbox folder: skip matching to
-attachments, but still `search_assets` by file name before any upload.
+the project tag, or the image files directly in the Dropbox folder (read
+to the end of the cursor, as above): list the set and its count, and
+confirm it before uploading anything. Skip matching to attachments, but
+still `search_assets` by file name before any upload.
 Upload Dropbox photos with the project tag only and no alt text, then see
 each photo by downloading its asset `url` and opening the file before you
 fill its row. Its room tag is added as above, and Step 4 puts its alt text
