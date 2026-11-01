@@ -18,7 +18,9 @@ const ROUTES = ["/", "/about", "/contact", "/gallery", "/gallery/enzos"];
 const WIDTHS = [320, 390, 768, 820, 1024];
 
 async function gotoLoaded(page: Page, path: string) {
-  await page.goto(path, { waitUntil: "load" });
+  const res = await page.goto(path, { waitUntil: "load" });
+  // An unpublished page would otherwise measure the error page and pass.
+  expect(res?.ok(), `${path} answered ${res?.status()}`).toBe(true);
   await page.evaluate(() => document.fonts.ready);
 }
 
@@ -26,13 +28,17 @@ function measure(page: Page) {
   return page.evaluate(() => {
     const vw = document.documentElement.clientWidth;
     const cut: string[] = [];
-    // True when an ancestor that clips its overflow leaves no visible box, as
-    // the sr-only pattern does (1px, overflow hidden).
+    // True when an ancestor clips the text away entirely on an axis it clips:
+    // the sr-only pattern (1px, overflow hidden) or a collapsed panel. An
+    // ancestor that clips only x while 0px tall still paints the text, so the
+    // axes are checked separately; display: contents boxes have no rect.
     const clippedAway = (el: Element) => {
       for (let a = el.parentElement; a && a !== document.body; a = a.parentElement) {
-        if (getComputedStyle(a).overflowX === "visible") continue;
+        const cs = getComputedStyle(a);
+        if (cs.display === "contents") continue;
         const b = a.getBoundingClientRect();
-        if (b.width <= 1 || b.height <= 1) return true;
+        if (cs.overflowX !== "visible" && b.width <= 1) return true;
+        if (cs.overflowY !== "visible" && b.height <= 1) return true;
       }
       return false;
     };
