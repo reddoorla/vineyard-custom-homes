@@ -6,7 +6,7 @@ description: Build a Vineyard Custom Homes project gallery from finished photos 
 # Build a Vineyard gallery
 
 This skill turns a set of finished photos into a draft project page on
-vineyardcustomhomes.com. It runs in a claude.ai chat and in Claude Code. It
+vineyardconstruction.com. It runs in a claude.ai chat and in Claude Code. It
 uses only the Prismic connector (and the Dropbox connector when the photos
 are in Dropbox), so it needs no scripts. It tags photos, writes their alt
 text, and lays them out by the rules in `rules.md`.
