@@ -82,7 +82,12 @@ in a claude.ai chat those come from two different places:
   never does"). So the photos reach the library one of two ways. Match an
   attachment to a library asset or a Dropbox file only by an exact file
   name: `search_assets` also returns near matches (`IMG_123` finds
-  `IMG_1234`).
+  `IMG_1234`). A file-name search outside the project tag can also find
+  another client's photo, because camera names (`IMG_0412.jpg`) repeat
+  between shoots. Count such a match as this photo only if the asset
+  carries no other project's tag and its width × height equal the
+  attachment's (or the Dropbox file's); otherwise treat the photo as not
+  in the library, and never tag or place the other asset.
   - **Tim has already uploaded them** (the usual way: he drags them into
     Prismic's Media Library and tags them with the client's surname).
     `search_assets` with that tag, paging through `nextCursor` until it is
@@ -102,9 +107,11 @@ in a claude.ai chat those come from two different places:
     with its Dropbox file name as `filename` (otherwise Prismic names it
     from the link, and later searches by name miss it), its alt text, its
     project tag and its room tag, if it has one. If a call times out or an
-    item comes back `failed`, wait a minute (a timed-out call may still be
-    storing its files), `search_assets` by file name, and retry only the
-    photos still missing, with fresh links. Never reuse a link.
+    item comes back `failed`, retry an item marked `failed` with a fresh
+    link. For a call that timed out, wait a minute, `search_assets` by file
+    name, then wait and search once more (it may still be storing), and
+    only then upload the photos still missing, with fresh links. Never
+    reuse a link.
 
 On either route, if the chat doesn't show you an attachment's file name,
 list `/mnt/user-data/uploads` with code execution.
@@ -129,8 +136,9 @@ to the end of the cursor, as above): list the set and its count, and
 confirm it before uploading anything. Skip matching to attachments, but
 still `search_assets` by file name before any upload.
 Upload Dropbox photos with the project tag only and no alt text, then see
-each photo by downloading its asset `url` and opening the file before you
-fill its row. Its room tag is added as above, and Step 4 puts its alt text
+each photo by downloading its asset `url` with `w=1600` added to the
+query (an imgix resize; the full-size original may be too large to open)
+and opening the file before you fill its row. Its room tag is added as above, and Step 4 puts its alt text
 on the page.
 
 Every upload result gives an asset's `id`, `url`, `width` and `height`;
