@@ -62,7 +62,8 @@ shows the **hero** (`hero_image`), then the **slices**, each one a
 
 ## Tags
 
-Every photo gets two asset tags in the Prismic media library.
+Every photo gets its project tag and, where one fits, a room tag in the
+Prismic media library.
 
 - **Project tag**: the name the library already uses for this client, which
   is usually the client's surname (`Bentley`, `vanderboom`, `haggett`). For a

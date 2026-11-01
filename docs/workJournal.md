@@ -232,4 +232,7 @@ A 3-lens review by an Opus subagent found no blocker and two majors, both folded
 
 A second review round found two more majors, folded in. First, a Dropbox upload without `filename` is named from the single-use link, so every later search by file name, the duplicate guard included, would miss it; the skill now passes the Dropbox name. Second, in Claude Code nothing is attached, so the Dropbox route would have had to write alt text before seeing the photo; there it now uploads without alt text and looks at the photo from the asset URL. Step 5's hero count now agrees with Step 3 and rule 8: the hero is in no slice. A claim that `update_asset_tags` might replace tags was checked against its schema (separate `add` and `remove` lists) and dropped.
 
+A third round found one more major: in Claude Code, where nothing is attached, both routes would have asked about every photo as unmatched. Claude Code now takes the whole tagged set or folder and sees each photo from its asset URL. The minors were folded in too. Photos the Dropbox route finds already in the library now get their tags. Links are asked for by `id:` with a 900-second expiry, and a failed link call is split to find the bad entry. "Both tags" now reads "project tag and room tag, if any", in `rules.md` as well, which had said every photo gets two tags while also giving bedrooms none.
+
+
 Usage: not readable from this repo; the workspace journal entry for this session carries it.
