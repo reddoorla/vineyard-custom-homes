@@ -84,20 +84,20 @@ in a claude.ai chat those come from two different places:
   name: `search_assets` also returns near matches (`IMG_123` finds
   `IMG_1234`). A file-name search outside the project tag can also find
   another client's photo, because camera names (`IMG_0412.jpg`) repeat
-  between shoots. Count such a match as this photo only if the asset
-  carries no other project's tag and its width × height equal the
-  attachment's (or the Dropbox file's); otherwise treat the photo as not
-  in the library, and never tag or place the other asset.
+  between shoots and one camera gives every photo the same size. **Never
+  accept such a match on its own:** list each one, with the asset's link
+  and file name beside the photo it might be, and ask whether it is the
+  same photo. Until the answer is yes, treat the photo as not in the
+  library, and never tag or place the other asset.
   - **Tim has already uploaded them** (the usual way: he drags them into
     Prismic's Media Library and tags them with the client's surname).
     `search_assets` with that tag, paging through `nextCursor` until it is
     null, and match each attachment to its asset by file name. Ask about
     any photo you can't match; never guess.
-  - **They are in a Dropbox folder:** `list_folder` on the path, following
-    its cursor to the end, and keep only the image files directly in that
-    folder: `list_folder` also returns subfolders (a `Web/` or `Low-res/`
-    copy), which are left out unless the folder named is that subfolder.
-    Match each image file to an attachment by name; ask about any you
+  - **They are in a Dropbox folder:** `list_folder` on the path with
+    `recursive: false` (left out, it reads every subfolder too, such as a
+    `Web/` or `Low-res/` copy), following its cursor until `has_more` is
+    false, and take the image files. Match each image file to an attachment by name; ask about any you
     can't match, never guess. `search_assets` by file name first, so a photo
     already in the library isn't stored twice. Upload the rest 10 at a
     time: get `download_link`s for those 10 only, by their `id:` values,
@@ -117,7 +117,8 @@ On either route, if the chat doesn't show you an attachment's file name,
 list `/mnt/user-data/uploads` with code execution.
 
 For every photo whose room tag was not set at upload (one already in the
-library, on either route, or any photo uploaded in Claude Code), add its
+library, on either route, any photo uploaded in Claude Code, or one that
+came back `uploaded` with a `tagsError`), add its
 room tag (and the project tag, if missing) with `update_asset_tags`; it
 takes up to 10 tag names a call and is safe to repeat, so group photos by
 room tag. Alt text for those goes on the page's image fields in Step 4.
@@ -138,8 +139,8 @@ still `search_assets` by file name before any upload.
 Upload Dropbox photos with the project tag only and no alt text, then see
 each photo by downloading its asset `url` with `w=1600` added to the
 query (an imgix resize; the full-size original may be too large to open)
-and opening the file before you fill its row. Its room tag is added as above, and Step 4 puts its alt text
-on the page.
+and opening the file before you fill its row. Its room tag is added as
+above, and Step 4 puts its alt text on the page.
 
 Every upload result gives an asset's `id`, `url`, `width` and `height`;
 keep them in the table.
