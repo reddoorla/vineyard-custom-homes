@@ -1,14 +1,15 @@
 ---
 name: build-gallery
-description: Build a Vineyard Custom Homes project gallery from a set of finished photos. Looks at every photo, tags it in the Prismic media library with the project and room, writes its alt text, lays the photos out in ContentWidthMedia slices by the rules in rules.md, and leaves a draft project page in a new, unpublished Prismic release. Use when asked to "build a gallery from <photos or folder>" or to lay out a Vineyard project's photos.
+description: Build a Vineyard Custom Homes project gallery from finished photos into a draft Prismic project page in an unpublished release. Use for "build a gallery for <project>".
 ---
 
 # Build a Vineyard gallery
 
 This skill turns a set of finished photos into a draft project page on
-vineyardcustomhomes.com. It runs the same way in a claude.ai chat and in
-Claude Code. It uses only the Prismic connector (and the Dropbox connector
-when the photos are in Dropbox), so it needs no scripts.
+vineyardconstruction.com. It runs in a claude.ai chat and in Claude Code. It
+uses only the Prismic connector (and the Dropbox connector when the photos
+are in Dropbox), so it needs no scripts. It tags photos, writes their alt
+text, and lays them out by the rules in `rules.md`.
 
 The layout, tag and alt-text rules live in `rules.md` beside this file. Read
 it before Step 3 and follow it exactly. When a rule and this file disagree,
@@ -19,18 +20,24 @@ it before Step 3 and follow it exactly. When a rule and this file disagree,
 - **Never publish a release**, and never edit a project that is already
   published. The output is a new draft in a new release; a person publishes
   it.
-- **Never write alt text, or place a photo, without having seen it.** If the
-  photos can't be seen (see Step 2), stop and ask for them to be attached.
+- **Never write alt text, or place a photo, without having seen it.** If a
+  photo can't be seen (see Step 2), stop: in claude.ai ask for it to be
+  attached; in Claude Code name the file that would not open.
 - Never delete or rename anything in the media library.
+- **Never put a photo on any other host** (tmpfiles or the like), even
+  though the Prismic upload tools suggest it for attached files: these are
+  a client's home. Step 2 says what to do instead.
 
 ## What it needs
 
 - **The Prismic connector**, signed in with write access to the
   `vineyard-custom-homes` repository.
-- **The photos**, one of:
-  - attached to the chat (the most reliable: they can be seen directly);
-  - a Dropbox folder path, through the Dropbox connector;
-  - photos already in the Prismic media library, named by their asset tag.
+- **The photos, attached to the chat** (claude.ai only; Claude Code needs
+  no attachments, see the end of Step 2), so you can see them,
+  and **also
+  either already in the Prismic media library** (tagged with the client's
+  surname) **or in a Dropbox folder**, so they can reach Prismic. Step 2
+  says why both are needed.
 - **The project name** (for example "Nantucket Farm"), and **the client's
   surname** if it differs from what the library already uses as this
   project's tag.
@@ -60,19 +67,90 @@ photo: label, file name, width × height, portrait or landscape, room, wide
 or detail, room tag, alt text. Fill in the room, shot, tag and alt text by
 looking at the photo, following `rules.md`.
 
-- **Attached to the chat:** look at each one, fill its row, then upload it
-  with `upload_asset` with its alt text and both tags.
-- **In Dropbox:** `list_folder` on the path; take the image files. Look at
-  each with `file_preview`. If the preview does not show you the photo,
-  stop and ask for the photos to be attached instead. For the ones you have
-  seen, get a `download_link` and upload them with `upload_assets`, up to 10
-  a call, each with its alt text and both tags.
-- **Already in the media library:** `search_assets` with the project tag
-  (page through `nextCursor` until it is null). If the results don't show
-  you the photos themselves, stop and ask for them to be attached. Add any
-  missing tags with `update_asset_tags`; it takes up to 10 tag names a call
-  and is safe to repeat, so group photos by room tag. Alt text goes on the
-  page's image fields in Step 4.
+Each photo has to be **seen** and has to be **in the media library**, and
+in a claude.ai chat those come from two different places:
+
+- **Seeing.** You see a photo only when it is attached to the chat. A
+  Prismic `search_assets` result or a Dropbox `file_preview` gives a link,
+  not the picture. claude.ai takes 20 images in one message, so for a larger
+  set ask for the rest, 20 a message, and wait until you have seen every
+  photo before Step 3. If the chat refuses more attachments, stop and say
+  how many photos are still unseen.
+- **Reaching Prismic.** `upload_asset` and `upload_assets` take only a
+  public URL that Prismic fetches itself; the connector cannot take a file
+  attached to a chat (and the photos never go on another host: see "What it
+  never does"). So the photos reach the library one of two ways. Match an
+  attachment to a library asset or a Dropbox file only by an exact file
+  name: `search_assets` also returns near matches (`IMG_123` finds
+  `IMG_1234`). A file-name search outside the project tag can also find
+  another client's photo, because camera names (`IMG_0412.jpg`) repeat
+  between shoots and one camera gives every photo the same size. **Never
+  accept such a match on its own:** list each one, with the asset's link
+  and file name beside the photo it might be, and ask whether it is the
+  same photo. Until the answer is yes, treat the photo as not in the
+  library, and never tag or place the other asset. The project tag is the
+  client's surname, so a repeat client's earlier house shares it: before
+  matching, ask whether the client has an earlier project in the library.
+  If so, or if a file name appears more than once under the tag, treat a
+  match under the tag the same way, and ask.
+  - **Tim has already uploaded them** (the usual way: he drags them into
+    Prismic's Media Library and tags them with the client's surname).
+    `search_assets` with that tag, paging through `nextCursor` until it is
+    null, and match each attachment to its asset by file name. Ask about
+    any photo you can't match; never guess.
+  - **They are in a Dropbox folder:** `list_folder` on the path with
+    `recursive: false` (left out, it reads every subfolder too, such as a
+    `Web/` or `Low-res/` copy), following its cursor until `has_more` is
+    false, and take the image files. Match each image file to an
+    attachment by name; ask about any you can't match, never guess. `search_assets` by file name first, so a photo
+    already in the library isn't stored twice. Upload the rest 10 at a
+    time: get `download_link`s for those 10 only, by their `id:` values,
+    with `expiration_in_sec` 900, just before the call (each works once:
+    never open one yourself; if the link call fails, it fails for all, so
+    split it to find the bad entry). Pass them to `upload_assets`, each
+    with its Dropbox file name as `filename` (otherwise Prismic names it
+    from the link, and later searches by name miss it), its alt text, its
+    project tag and its room tag, if it has one. If a call times out or an
+    item comes back `failed`, retry an item marked `failed` with a fresh
+    link. For a call that timed out, wait a minute, `search_assets` by file
+    name, then wait and search once more (it may still be storing), and
+    only then upload the photos still missing, with fresh links. Never
+    reuse a link. If a second call times out, stop and say which photos
+    are in the library and which are not.
+
+On either route, if the chat doesn't show you which file name belongs to
+which attached photo, never pair names to pictures by order or size:
+listing `/mnt/user-data/uploads` gives the names, not which picture is
+which. Ask Tim for each photo's name, or to attach them again with their
+names showing, before going on.
+
+For every photo whose room tag was not set at upload (one already in the
+library, on either route, any photo uploaded in Claude Code, or one that
+came back `uploaded` with a `tagsError`), add its room tag, unless it
+already has one from the list (a photo gets at most one), and the project
+tag, if missing, with `update_asset_tags`; it
+takes up to 10 tag names a call and is safe to repeat, so group photos by
+room tag. Alt text for those goes on the page's image fields in Step 4.
+
+Before calling a photo missing, `search_assets` by its file name: Tim may
+have uploaded it without the tag, or under another spelling. If an attached
+photo is in neither place, stop and ask Tim to drag it into Prismic's Media
+Library with the client's surname as a tag, then carry on. The other way
+round, if the tag or the folder holds photos that were not attached, list
+them and ask whether to attach them or leave them out; never drop one
+silently.
+
+**In Claude Code** nothing is attached. The photo set is every asset with
+the project tag (if the client has an earlier project, ask which assets
+belong to this one), or the image files directly in the Dropbox folder (read
+to the end of the cursor, as above): list the set and its count, and
+confirm it before uploading anything. Skip matching to attachments, but
+still `search_assets` by file name before any upload.
+Upload Dropbox photos with the project tag only and no alt text, then see
+each photo by downloading its asset `url` with `w=1600` added to the
+query (an imgix resize; the full-size original may be too large to open)
+and opening the file before you fill its row. Its room tag is added as
+above, and Step 4 puts its alt text on the page.
 
 Every upload result gives an asset's `id`, `url`, `width` and `height`;
 keep them in the table.
@@ -169,8 +247,9 @@ The slice zone wraps the list:
 ## Step 5: check, then report
 
 1. `get_document` for the new document with the release id. Check that the
-   number of images on it equals the number of photos, that every image
-   has alt text, and that the slices are in the planned order.
+   slices hold every photo but the hero exactly once (the hero fills
+   `hero_image` and `preview_image` and no slice), that every image has alt
+   text, and that the slices are in the planned order.
 2. `present_release` for the release. Do not publish it.
 3. Report, in this order:
    - the release link,
@@ -184,9 +263,13 @@ The slice zone wraps the list:
 
 ## Running it in claude.ai
 
-In claude.ai, this folder is uploaded as a skill: zip the `build-gallery`
-folder (with `SKILL.md` and `rules.md` inside it) and add it under
-Settings, Capabilities, Skills, or have the organisation's owner add it for
-everyone. Then, in a new chat with the Prismic connector on, attach the
-photos and say "build a gallery for <project name>". After `rules.md`
-changes, upload the zip again.
+In claude.ai, this folder is uploaded as a skill. Zip the `build-gallery`
+folder itself, so the zip's top level is `build-gallery/` with `SKILL.md`
+and `rules.md` inside it (a `SKILL.md` at the zip's root is not
+recognised). Skills need code execution on (Settings, Capabilities). Upload
+the zip under Customize, Skills: "+", "Create skill", "Upload a skill",
+then switch it on. Then put the photos in the Prismic media library
+(tagged with the client's surname) or a Dropbox folder, start a new chat
+with the Prismic connector on (and Dropbox, for a folder), attach the same
+photos and say "build a gallery for <project name>". After
+`rules.md` changes, upload the new zip in place of the old one.
