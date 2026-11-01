@@ -191,3 +191,15 @@ This was a migration to a major, so it went to the operator as reddoor-workspace
 Not proven: no test renders `/slice-simulator` inside Prismic's builder. The evidence that it works on v3 is the type check, the build, and a review that read v3's component (it renders `children?.({ slices })` inside its root, and with no simulator message yet it shows only the empty white overlay).
 
 Backlog: P1-80.
+
+## 2026-11-01 — ContentWidthMedia two-col offers 3:4 and 2:3, and the left column stops growing on a phone (branch `claude/vineyard-aspect-ratios`)
+
+Tim asked on 10-30 for two more ratios on the two-col `image aspect` select, from an editor screenshot holding two portrait photos from traditional-elegance (1920×2560 is 3:4, 1706×2560 is 2:3). The select lives only on the `twoCol` variation; `single` has no aspect field and is unchanged. The live Prismic model matched `model.json` exactly before the change (`get_shared_slice`: options `["9:16","1:1"]`, default `9:16`), so the PR's model delta is only the two options, and CI delivers it on merge to `main`.
+
+The component's two-way ternary (9:16, else square) became a lookup of full class strings, so Tailwind still sees every class. 9:16 and 1:1 keep their 4:3 phone fallback. 3:4 and 2:3 keep their portrait box on a phone too: at 390px, 2:3 is 359×538, while 9:16 would be 638 tall, which is presumably why 4:3 existed. An unrecognised value still renders square, as before.
+
+**Defect found while testing, live today:** below md the left column had no `overflow-hidden`, so as a flex-column item its automatic minimum height was the image's own height, and a portrait photo pushed it past `aspect-[4/3]`. Measured on vineyardconstruction.com/gallery/traditional-elegance at 390px: left boxes at 0.749, 0.666 and 0.563 (each photo's own shape) against right boxes at 1.333 every time. The right column always had `overflow-hidden`, which is why only half the pair was wrong and nobody noticed. The left column now has it too. On a phone, every existing left column holding a portrait photo becomes 4:3 like its partner.
+
+The test is `tests/smoke/content-width-media.spec.ts` over a new guarded fixture, `/dev/content-width-media` (the slice once per option, with Tim's two photos). It checks each box's width/height at 1280 and 390, `object-fit: cover`, and that the image fills its box. It passed 2 of 2. The first phone run failed on the live defect above (0.750 where 4:3 was expected), which is how the defect was found. A mutant wiring 2:3 to the 3:4 box failed it (0.75 against 0.667). Locally the repo's pinned Playwright 1.64 has no browser in the cloud container, so it ran through an uncommitted config pointing at the preinstalled Chromium.
+
+Usage: not readable
