@@ -28,12 +28,12 @@ function measure(page: Page) {
   return page.evaluate(() => {
     const vw = document.documentElement.clientWidth;
     const cut: string[] = [];
-    // True when an ancestor clips the text away entirely on an axis it clips:
+    // True when the text's element or an ancestor clips it away entirely on an axis it clips:
     // the sr-only pattern (1px, overflow hidden) or a collapsed panel. An
     // ancestor that clips only x while 0px tall still paints the text, so the
     // axes are checked separately; display: contents boxes have no rect.
     const clippedAway = (el: Element) => {
-      for (let a = el.parentElement; a && a !== document.body; a = a.parentElement) {
+      for (let a: Element | null = el; a && a !== document.body; a = a.parentElement) {
         const cs = getComputedStyle(a);
         if (cs.display === "contents") continue;
         const b = a.getBoundingClientRect();
