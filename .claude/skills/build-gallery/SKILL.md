@@ -88,7 +88,11 @@ in a claude.ai chat those come from two different places:
   accept such a match on its own:** list each one, with the asset's link
   and file name beside the photo it might be, and ask whether it is the
   same photo. Until the answer is yes, treat the photo as not in the
-  library, and never tag or place the other asset.
+  library, and never tag or place the other asset. The project tag is the
+  client's surname, so a repeat client's earlier house shares it: before
+  matching, ask whether the client has an earlier project in the library.
+  If so, or if a file name appears more than once under the tag, treat a
+  match under the tag the same way, and ask.
   - **Tim has already uploaded them** (the usual way: he drags them into
     Prismic's Media Library and tags them with the client's surname).
     `search_assets` with that tag, paging through `nextCursor` until it is
@@ -97,8 +101,8 @@ in a claude.ai chat those come from two different places:
   - **They are in a Dropbox folder:** `list_folder` on the path with
     `recursive: false` (left out, it reads every subfolder too, such as a
     `Web/` or `Low-res/` copy), following its cursor until `has_more` is
-    false, and take the image files. Match each image file to an attachment by name; ask about any you
-    can't match, never guess. `search_assets` by file name first, so a photo
+    false, and take the image files. Match each image file to an
+    attachment by name; ask about any you can't match, never guess. `search_assets` by file name first, so a photo
     already in the library isn't stored twice. Upload the rest 10 at a
     time: get `download_link`s for those 10 only, by their `id:` values,
     with `expiration_in_sec` 900, just before the call (each works once:
@@ -111,15 +115,20 @@ in a claude.ai chat those come from two different places:
     link. For a call that timed out, wait a minute, `search_assets` by file
     name, then wait and search once more (it may still be storing), and
     only then upload the photos still missing, with fresh links. Never
-    reuse a link.
+    reuse a link. If a second call times out, stop and say which photos
+    are in the library and which are not.
 
-On either route, if the chat doesn't show you an attachment's file name,
-list `/mnt/user-data/uploads` with code execution.
+On either route, if the chat doesn't show you which file name belongs to
+which attached photo, never pair names to pictures by order or size:
+listing `/mnt/user-data/uploads` gives the names, not which picture is
+which. Ask Tim for each photo's name, or to attach them again with their
+names showing, before going on.
 
 For every photo whose room tag was not set at upload (one already in the
 library, on either route, any photo uploaded in Claude Code, or one that
-came back `uploaded` with a `tagsError`), add its
-room tag (and the project tag, if missing) with `update_asset_tags`; it
+came back `uploaded` with a `tagsError`), add its room tag, unless it
+already has one from the list (a photo gets at most one), and the project
+tag, if missing, with `update_asset_tags`; it
 takes up to 10 tag names a call and is safe to repeat, so group photos by
 room tag. Alt text for those goes on the page's image fields in Step 4.
 
@@ -132,7 +141,8 @@ them and ask whether to attach them or leave them out; never drop one
 silently.
 
 **In Claude Code** nothing is attached. The photo set is every asset with
-the project tag, or the image files directly in the Dropbox folder (read
+the project tag (if the client has an earlier project, ask which assets
+belong to this one), or the image files directly in the Dropbox folder (read
 to the end of the cursor, as above): list the set and its count, and
 confirm it before uploading anything. Skip matching to attachments, but
 still `search_assets` by file name before any upload.
