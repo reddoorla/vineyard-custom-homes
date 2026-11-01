@@ -234,5 +234,4 @@ A second review round found two more majors, folded in. First, a Dropbox upload 
 
 A third round found one more major: in Claude Code, where nothing is attached, both routes would have asked about every photo as unmatched. Claude Code now takes the whole tagged set or folder and sees each photo from its asset URL. The minors were folded in too. Photos the Dropbox route finds already in the library now get their tags. Links are asked for by `id:` with a 900-second expiry, and a failed link call is split to find the bad entry. "Both tags" now reads "project tag and room tag, if any", in `rules.md` as well, which had said every photo gets two tags while also giving bedrooms none.
 
-
 Usage: not readable from this repo; the workspace journal entry for this session carries it.
