@@ -98,7 +98,11 @@ in a claude.ai chat those come from two different places:
     already in the library isn't stored twice. Upload the rest 10 at a
     time: get `download_link`s for those 10 only, just before the call
     (they expire in minutes and each works once: never open one yourself),
-    and pass them to `upload_assets`, each with its alt text and both tags.
+    and pass them to `upload_assets`, each with its Dropbox file name as
+    `filename` (otherwise Prismic names it from the link, and later
+    searches by name miss it), its alt text and both tags. In Claude Code,
+    where nothing is attached, upload without alt text, then look at each
+    photo from its asset `url`; Step 4 puts the alt text on the page.
     If a call times out or an item comes back `failed`, `search_assets` by
     file name before retrying (a timed-out call may still have stored its
     files), then get fresh links for only the photos still missing. Never
@@ -204,9 +208,9 @@ The slice zone wraps the list:
 ## Step 5: check, then report
 
 1. `get_document` for the new document with the release id. Check that the
-   slices hold every photo but the hero exactly once (the hero is in
-   `hero_image` and `preview_image`, and only in a slice too if the layout
-   put it there), that every image has alt text, and that the slices are in the planned order.
+   slices hold every photo but the hero exactly once (the hero fills
+   `hero_image` and `preview_image` and no slice), that every image has alt
+   text, and that the slices are in the planned order.
 2. `present_release` for the release. Do not publish it.
 3. Report, in this order:
    - the release link,
