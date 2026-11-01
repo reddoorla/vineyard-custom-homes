@@ -6,6 +6,21 @@
   import { cappedWidths } from "@reddoorla/maintenance/images";
 
   let { slice }: { slice: ContentWidthMediaSlice } = $props();
+
+  // Each column's box, and its background video's, by the editor's `image aspect`.
+  // Full class strings, so Tailwind's scanner sees every one. 9:16 and 1:1 fall
+  // back to 4:3 below md, as they always have; 3:4 and 2:3 are mild enough to
+  // keep their portrait crop on a phone (2:3 on a 390px screen is 537px tall).
+  const aspects = {
+    "9:16": { box: "aspect-[4/3] md:aspect-[9/16]", video: "aspect-[9/16]" },
+    "1:1": { box: "aspect-[4/3] md:aspect-square", video: "aspect-square" },
+    "3:4": { box: "aspect-[3/4]", video: "aspect-[3/4]" },
+    "2:3": { box: "aspect-[2/3]", video: "aspect-[2/3]" },
+  } as const;
+  // Anything unrecognised renders square, as the old 9:16-or-square ternary did.
+  const aspect = $derived(
+    (slice.variation === "twoCol" && aspects[slice.primary.image_aspect]) || aspects["1:1"],
+  );
 </script>
 
 <ContentWidth class="mt-9 flex flex-col md:flex-row relative overflow-hidden">
@@ -31,11 +46,7 @@
     </div>
   {/if}
   {#if slice.variation === "twoCol"}
-    <div
-      class="aspect-[4/3] mt-9 md:mt-0 {slice.primary.image_aspect === '9:16'
-        ? 'md:aspect-[9/16]'
-        : 'md:aspect-square'} md:w-1/2 md:pr-4.5 relative"
-    >
+    <div class="{aspect.box} mt-9 md:mt-0 md:w-1/2 md:pr-4.5 relative overflow-hidden">
       <PrismicImage
         field={slice.primary.image_one}
         widths={cappedWidths(slice.primary.image_one)}
@@ -48,21 +59,14 @@
           <iframe
             title="background video"
             src={`https://player.vimeo.com/video/${slice.primary.vimeo_id_one}?background=1&muted=1&loop=1&autoplay=1&dnt=1`}
-            class="absolute top-1/2 left-1/2 -translate-1/2 w-full {slice.primary.image_aspect ===
-            '9:16'
-              ? 'aspect-[9/16]'
-              : 'aspect-square'}"
+            class="absolute top-1/2 left-1/2 -translate-1/2 w-full {aspect.video}"
             frameborder="0"
             allowfullscreen
           ></iframe>
         </VimeoGate>
       {/if}
     </div>
-    <div
-      class="aspect-[4/3] mt-9 md:mt-0 {slice.primary.image_aspect === '9:16'
-        ? 'md:aspect-[9/16]'
-        : 'md:aspect-square'} md:w-1/2 md:pl-4.5 relative overflow-hidden"
-    >
+    <div class="{aspect.box} mt-9 md:mt-0 md:w-1/2 md:pl-4.5 relative overflow-hidden">
       <PrismicImage
         field={slice.primary.image_two}
         widths={cappedWidths(slice.primary.image_two)}
@@ -75,10 +79,7 @@
           <iframe
             title="background video"
             src={`https://player.vimeo.com/video/${slice.primary.vimeo_id_two}?background=1&muted=1&loop=1&autoplay=1&dnt=1`}
-            class="absolute top-1/2 left-1/2 -translate-1/2 w-full {slice.primary.image_aspect ===
-            '9:16'
-              ? 'aspect-[9/16]'
-              : 'aspect-square'}"
+            class="absolute top-1/2 left-1/2 -translate-1/2 w-full {aspect.video}"
             frameborder="0"
             allowfullscreen
           ></iframe>
