@@ -1,14 +1,15 @@
 ---
 name: build-gallery
-description: Build a Vineyard Custom Homes project gallery from a set of finished photos. Looks at every photo, tags it in the Prismic media library with the project and room, writes its alt text, lays the photos out in ContentWidthMedia slices by the rules in rules.md, and leaves a draft project page in a new, unpublished Prismic release. Use when asked to "build a gallery from <photos or folder>" or to lay out a Vineyard project's photos.
+description: Build a Vineyard Custom Homes project gallery from finished photos into a draft Prismic project page in an unpublished release. Use for "build a gallery for <project>".
 ---
 
 # Build a Vineyard gallery
 
 This skill turns a set of finished photos into a draft project page on
-vineyardcustomhomes.com. It runs the same way in a claude.ai chat and in
-Claude Code. It uses only the Prismic connector (and the Dropbox connector
-when the photos are in Dropbox), so it needs no scripts.
+vineyardcustomhomes.com. It runs in a claude.ai chat and in Claude Code. It
+uses only the Prismic connector (and the Dropbox connector when the photos
+are in Dropbox), so it needs no scripts. It tags photos, writes their alt
+text, and lays them out by the rules in `rules.md`.
 
 The layout, tag and alt-text rules live in `rules.md` beside this file. Read
 it before Step 3 and follow it exactly. When a rule and this file disagree,
@@ -27,10 +28,10 @@ it before Step 3 and follow it exactly. When a rule and this file disagree,
 
 - **The Prismic connector**, signed in with write access to the
   `vineyard-custom-homes` repository.
-- **The photos**, one of:
-  - attached to the chat (the most reliable: they can be seen directly);
-  - a Dropbox folder path, through the Dropbox connector;
-  - photos already in the Prismic media library, named by their asset tag.
+- **The photos, attached to the chat**, so you can see them, and **also
+  either already in the Prismic media library** (tagged with the client's
+  surname) **or in a Dropbox folder**, so they can reach Prismic. Step 2
+  says why both are needed.
 - **The project name** (for example "Nantucket Farm"), and **the client's
   surname** if it differs from what the library already uses as this
   project's tag.
@@ -60,19 +61,38 @@ photo: label, file name, width × height, portrait or landscape, room, wide
 or detail, room tag, alt text. Fill in the room, shot, tag and alt text by
 looking at the photo, following `rules.md`.
 
-- **Attached to the chat:** look at each one, fill its row, then upload it
-  with `upload_asset` with its alt text and both tags.
-- **In Dropbox:** `list_folder` on the path; take the image files. Look at
-  each with `file_preview`. If the preview does not show you the photo,
-  stop and ask for the photos to be attached instead. For the ones you have
-  seen, get a `download_link` and upload them with `upload_assets`, up to 10
-  a call, each with its alt text and both tags.
-- **Already in the media library:** `search_assets` with the project tag
-  (page through `nextCursor` until it is null). If the results don't show
-  you the photos themselves, stop and ask for them to be attached. Add any
-  missing tags with `update_asset_tags`; it takes up to 10 tag names a call
-  and is safe to repeat, so group photos by room tag. Alt text goes on the
-  page's image fields in Step 4.
+Each photo has to be **seen** and has to be **in the media library**, and
+in a claude.ai chat those come from two different places:
+
+- **Seeing.** You see a photo only when it is attached to the chat. A
+  Prismic `search_assets` result or a Dropbox `file_preview` gives a link,
+  not the picture. claude.ai takes 20 images in one message, so for a larger
+  set ask for the rest, 20 a message, and wait until you have seen every
+  photo before Step 3. (In Claude Code you can instead download each
+  library asset's `url` and open the file.)
+- **Reaching Prismic.** `upload_asset` and `upload_assets` take only a
+  public URL that Prismic fetches itself; the connector cannot take a file
+  attached to a chat. So the photos reach the library one of two ways:
+  - **Tim has already uploaded them** (the usual way: he drags them into
+    Prismic's Media Library and tags them with the client's surname).
+    `search_assets` with that tag, paging through `nextCursor` until it is
+    null, and match each attachment to its asset by file name. If the chat
+    doesn't show you an attachment's file name, list `/mnt/user-data/uploads`
+    with code execution. Ask about any photo you can't match; never guess.
+    Add the room tags (and the project tag, if missing) with
+    `update_asset_tags`; it takes up to 10 tag names a call and is safe to
+    repeat, so group photos by room tag. Alt text goes on the page's image
+    fields in Step 4.
+  - **They are in a Dropbox folder:** `list_folder` on the path and match
+    each image file to an attachment by name. `search_assets` by file name
+    first, so a photo already in the library isn't stored twice. For the
+    rest, get a `download_link` (single-use: never open it yourself) and
+    pass it to `upload_assets`, up to 10 a call, each with its alt text and
+    both tags.
+
+If the photos are attached but in neither place, stop and ask Tim to
+drag them into Prismic's Media Library with the client's surname as a tag,
+then carry on.
 
 Every upload result gives an asset's `id`, `url`, `width` and `height`;
 keep them in the table.
@@ -184,9 +204,11 @@ The slice zone wraps the list:
 
 ## Running it in claude.ai
 
-In claude.ai, this folder is uploaded as a skill: zip the `build-gallery`
-folder (with `SKILL.md` and `rules.md` inside it) and add it under
-Settings, Capabilities, Skills, or have the organisation's owner add it for
-everyone. Then, in a new chat with the Prismic connector on, attach the
-photos and say "build a gallery for <project name>". After `rules.md`
-changes, upload the zip again.
+In claude.ai, this folder is uploaded as a skill. Zip the `build-gallery`
+folder itself, so the zip's top level is `build-gallery/` with `SKILL.md`
+and `rules.md` inside it (a `SKILL.md` at the zip's root is not
+recognised). Skills need code execution on (Settings, Capabilities). Upload
+the zip under Customize, Skills: "+", "Create skill", "Upload a skill",
+then switch it on. Then, in a new chat with the Prismic connector on,
+attach the photos and say "build a gallery for <project name>". After
+`rules.md` changes, upload the new zip in place of the old one.
