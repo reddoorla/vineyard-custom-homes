@@ -24,8 +24,18 @@ function watchToolbar(page: Page) {
   return requests;
 }
 
+// The dev server encodes every image on each request (vite-imagetools, 11 to 26 s
+// each), and Prismic images come from images.prismic.io. Neither is what these
+// tests check, and a slow image holds the page's data request in the queue, so
+// the waits below would be set by image encoding. Aborting them keeps the waits
+// on the toolbar and the navigation.
+function abortImages(page: Page) {
+  return page.route(/\/@imagetools\/|images\.prismic\.io/, (r) => r.abort());
+}
+
 test("a normal visit loads no Prismic toolbar", async ({ page, context }) => {
   const requests = watchToolbar(page);
+  await abortImages(page);
   // Hydrated means the layout's client code, which mounts PrismicPreview for a
   // preview session, has run. Waiting for network idle instead waits on dev
   // image encoding and analytics, and "load" waits on every image, none of
@@ -53,6 +63,7 @@ test("ending a preview leaves /preview and keeps the scroll position", async ({
   // which kit 3 rejects in dev and ignores in production: the page jumps to the
   // top. reddoor-starter#188.
   await context.addCookies([{ name: "io.prismic.preview", value: "{}", url: baseURL! }]);
+  await abortImages(page);
   await page.goto("/preview/about", { waitUntil: "domcontentloaded" });
   await page.locator("html[data-hydrated]").waitFor({ state: "attached" });
   await page.evaluate(() => window.scrollTo(0, 400));
@@ -66,8 +77,10 @@ test("ending a preview leaves /preview and keeps the scroll position", async ({
   await page.evaluate(() =>
     window.dispatchEvent(new Event("prismicPreviewEnd", { cancelable: true })),
   );
-  // No timeout of its own: /about's load calls Prismic on the dev server, which
-  // took 0.2 to 9.3 s here, so the test's own timeout bounds the wait.
+  // No timeout of its own: /about's data request waits on the dev server, so the
+  // test's own timeout bounds the wait. With images aborted (above) that request
+  // took 0.1 to 0.3 s; with them loading it took up to 11 s, set by image
+  // encoding on the dev server, not by Prismic.
   await expect(page).toHaveURL((url) => url.pathname === "/about", { timeout: 0 });
   await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(before);
 });
