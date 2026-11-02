@@ -970,7 +970,7 @@ export interface ContentWidthMediaSliceTwoColPrimary {
 	 * - **API ID Path**: content_width_media.twoCol.primary.image_aspect
 	 * - **Documentation**: https://prismic.io/docs/fields/select
 	 */
-	image_aspect: prismic.SelectField<"9:16" | "1:1", "filled">;
+	image_aspect: prismic.SelectField<"9:16" | "1:1" | "3:4" | "2:3", "filled">;
 }
 
 /**
