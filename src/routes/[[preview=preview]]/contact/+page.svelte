@@ -42,7 +42,11 @@
     </p>
 
     <div class="flex flex-col items-center gap-16 mx-auto w-full lg:w-[520px] mt-32">
+      <!-- max-w-full: at a fixed 486px this divider made the page 403px wide
+           on a 320px phone (#88). It now narrows with its column. -->
       <svg
+        class="max-w-full h-auto"
+        aria-hidden="true"
         xmlns="http://www.w3.org/2000/svg"
         width="486"
         height="6"
