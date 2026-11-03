@@ -259,3 +259,7 @@ The new `tests/smoke/mobile-overflow.spec.ts` is ported from medical-solutions-o
 Locally, the repo's Playwright 1.64 found no browser in the cloud container; a symlink from its expected headless-shell path to the preinstalled 1.63 build ran it. CI installs its own.
 
 Usage: recorded in the workspace journal entry for this session.
+
+## 2026-11-03 — `svelte-select` and the two dead select components leave the repo (into `main`)
+
+`src/lib/components/FullWidth/StyledSingleSelect.svelte` and `StyledMultiSelect.svelte` wrapped `svelte-select`, and nothing in `src` imported either one. The contact form never used them. They are deleted, with `svelte-select` (^5.8.3) and its lock entries (`svelte-floating-ui` and three `@floating-ui` packages), and with `src/lib/assets/icons/dropdown-arrow-light.svg`, whose only users were the two components. Why now: Renovate's svelte-select 6 major failed `svelte-check` on MSOT's live copy of the same wrapper, and the operator chose "Native select, drop dep" for every site that declared it (`reddoorla/reddoor-workspace` `decisions/2026-11-03-0622-p1-80b-prismic-v3-and-svelte-select-6.md`; MSOT's native select is reddoorla/medical-solutions-of-texas#117). The multi-select imported its arrow from `$lib/assests/icons/…`, a misspelled directory that does not exist, so it could not have built if anything had rendered it. That is one more sign it was copied in from a sibling and never wired up. Gates: `pnpm lint` clean, `svelte-check` 0 errors (10 warnings, in files this change does not touch), `pnpm build` passes.
