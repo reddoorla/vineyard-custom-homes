@@ -36,6 +36,9 @@ function attachConsoleWatcher(page: Page, extraAllowed: RegExp[] = []) {
 
 for (const route of smokeRoutes) {
   test(`${route.path} (${route.name}) loads with no console errors`, async ({ page }) => {
+    // The hydration wait below can take 30 s on a cold dev server, so the test's own
+    // limit must be longer than the event wait, or the wait never runs to its limit.
+    test.setTimeout(60_000);
     const errors = attachConsoleWatcher(page);
     const response = await page.goto(route.path, {
       waitUntil: "domcontentloaded",
