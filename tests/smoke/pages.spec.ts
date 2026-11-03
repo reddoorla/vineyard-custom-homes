@@ -42,10 +42,13 @@ for (const route of smokeRoutes) {
     });
     expect(response?.status(), `HTTP status for ${route.path}`).toBe(route.expectStatus ?? 200);
     if (route.hydrationMarker) {
+      // A wait for an event (hydration), not a timing window: on a cold dev server
+      // hydration lands about 14 s after domcontentloaded while dev images encode,
+      // so the 5 s default is too short.
       await expect(
         page.locator(route.hydrationMarker),
         `hydration marker "${route.hydrationMarker}" on ${route.path}`,
-      ).toBeVisible();
+      ).toBeVisible({ timeout: 30_000 });
     }
     expect(errors, `console errors on ${route.path}`).toEqual([]);
   });
