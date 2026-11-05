@@ -173,7 +173,12 @@
     </div>
   </ContentWidth>
 </section>
-<section class="py-16">
+<!-- overflow-x-clip: from xl the slider's arrows sit 52px past its container,
+     wider than the 4% margin until 1300px; at 1280 the next arrow ends at
+     1280.8 and the page is 1281px wide (P1-90h). Home clips the same slider
+     with overflow-hidden; clip only x here, because below lg the arrows hang
+     72px under the slider and this section's py-16 is 64px. -->
+<section class="py-16 overflow-x-clip">
   <TestimonialSlider testimonials={ownerTestimonials.testimonials} />
 </section>
 
