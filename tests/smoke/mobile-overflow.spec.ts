@@ -23,7 +23,8 @@ import { test, expect, type Page } from "@playwright/test";
 // and it counts as long as any of it is left. The slider's overflow-hidden frame
 // ends 51.2px inside a 1280px screen, so the next slide's text, which lies across
 // the edge in layout, is hidden whole. A line clipped anywhere short of being
-// hidden, at the edge (the body's overflow-x: clip) or inside it, still counts.
+// hidden, at the edge (the body's overflow-x: clip) or inside it, still counts
+// if it runs past the edge.
 const ROUTES = ["/", "/about", "/contact", "/gallery", "/gallery/enzos"];
 const WIDTHS = [320, 390, 768, 820, 1024, 1100, 1280, 1440];
 
@@ -32,9 +33,9 @@ async function gotoLoaded(page: Page, path: string) {
   // An unpublished page would otherwise measure the error page and pass.
   expect(res?.ok(), `${path} answered ${res?.status()}`).toBe(true);
   await page.evaluate(() => document.fonts.ready);
-  // A proxy for hydration, not a signal: the network quiet for 500ms means the
-  // JS that hydrates the page has arrived, and the settled readings in the test
-  // below cover onMount running after it.
+  // A proxy for hydration, not a signal (#114): the network quiet for 500ms
+  // means the JS that hydrates the page has arrived, and it runs onMount as it
+  // does. The settle loop below cannot tell a placeholder from hydrated slides.
   await page.waitForLoadState("networkidle");
 }
 
@@ -56,7 +57,8 @@ function measure(page: Page) {
       }
       return false;
     };
-    // True when the ancestors that clip x leave none of the rect.
+    // True when the ancestors that clip x leave none of the rect. Border boxes,
+    // and DOM ancestors rather than containing blocks (#113).
     const hiddenWholeX = (el: Element | null, r: DOMRect) => {
       let [left, right] = [r.left, r.right];
       for (let a = el; a && a !== document.documentElement; a = a.parentElement) {
@@ -91,8 +93,9 @@ for (const width of WIDTHS) {
     for (const path of ROUTES) {
       test(`${path} has no horizontal overflow`, async ({ page }) => {
         await gotoLoaded(page, path);
-        // Measure until two readings 300ms apart agree, so a slider still
-        // filling or moving is not what gets measured. Fails if they never do.
+        // Measure until two readings 300ms apart agree, so a result that is still
+        // changing is not the one asserted. Readings compare scrollWidth and the
+        // cut lines only, not positions. Fails if they never agree.
         let last = "";
         let reading = await measure(page);
         for (let i = 0; i < 10 && JSON.stringify(reading) !== last; i++) {
