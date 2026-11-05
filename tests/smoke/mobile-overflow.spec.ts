@@ -18,12 +18,12 @@ import { test, expect, type Page } from "@playwright/test";
 // Two more for P1-90h (reddoorla/reddoor-maintenance#1876, 2026-11-04). The
 // page is measured once it has hydrated: the testimonial slider fills its
 // slides in onMount, and the server sends "No testimonials available", so a
-// measurement at `load` saw the placeholder. And a line's visible part is what
-// counts: each line is cut down to every ancestor that clips x, and it is cut
-// off only if what is left still reaches the edge. The slider's overflow-hidden
-// track ends 51px inside a 1280px screen, so the next slide's text, which lies
-// across the edge in layout, is hidden whole. Text clipped at the edge itself,
-// by the body's overflow-x: clip or a full-width section's, still counts.
+// measurement at `load` saw the placeholder. And a line that an ancestor
+// hides whole is skipped: each line is cut down to every ancestor that clips x,
+// and it counts as long as any of it is left. The slider's overflow-hidden frame
+// ends 51.2px inside a 1280px screen, so the next slide's text, which lies across
+// the edge in layout, is hidden whole. A line clipped anywhere short of being
+// hidden, at the edge (the body's overflow-x: clip) or inside it, still counts.
 const ROUTES = ["/", "/about", "/contact", "/gallery", "/gallery/enzos"];
 const WIDTHS = [320, 390, 768, 820, 1024, 1100, 1280, 1440];
 
@@ -32,8 +32,9 @@ async function gotoLoaded(page: Page, path: string) {
   // An unpublished page would otherwise measure the error page and pass.
   expect(res?.ok(), `${path} answered ${res?.status()}`).toBe(true);
   await page.evaluate(() => document.fonts.ready);
-  // The JS that hydrates the page has loaded and run by the time the network
-  // has been quiet for 500ms.
+  // A proxy for hydration, not a signal: the network quiet for 500ms means the
+  // JS that hydrates the page has arrived, and the settled readings in the test
+  // below cover onMount running after it.
   await page.waitForLoadState("networkidle");
 }
 
@@ -55,9 +56,8 @@ function measure(page: Page) {
       }
       return false;
     };
-    // The part of a rect left after every ancestor that clips x, or null if
-    // none is left.
-    const visibleX = (el: Element | null, r: DOMRect): [number, number] | null => {
+    // True when the ancestors that clip x leave none of the rect.
+    const hiddenWholeX = (el: Element | null, r: DOMRect) => {
       let [left, right] = [r.left, r.right];
       for (let a = el; a && a !== document.documentElement; a = a.parentElement) {
         const cs = getComputedStyle(a);
@@ -65,7 +65,7 @@ function measure(page: Page) {
         const b = a.getBoundingClientRect();
         [left, right] = [Math.max(left, b.left), Math.min(right, b.right)];
       }
-      return right > left ? [left, right] : null;
+      return right <= left;
     };
     const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
     for (let n = walker.nextNode(); n; n = walker.nextNode()) {
@@ -76,8 +76,7 @@ function measure(page: Page) {
       const range = document.createRange();
       range.selectNodeContents(n);
       const past = [...range.getClientRects()].filter((r) => r.width > 0 && r.right > vw + 1);
-      const seen = past.map((r) => visibleX(el, r)).filter((v) => v !== null);
-      if (seen.some(([left, right]) => left < vw - 1 && right >= vw - 1)) {
+      if (past.some((r) => r.left < vw - 1 && !hiddenWholeX(el, r))) {
         cut.push(`<${el?.tagName.toLowerCase()}> "${n.textContent.trim().slice(0, 60)}"`);
       }
     }
@@ -92,7 +91,8 @@ for (const width of WIDTHS) {
     for (const path of ROUTES) {
       test(`${path} has no horizontal overflow`, async ({ page }) => {
         await gotoLoaded(page, path);
-        // Two readings 300ms apart must agree, so nothing still moving is measured.
+        // Measure until two readings 300ms apart agree, so a slider still
+        // filling or moving is not what gets measured. Fails if they never do.
         let last = "";
         let reading = await measure(page);
         for (let i = 0; i < 10 && JSON.stringify(reading) !== last; i++) {
@@ -100,6 +100,7 @@ for (const width of WIDTHS) {
           await page.waitForTimeout(300);
           reading = await measure(page);
         }
+        expect(JSON.stringify(reading), "readings never settled").toBe(last);
         const { scrollWidth, clientWidth, cut } = reading;
         expect(scrollWidth, `page is wider than ${clientWidth}px`).toBeLessThanOrEqual(clientWidth);
         expect(cut, `text cut off at the ${clientWidth}px edge`).toEqual([]);
