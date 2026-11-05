@@ -15,7 +15,7 @@ import { test, expect, type Page } from "@playwright/test";
 // ancestor clips away entirely: the footer's sr-only <address> is a 1px box, so
 // its nowrap lines run past the edge in layout but are never seen.
 const ROUTES = ["/", "/about", "/contact", "/gallery", "/gallery/enzos"];
-const WIDTHS = [320, 390, 768, 820, 1024];
+const WIDTHS = [320, 390, 768, 820, 1024, 1100, 1280, 1440];
 
 async function gotoLoaded(page: Page, path: string) {
   const res = await page.goto(path, { waitUntil: "load" });
