@@ -54,9 +54,12 @@ Read these fresh each time, because they change:
    `hero_image`, `preview_image`, `design`, `architect`, `testimonial`,
    `testimonial_attribution`, `slices`).
 2. `get_shared_slice` for `content_width_media`: its variations (`default`
-   is "single", `twoCol` is "two col") and the current options of `twoCol`'s
-   `image_aspect`. If options beyond `9:16` and `1:1` exist (such as `3:4`
-   or `2:3`), `rules.md` rule 6 uses them.
+   is "single", `twoCol` is "two col") and the current options of each
+   variation's `image_aspect`. If `twoCol` has options beyond `9:16` and
+   `1:1` (such as `3:4` or `2:3`), `rules.md` rule 7 uses them. If `default`
+   has its own `image_aspect` (`16:9`, `4:3`, `3:2`, `1:1`, `none`),
+   `rules.md` rule 6 chooses each single's shape; if it has none, every
+   single is 16:9 and no portrait goes in one.
 3. `list_asset_tags`, so the tags you add reuse the library's spellings and
    the project tag matches the one already in use.
 
@@ -163,17 +166,17 @@ slices, for example:
 
 ```
 hero: P08
-1. single P28
-2. single P32
+1. single 16:9  P28
+2. single none  P32
 3. two col 1:1  P34 | P29
 ```
 
 Then check it against the rules before writing anything:
 
 - every photo appears exactly once (the hero counts);
-- no portrait photo is in a single;
+- every portrait photo in a single has the shape none or 1:1 (rule 5);
 - no more than two singles, or two two cols, in a row;
-- every two col's aspect follows rule 6.
+- every single's shape follows rule 6, and every two col's follows rule 7.
 
 Fix any break, or name it in the report if the photos leave no way round
 it.
@@ -218,7 +221,10 @@ A single, and a two col:
   "widget": {
     "__TYPE__": "SharedSliceContent",
     "variation": "default",
-    "primary": { "image": "<image field>" },
+    "primary": {
+      "image": "<image field>",
+      "image_aspect": { "__TYPE__": "FieldContent", "type": "Select", "value": "16:9" }
+    },
     "items": []
   }
 }

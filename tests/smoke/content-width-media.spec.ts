@@ -50,3 +50,53 @@ for (const [viewport, size] of [
     }
   });
 }
+
+// The single takes its own `image aspect`. 16:9, and a single written before
+// the field existed, keep the 4:3 phone box they have always had; 4:3, 3:2 and
+// 1:1 hold at every width; `none` takes the photo's own shape from Prismic's
+// `dimensions` (2560×1706 landscape, 1920×2560 portrait), and falls back to
+// 16:9 when the single carries a video.
+const sixteenNine = { phone: 4 / 3, wide: 16 / 9 };
+const singles: Record<string, { phone: number; wide: number }> = {
+  "16:9": sixteenNine,
+  unset: sixteenNine,
+  "4:3": { phone: 4 / 3, wide: 4 / 3 },
+  "3:2": { phone: 3 / 2, wide: 3 / 2 },
+  "1:1": { phone: 1, wide: 1 },
+  none: { phone: 2560 / 1706, wide: 2560 / 1706 },
+  "none-portrait": { phone: 1920 / 2560, wide: 1920 / 2560 },
+  "none-video": sixteenNine,
+};
+
+for (const width of [390, 1100, 1440]) {
+  test(`single boxes take each image aspect at ${width}px, within 1%, cropped not stretched`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto(ROUTE, { waitUntil: "domcontentloaded" });
+    for (const [key, ratios] of Object.entries(singles)) {
+      const img = page.locator(`section[data-single="${key}"] img`);
+      await expect(img).toHaveCount(1);
+      const box = await img.evaluate((el) => {
+        const r = el.parentElement!.getBoundingClientRect();
+        return {
+          ratio: r.width / r.height,
+          width: r.width,
+          fit: getComputedStyle(el).objectFit,
+          fills: Math.abs(el.getBoundingClientRect().height - el.parentElement!.clientHeight) < 1,
+        };
+      });
+      const expected = width < 768 ? ratios.phone : ratios.wide;
+      // Soft, so one run names every option whose box is wrong.
+      expect
+        .soft(
+          Math.abs(box.ratio / expected - 1),
+          `${key} at ${width}: ${box.ratio.toFixed(4)} against ${expected.toFixed(4)}`,
+        )
+        .toBeLessThan(0.01);
+      expect(box.width, `${key} at ${width}: full content width`).toBeGreaterThan(width * 0.9);
+      expect(box.fit, `${key} at ${width}`).toBe("cover");
+      expect(box.fills, `${key} at ${width}: image fills its box`).toBe(true);
+    }
+  });
+}
