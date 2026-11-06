@@ -124,10 +124,18 @@ for (const width of [390, 767, 768, 1100, 1440]) {
     for (const key of ["16:9-video", "4:3-video", "1:1-video", "none-video"]) {
       const frame = page.locator(`section[data-single="${key}"] iframe`);
       await expect(frame, key).toHaveCount(1);
-      const { box, video } = await frame.evaluate((el) => {
+      await frame.scrollIntoViewIfNeeded();
+      const { box, video, outside } = await frame.evaluate((el) => {
         const box = el.closest("section")!.querySelector("img")!.parentElement!;
         const b = box.getBoundingClientRect();
         const v = el.getBoundingClientRect();
+        // What paints just outside the box's left and right edges, in the page
+        // margin: the cropped video must not.
+        const y = (Math.max(b.top, 0) + Math.min(b.bottom, innerHeight)) / 2;
+        const outside = [b.left - 4, b.right + 4].map((x) => {
+          const hit = document.elementFromPoint(x, y);
+          return hit === el || el.contains(hit);
+        });
         return {
           box: { left: b.left, right: b.right, top: b.top, bottom: b.bottom },
           video: {
@@ -137,8 +145,10 @@ for (const width of [390, 767, 768, 1100, 1440]) {
             bottom: v.bottom,
             ratio: v.width / v.height,
           },
+          outside,
         };
       });
+      expect(outside, `${key} at ${width}: video cropped to its box`).toEqual([false, false]);
       expect(
         Math.abs(video.ratio / (16 / 9) - 1),
         `${key} at ${width}: video is 16:9`,

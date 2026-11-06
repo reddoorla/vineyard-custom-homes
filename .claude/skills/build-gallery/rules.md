@@ -54,7 +54,7 @@ shows the **hero** (`hero_image`), then the **slices**, each one a
    (taller than wide) photo goes in a single only when the slice offers the
    single's shapes, and then only with none (it shows whole, and tall) or
    1:1 (it loses its top and bottom); at 16:9, 4:3 or 3:2, or when the
-   slice offers no choice, the slice would cut away most of it. Prefer
+   slice offers no choice, the slice would cut away much of it. Prefer
    pairing a portrait in a two col, and use a portrait single for a photo
    that should stand alone.
    _Not Tim's words: the old rule kept every portrait out of a single;
@@ -69,7 +69,7 @@ shows the **hero** (`hero_image`), then the **slices**, each one a
      4:3, a 3000×2000 or 2560×1706 photo is 3:2).
    - 1:1 for a detail whose subject sits in the middle of the frame.
    - none for a photo that should not be cropped at all, such as a portrait,
-     a panorama or an odd shape. (If Tim later puts a video in a none
+     a panorama or an odd shape; this wins over the 16:9 default. (If Tim later puts a video in a none
      single, it shows at 16:9; in the other shapes the video fills the box
      and loses its sides.)
      _Not Tim's words: a first guess at when to use each shape, for Tim to

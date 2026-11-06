@@ -172,6 +172,9 @@ hero: P08
 3. two col 1:1  P34 | P29
 ```
 
+Give a single its shape only when Step 1 found the single's
+`image_aspect`; otherwise write it as plain `single P28`.
+
 Then check it against the rules before writing anything:
 
 - every photo appears exactly once (the hero counts);
@@ -258,8 +261,9 @@ The slice zone wraps the list:
 1. `get_document` for the new document with the release id. Check that the
    slices hold every photo but the hero exactly once (the hero fills
    `hero_image` and `preview_image` and no slice), that every image has alt
-   text, that the slices are in the planned order, and that each single and
-   two col carries the `image_aspect` the layout gave it.
+   text, that the slices are in the planned order, and that each two col
+   carries the `image_aspect` the layout gave it, and each single too when
+   Step 1 found the single's `image_aspect` (otherwise a single has none).
 2. `present_release` for the release. Do not publish it.
 3. Report, in this order:
    - the release link,
