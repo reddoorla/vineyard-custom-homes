@@ -906,6 +906,17 @@ export interface ContentWidthMediaSliceDefaultPrimary {
 	 * - **Documentation**: https://prismic.io/docs/fields/text
 	 */
 	vimeo_id: prismic.KeyTextField;
+	
+	/**
+	 * image aspect field in *ContentWidthMedia → single → Primary*
+	 *
+	 * - **Field Type**: Select
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: 16:9
+	 * - **API ID Path**: content_width_media.default.primary.image_aspect
+	 * - **Documentation**: https://prismic.io/docs/fields/select
+	 */
+	image_aspect: prismic.SelectField<"16:9" | "4:3" | "3:2" | "1:1" | "none", "filled">;
 }
 
 /**

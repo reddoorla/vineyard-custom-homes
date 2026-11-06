@@ -21,11 +21,37 @@
   const aspect = $derived(
     (slice.variation === "twoCol" && aspects[slice.primary.image_aspect]) || aspects["1:1"],
   );
+
+  // The single's box, by its own `image aspect`. 16:9 keeps the 4:3 phone
+  // fallback the single has always had, and is what an empty or unknown value
+  // gets, so every page written before the field existed renders unchanged.
+  // 4:3, 3:2 and 1:1 hold their shape at every width. Full class strings, so
+  // Tailwind's scanner sees every one.
+  const singleAspects: Record<string, string> = {
+    "16:9": "aspect-[4/3] md:aspect-video",
+    "4:3": "aspect-[4/3]",
+    "3:2": "aspect-[3/2]",
+    "1:1": "aspect-square",
+  };
+  // `none` sizes the box to the photo's own shape, from Prismic's `dimensions`,
+  // so nothing is cropped. A video has no shape Prismic knows, so `none` with a
+  // Vimeo id, or a photo without usable dimensions, falls back to 16:9. The
+  // background video itself is unchanged: 16:9 at the box's full height, so in
+  // every box at least as tall as 16:9 it covers the box and its sides are cropped.
+  const single = $derived.by(() => {
+    if (slice.variation !== "default") return { box: "", style: undefined };
+    const { image_aspect, image, vimeo_id } = slice.primary;
+    const { width = 0, height = 0 } = image?.dimensions ?? {};
+    if (image_aspect === "none" && !vimeo_id && width > 0 && height > 0)
+      return { box: "", style: `aspect-ratio: ${width} / ${height}` };
+    const key = image_aspect && Object.hasOwn(singleAspects, image_aspect) ? image_aspect : "16:9";
+    return { box: singleAspects[key], style: undefined };
+  });
 </script>
 
 <ContentWidth class="mt-9 flex flex-col md:flex-row relative overflow-hidden">
   {#if slice.variation === "default"}
-    <div class="aspect-[4/3] md:aspect-video w-full overflow-hidden">
+    <div class="{single.box} w-full overflow-hidden" style={single.style}>
       <PrismicImage
         field={slice.primary.image}
         widths={cappedWidths(slice.primary.image)}
