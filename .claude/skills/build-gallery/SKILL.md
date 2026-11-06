@@ -58,9 +58,9 @@ Read these fresh each time, because they change:
    variation's `image_aspect`. If `twoCol` has options beyond `9:16` and
    `1:1` (such as `3:4` or `2:3`), `rules.md` rule 7 uses them. If `default`
    has its own `image_aspect` (`16:9`, `4:3`, `3:2`, `1:1`, `none`),
-   `rules.md` rule 6 chooses each single's shape. If it has none, every
-   single is 16:9, no portrait goes in one, and Step 4 leaves
-   `image_aspect` out of every single.
+   `rules.md` rule 6 chooses each single's shape. If it has no
+   `image_aspect`, every single is 16:9, no portrait goes in one, and Step 4
+   leaves `image_aspect` out of every single.
 3. `list_asset_tags`, so the tags you add reuse the library's spellings and
    the project tag matches the one already in use.
 
@@ -263,7 +263,7 @@ The slice zone wraps the list:
    `hero_image` and `preview_image` and no slice), that every image has alt
    text, that the slices are in the planned order, and that each two col
    carries the `image_aspect` the layout gave it, and each single too when
-   Step 1 found the single's `image_aspect` (otherwise a single has none).
+   Step 1 found the single's `image_aspect` (otherwise a single carries no `image_aspect`).
 2. `present_release` for the release. Do not publish it.
 3. Report, in this order:
    - the release link,

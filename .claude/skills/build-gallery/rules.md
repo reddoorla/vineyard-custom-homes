@@ -69,9 +69,9 @@ shows the **hero** (`hero_image`), then the **slices**, each one a
      4:3, a 3000×2000 or 2560×1706 photo is 3:2).
    - 1:1 for a detail whose subject sits in the middle of the frame.
    - none for a photo that should not be cropped at all, such as a portrait,
-     a panorama or an odd shape; this wins over the 16:9 default. (If Tim later puts a video in a none
-     single, it shows at 16:9; in the other shapes the video fills the box
-     and loses its sides.)
+     a panorama or an odd shape; this wins over the 16:9 default. (If Tim
+     later puts a video in a none single, it shows at 16:9; in the other
+     shapes the video fills the box and loses its sides.)
      _Not Tim's words: a first guess at when to use each shape, for Tim to
      correct._
 7. **Choosing a two col's shape:**
