@@ -58,8 +58,9 @@ Read these fresh each time, because they change:
    variation's `image_aspect`. If `twoCol` has options beyond `9:16` and
    `1:1` (such as `3:4` or `2:3`), `rules.md` rule 7 uses them. If `default`
    has its own `image_aspect` (`16:9`, `4:3`, `3:2`, `1:1`, `none`),
-   `rules.md` rule 6 chooses each single's shape; if it has none, every
-   single is 16:9 and no portrait goes in one.
+   `rules.md` rule 6 chooses each single's shape. If it has none, every
+   single is 16:9, no portrait goes in one, and Step 4 leaves
+   `image_aspect` out of every single.
 3. `list_asset_tags`, so the tags you add reuse the library's spellings and
    the project tag matches the one already in use.
 
@@ -212,7 +213,9 @@ An image field, with the asset's values from the table:
 }
 ```
 
-A single, and a two col:
+A single, and a two col. Give a single the `image_aspect` that rule 6
+chose, and leave the field out altogether when Step 1 found no
+`image_aspect` on the `default` variation:
 
 ```json
 {
@@ -255,7 +258,8 @@ The slice zone wraps the list:
 1. `get_document` for the new document with the release id. Check that the
    slices hold every photo but the hero exactly once (the hero fills
    `hero_image` and `preview_image` and no slice), that every image has alt
-   text, and that the slices are in the planned order.
+   text, that the slices are in the planned order, and that each single and
+   two col carries the `image_aspect` the layout gave it.
 2. `present_release` for the release. Do not publish it.
 3. Report, in this order:
    - the release link,

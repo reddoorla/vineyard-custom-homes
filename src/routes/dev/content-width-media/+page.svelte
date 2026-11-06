@@ -42,32 +42,47 @@
       }) as unknown as Extract<ContentWidthMediaSlice, { variation: "twoCol" }>,
   );
 
-  // A landscape (2560×1706) from the same project, for the single.
+  // A landscape (2560×1706, 3:2) from the same project, for the single; for
+  // `none`, also a 3000×1776 one (1.689, near no option) from nantucket-farm,
+  // the portrait above, and a photo with no usable dimensions.
   const wide = photo("z15ZHSHcA_3LaUJX", "VCH_VanderBoom00010.JPG", 2560, 1706);
+  const odd = photo("aMxjf2GNHVfTPYPT", "VCH_Bentley_DSC00994.jpg", 3000, 1776);
+  // PrismicImage itself throws on null dimensions, so "no usable shape" is 0×0.
+  const shapeless = { ...wide, dimensions: { width: 0, height: 0 } };
+  const video = "76979871";
+  // `image_aspect` absent means a single written before the field existed;
+  // null, "" and an unknown value are what the API can hand back for one.
   const singleCases: {
     key: string;
-    image_aspect?: string;
-    image: typeof wide;
+    image_aspect?: string | null;
+    image: unknown;
     vimeo_id?: string;
   }[] = [
     { key: "16:9", image_aspect: "16:9", image: wide },
     { key: "4:3", image_aspect: "4:3", image: wide },
     { key: "3:2", image_aspect: "3:2", image: wide },
     { key: "1:1", image_aspect: "1:1", image: wide },
-    { key: "none", image_aspect: "none", image: wide },
+    { key: "none", image_aspect: "none", image: odd },
     { key: "none-portrait", image_aspect: "none", image: one },
-    { key: "none-video", image_aspect: "none", image: wide, vimeo_id: "76979871" },
+    { key: "none-shapeless", image_aspect: "none", image: shapeless },
+    { key: "none-video", image_aspect: "none", image: wide, vimeo_id: video },
+    { key: "16:9-video", image_aspect: "16:9", image: wide, vimeo_id: video },
+    { key: "4:3-video", image_aspect: "4:3", image: wide, vimeo_id: video },
+    { key: "1:1-video", image_aspect: "1:1", image: wide, vimeo_id: video },
     { key: "unset", image: wide },
+    { key: "null", image_aspect: null, image: wide },
+    { key: "empty", image_aspect: "", image: wide },
+    { key: "unknown", image_aspect: "21:9", image: wide },
   ];
   const singles = singleCases.map(
-    ({ key, image_aspect, image, vimeo_id }) =>
+    ({ key, image, vimeo_id, ...rest }) =>
       ({
         id: `content_width_media$single-${key}`,
         slice_type: "content_width_media",
         slice_label: null,
         variation: "default",
         version: "initial",
-        primary: { image, vimeo_id: vimeo_id ?? null, ...(image_aspect ? { image_aspect } : {}) },
+        primary: { image, vimeo_id: vimeo_id ?? null, ...rest },
         items: [],
       }) as unknown as Extract<ContentWidthMediaSlice, { variation: "default" }>,
   );

@@ -11,13 +11,16 @@ shows the **hero** (`hero_image`), then the **slices**, each one a
 `ContentWidthMedia` slice:
 
 - **single**: one photo, full width, in the shape set by the slice's
-  **image aspect**: 16:9 (the default), 4:3, 3:2, 1:1 (square), or none,
-  which shows the photo at its own shape with nothing cut away. 16:9 is the
-  one shape that changes on a phone, where it shows at 4:3 (so a 4:3 photo
-  loses a little off the top and bottom there, and a 3:2 photo a little off
-  its sides); the others keep their shape at every width. A Vimeo video in a
-  single fills the box and loses its sides; with none, a video shows at 16:9,
-  because Prismic knows a photo's shape but not a video's.
+  **image aspect**, when the slice offers one (Step 1 of the skill reads
+  whether it does): 16:9 (the default), 4:3, 3:2, 1:1 (square), or none,
+  which shows the photo at its own shape with nothing cut away. Without the
+  choice, every single is 16:9. 16:9 is the one shape that changes on a
+  phone, where it shows at 4:3: a 4:3 photo loses a little off its top and
+  bottom on a computer, and a 3:2 photo a little off its sides on a phone.
+  The others keep their shape at every width. A Vimeo video fills the box,
+  losing its sides wherever the box is taller than 16:9; with none, a video
+  gets the 16:9 shape, because Prismic knows a photo's shape but not a
+  video's.
   _Tim, 11-06: "the ideal list would be 16:9, 4:3 and 3:2 or none (taking
   the native aspect ratio)… 1:1 for the single column would be great too."_
 - **two col**: two photos side by side. Both halves share one shape, the
@@ -48,20 +51,27 @@ shows the **hero** (`hero_image`), then the **slices**, each one a
    _Tim, 10-30: "Put shots that look similar next to each other … different
    angles of the same room."_
 5. **A wide landscape shot of a whole room goes in a single.** A portrait
-   (taller than wide) photo goes in a single only with the shape none (it
-   shows whole, and tall) or 1:1 (it loses its top and bottom); at 16:9, 4:3
-   or 3:2 the slice would cut away most of it. Prefer pairing a portrait in
-   a two col, and use a portrait single for a photo that should stand alone.
-   _Tim, 11-06, with the single's new shapes._
-6. **Choosing a single's shape:**
-   - 16:9 for a wide landscape, the usual case, and whenever in doubt: it
-     is what every single showed before the choice existed.
-   - 4:3 or 3:2 for a landscape shot at that shape (a 3000×2250 photo is
-     4:3, a 3000×2000 or 2560×1706 photo is 3:2), so it is not cropped to
-     16:9 on a computer.
+   (taller than wide) photo goes in a single only when the slice offers the
+   single's shapes, and then only with none (it shows whole, and tall) or
+   1:1 (it loses its top and bottom); at 16:9, 4:3 or 3:2, or when the
+   slice offers no choice, the slice would cut away most of it. Prefer
+   pairing a portrait in a two col, and use a portrait single for a photo
+   that should stand alone.
+   _Not Tim's words: the old rule kept every portrait out of a single;
+   this opens it to the shapes Tim asked for on 11-06, for Tim to correct._
+6. **Choosing a single's shape**, when the slice offers one:
+   - 16:9 by default, for every landscape, including the many shot at 3:2
+     or 4:3: it is what every single showed before the choice existed, and
+     losing a strip of sky or floor costs nothing.
+   - 4:3 or 3:2 only when a landscape's top and bottom matter, such as a
+     staircase, a vaulted ceiling or a chimney that 16:9 would cut through,
+     and then the one nearer the photo's own shape (a 3000×2250 photo is
+     4:3, a 3000×2000 or 2560×1706 photo is 3:2).
    - 1:1 for a detail whose subject sits in the middle of the frame.
    - none for a photo that should not be cropped at all, such as a portrait,
-     a panorama or an odd shape. Never for a single that will carry a video.
+     a panorama or an odd shape. (If Tim later puts a video in a none
+     single, it shows at 16:9; in the other shapes the video fills the box
+     and loses its sides.)
      _Not Tim's words: a first guess at when to use each shape, for Tim to
      correct._
 7. **Choosing a two col's shape:**

@@ -51,24 +51,33 @@ for (const [viewport, size] of [
   });
 }
 
-// The single takes its own `image aspect`. 16:9, and a single written before
-// the field existed, keep the 4:3 phone box they have always had; 4:3, 3:2 and
-// 1:1 hold at every width; `none` takes the photo's own shape from Prismic's
-// `dimensions` (2560×1706 landscape, 1920×2560 portrait), and falls back to
-// 16:9 when the single carries a video.
+// The single takes its own `image aspect`. 16:9, and a single whose value is
+// absent, null, empty or unknown, keep the 4:3 phone box they have always had
+// (below md, 768px); 4:3, 3:2 and 1:1 hold at every width; `none` takes the
+// photo's own shape from Prismic's `dimensions` (3000×1776 landscape,
+// 1920×2560 portrait), and falls back to 16:9 for a single with a video or a
+// photo with no dimensions.
 const sixteenNine = { phone: 4 / 3, wide: 16 / 9 };
 const singles: Record<string, { phone: number; wide: number }> = {
   "16:9": sixteenNine,
   unset: sixteenNine,
+  null: sixteenNine,
+  empty: sixteenNine,
+  unknown: sixteenNine,
   "4:3": { phone: 4 / 3, wide: 4 / 3 },
   "3:2": { phone: 3 / 2, wide: 3 / 2 },
   "1:1": { phone: 1, wide: 1 },
-  none: { phone: 2560 / 1706, wide: 2560 / 1706 },
+  none: { phone: 3000 / 1776, wide: 3000 / 1776 },
   "none-portrait": { phone: 1920 / 2560, wide: 1920 / 2560 },
+  "none-shapeless": sixteenNine,
   "none-video": sixteenNine,
+  "16:9-video": sixteenNine,
+  "4:3-video": { phone: 4 / 3, wide: 4 / 3 },
+  "1:1-video": { phone: 1, wide: 1 },
 };
 
-for (const width of [390, 1100, 1440]) {
+// 767 and 768 pin the md breakpoint where 16:9 leaves its phone box.
+for (const width of [390, 767, 768, 1100, 1440]) {
   test(`single boxes take each image aspect at ${width}px, within 1%, cropped not stretched`, async ({
     page,
   }) => {
@@ -97,6 +106,47 @@ for (const width of [390, 1100, 1440]) {
       expect(box.width, `${key} at ${width}: full content width`).toBeGreaterThan(width * 0.9);
       expect(box.fit, `${key} at ${width}`).toBe("cover");
       expect(box.fills, `${key} at ${width}: image fills its box`).toBe(true);
+    }
+  });
+
+  test(`a single's background video covers its box at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 900 });
+    await page.goto(ROUTE, { waitUntil: "domcontentloaded" });
+    // VimeoGate mounts the iframe on the first pointer move after hydration,
+    // so keep moving until it does.
+    let x = 10;
+    await expect(async () => {
+      await page.mouse.move((x += 7), 40);
+      await expect(page.locator(`section[data-single="16:9-video"] iframe`)).toBeAttached({
+        timeout: 2000,
+      });
+    }).toPass({ timeout: 30_000 });
+    for (const key of ["16:9-video", "4:3-video", "1:1-video", "none-video"]) {
+      const frame = page.locator(`section[data-single="${key}"] iframe`);
+      await expect(frame, key).toHaveCount(1);
+      const { box, video } = await frame.evaluate((el) => {
+        const box = el.closest("section")!.querySelector("img")!.parentElement!;
+        const b = box.getBoundingClientRect();
+        const v = el.getBoundingClientRect();
+        return {
+          box: { left: b.left, right: b.right, top: b.top, bottom: b.bottom },
+          video: {
+            left: v.left,
+            right: v.right,
+            top: v.top,
+            bottom: v.bottom,
+            ratio: v.width / v.height,
+          },
+        };
+      });
+      expect(
+        Math.abs(video.ratio / (16 / 9) - 1),
+        `${key} at ${width}: video is 16:9`,
+      ).toBeLessThan(0.01);
+      expect(video.left, `${key} at ${width}`).toBeLessThanOrEqual(box.left + 1);
+      expect(video.right, `${key} at ${width}`).toBeGreaterThanOrEqual(box.right - 1);
+      expect(video.top, `${key} at ${width}`).toBeLessThanOrEqual(box.top + 1);
+      expect(video.bottom, `${key} at ${width}`).toBeGreaterThanOrEqual(box.bottom - 1);
     }
   });
 }
