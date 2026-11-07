@@ -36,16 +36,22 @@ function attachConsoleWatcher(page: Page, extraAllowed: RegExp[] = []) {
 
 for (const route of smokeRoutes) {
   test(`${route.path} (${route.name}) loads with no console errors`, async ({ page }) => {
+    // The hydration wait below can take 30 s on a cold dev server, so the test's own
+    // limit must be longer than the event wait, or the wait never runs to its limit.
+    test.setTimeout(60_000);
     const errors = attachConsoleWatcher(page);
     const response = await page.goto(route.path, {
       waitUntil: "domcontentloaded",
     });
     expect(response?.status(), `HTTP status for ${route.path}`).toBe(route.expectStatus ?? 200);
     if (route.hydrationMarker) {
+      // A wait for an event (hydration), not a timing window: on a cold dev server
+      // hydration lands about 14 s after domcontentloaded while dev images encode,
+      // so the 5 s default is too short.
       await expect(
         page.locator(route.hydrationMarker),
         `hydration marker "${route.hydrationMarker}" on ${route.path}`,
-      ).toBeVisible();
+      ).toBeVisible({ timeout: 30_000 });
     }
     expect(errors, `console errors on ${route.path}`).toEqual([]);
   });
