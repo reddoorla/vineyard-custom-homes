@@ -26,6 +26,15 @@
             "label": "vimeo id",
             "placeholder": ""
           }
+        },
+        "image_aspect": {
+          "type": "Select",
+          "config": {
+            "label": "image aspect",
+            "placeholder": "",
+            "options": ["16:9", "4:3", "3:2", "1:1", "none"],
+            "default_value": "16:9"
+          }
         }
       },
       "items": {}

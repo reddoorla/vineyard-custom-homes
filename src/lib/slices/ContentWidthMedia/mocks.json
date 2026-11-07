@@ -30,6 +30,11 @@
         "__TYPE__": "FieldContent",
         "value": "key",
         "type": "Text"
+      },
+      "image_aspect": {
+        "__TYPE__": "FieldContent",
+        "value": "16:9",
+        "type": "Select"
       }
     },
     "items": []
