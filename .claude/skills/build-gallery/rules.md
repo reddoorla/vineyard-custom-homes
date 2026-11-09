@@ -116,6 +116,38 @@ Prismic media library.
   them. Tim, 11-06: added `barn`, and `front door` only when the door is
   prominent._
 
+## Page metadata
+
+Every project page fills the three fields on its **SEO & Metadata** tab.
+They are what Google shows, and what a link to the page shows when it is
+shared. Left empty, the site falls back to "the project name | Vineyard
+Custom Homes", one description for the whole site and one picture for the
+whole site, so the page shares its description and picture with every
+other page.
+_Tim, 11-06: Prismic asked for page metadata and a meta image, and he
+filled them on the six published projects by hand. These rules copy what
+he wrote there._
+
+- **Meta title**: the project name, then ` | Vineyard Custom Homes`
+  ("Nantucket Farm | Vineyard Custom Homes").
+- **Meta description**: one sentence, about 140 characters and never more
+  than 160. Name the project and say Vineyard Custom Homes built it. Name
+  the design and architect credits when Tim gave them, as he wrote them.
+  End with a short invitation ("See the finished project.", "Explore the
+  finished project.", "View the project."). Without credits, say what the
+  photos show instead (a barn, a wall of glass, a pool). Only say what you
+  were told or have seen: never a town, a size, a price or a year you were
+  not given, and no selling words.
+  Tim's, for Nantucket Farm: "Nantucket Farm, a custom home built by
+  Vineyard Custom Homes with Rob Nyhof Design and Phil Norman Design
+  Group. Explore the finished project."
+- **Meta image**: the hero photo, cropped to the field's wide shape
+  (2400 × 1260), keeping the middle. It is already in the media library,
+  so nothing is uploaded. If the hero is portrait, use the widest landscape
+  exterior in the gallery instead, and say so in the report.
+  _Tim, 11-06: all six of his meta images are the page's hero, cropped
+  through the middle._
+
 ## Alt text
 
 Every photo gets alt text, written after looking at it.

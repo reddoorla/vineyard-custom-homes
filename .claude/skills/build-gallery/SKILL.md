@@ -52,7 +52,11 @@ Read these fresh each time, because they change:
 
 1. `get_custom_type` for `project`: its fields (`title`, `uid`,
    `hero_image`, `preview_image`, `design`, `architect`, `testimonial`,
-   `testimonial_attribution`, `slices`).
+   `testimonial_attribution`, `slices`), and on its "SEO & Metadata" tab
+   `meta_title`, `meta_description` and `meta_image`, with the size in
+   `meta_image`'s constraint (2400 wide, 1260 high when this was written).
+   If that size has changed, crop to the new one in Step 4. If a metadata
+   field is gone, leave it out and say so in the report.
 2. `get_shared_slice` for `content_width_media`: its variations (`default`
    is "single", `twoCol` is "two col") and the current options of each
    variation's `image_aspect`. If `twoCol` has options beyond `9:16` and
@@ -197,6 +201,11 @@ it.
    - `title`, `preview_title`: the project name. `design`, `architect`,
      `testimonial`, `testimonial_attribution` if given.
    - `hero_image` and `preview_image`: the hero photo.
+   - `meta_title` and `meta_description`: written by `rules.md` "Page
+     metadata", from the project name, the credits Tim gave and the photos
+     you have seen. Count the description's characters.
+   - `meta_image`: the photo `rules.md` "Page metadata" chose, cropped as
+     shown below.
    - `slices`: one slice per line of the layout, in order.
 
 An image field, with the asset's values from the table:
@@ -256,6 +265,41 @@ chose, and leave the field out altogether when Step 1 found no
 The slice zone wraps the list:
 `{"__TYPE__": "SliceContentType", "value": [<slices>]}`.
 
+The meta title and meta description are text fields:
+`{"__TYPE__": "FieldContent", "type": "Text", "value": "Nantucket Farm | Vineyard Custom Homes"}`.
+
+The meta image is the chosen photo's library asset, cropped through its
+middle to 2400 × 1260 (or the size Step 1 read). Work out the crop from the
+photo's own width W and height H, in its pixels, rounding to whole pixels:
+
+- a photo less wide than 2400:1260 (nearly every photo) keeps its full
+  width: crop width = W, crop height = W × 1260 ÷ 2400, rounded;
+  x = 0; y = (H − crop height) ÷ 2, rounded down;
+- a wider photo (a panorama) keeps its full height: crop height = H, crop
+  width = H × 2400 ÷ 1260, rounded; y = 0; x = (W − crop width) ÷ 2,
+  rounded down.
+
+Then fill the field like this: `origin` is the asset as it is, the outer
+`width` and `height` are the target size, `edit.crop` is the crop's x and
+y, and the outer `url` is the asset's url without its query, followed by
+`?auto=format%2Ccompress&rect=<x>%2C<y>%2C<crop width>%2C<crop height>&w=2400&h=1260`.
+For a 3000 × 1688 hero: crop 3000 × 1575, x 0, y 56.
+
+```json
+{
+  "__TYPE__": "ImageContent",
+  "origin": { "id": "<asset id>", "url": "<asset url>", "width": 3000, "height": 1688 },
+  "url": "<asset url without its query>?auto=format%2Ccompress&rect=0%2C56%2C3000%2C1575&w=2400&h=1260",
+  "width": 2400,
+  "height": 1260,
+  "edit": { "zoom": 1, "crop": { "x": 0, "y": 56 }, "background": "transparent" },
+  "alt": "<the photo's alt text>",
+  "credits": null,
+  "provider": "imgix",
+  "thumbnails": {}
+}
+```
+
 ## Step 5: check, then report
 
 1. `get_document` for the new document with the release id. Check that the
@@ -264,12 +308,18 @@ The slice zone wraps the list:
    text, that the slices are in the planned order, and that each two col
    carries the `image_aspect` the layout gave it, and each single too when
    Step 1 found the single's `image_aspect` (otherwise a single carries no `image_aspect`).
+   Check too that `meta_title` and `meta_description` are filled, that the
+   description is at most 160 characters, and that `meta_image` is
+   2400 × 1260 with its `origin` the photo you chose.
 2. `present_release` for the release. Do not publish it.
 3. Report, in this order:
    - the release link,
      `https://vineyard-custom-homes.prismic.io/builder/upcoming/<release id>`;
    - the layout list from Step 3;
    - the photo table (label, file, room, room tag, alt text);
+   - the meta title, the meta description with its character count, and
+     which photo is the meta image (and why, if it is not the hero), for
+     Tim to change on the page's "SEO & Metadata" tab if he wants;
    - each rule the page breaks and why, and any photo you were unsure of
      (a room you guessed, a photo that may not belong);
    - what is left for Tim: the testimonial, the related projects, any
