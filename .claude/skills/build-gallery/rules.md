@@ -104,13 +104,56 @@ Prismic media library.
   _The operator, 11-01: follow the library's existing tags._
 - **Room tag**: at most one, from this list:
   `kitchen`, `bathroom`, `fireplace`, `laundry`, `entry`, `front door`,
-  `exterior`. When two fit, the first in this order wins: `front door`,
-  `fireplace`, `kitchen`, `bathroom`, `laundry`, `entry`, `exterior`. A dining
-  room with a fireplace is `fireplace`; a breakfast nook or a butler's pantry
-  is `kitchen`; a mud room or dog wash is `laundry`. A bedroom, office or gym
-  gets no room tag.
+  `barn`, `exterior`. When two fit, the first in this order wins: `front door`,
+  `fireplace`, `kitchen`, `bathroom`, `laundry`, `entry`, `barn`, `exterior`.
+  A dining room with a fireplace is `fireplace`; a breakfast nook or a
+  butler's pantry is `kitchen`; a mud room or dog wash is `laundry`. A barn's
+  outside, its aisle and stalls, and its paddock or run are all `barn`, not
+  `exterior`. A bedroom, office or gym gets no room tag. Use `front door` only
+  when the door is a clear subject of the photo; a wide shot where it is small
+  is `exterior`.
   _Tim, 10-30, with `bathroom` and `exterior` as the library already spells
-  them._
+  them. Tim, 11-06: added `barn`, and `front door` only when the door is
+  prominent._
+
+## Page metadata
+
+Every project page fills the three fields on its **SEO & Metadata** tab.
+They are what Google shows, and what a link to the page shows when it is
+shared. Left empty, the site falls back to "the project name | Vineyard
+Custom Homes", one description for the whole site and one picture for the
+whole site, so the page shares its description and picture with every
+other page.
+_Tim, 11-06: Prismic asked for page metadata and a meta image, and he
+filled them on six of the published projects by hand. These rules copy what
+he wrote there._
+
+- **Meta title**: the project name, then ` | Vineyard Custom Homes`
+  ("Nantucket Farm | Vineyard Custom Homes").
+- **Meta description**: about 140 characters in all, never more than 160:
+  a sentence naming the project and saying Vineyard Custom Homes built it,
+  then a short invitation ("See the finished project.", "Explore the
+  finished project.", "View the project."). Call it a custom home only
+  when Tim did; otherwise say "a home" or "a project", or what Tim called
+  it (a barn, a remodel, a commercial building). Name the design and
+  architect credits when Tim gave them, in prose: a credit of `Client` is
+  "designed by the homeowner", and a labelled one such as "Exterior -
+  Reddoor Creative" is "exterior design by Reddoor Creative", as Tim wrote
+  them on Hipster Barndominium and Enzo's Hand Wash. Without credits,
+  say what the photos show instead (a barn, a wall of glass, a pool). Only
+  say what you were told or have seen: never a town, a size, a price or a
+  year you were not given, and no selling words.
+  Tim's, for Nantucket Farm: "Nantucket Farm, a custom home built by
+  Vineyard Custom Homes with Rob Nyhof Design and Phil Norman Design
+  Group. Explore the finished project."
+- **Meta image**: the hero photo, cropped to the field's wide shape
+  (2400 × 1260), keeping the middle. It is already in the media library,
+  so nothing is uploaded. If the hero is portrait, use instead the
+  landscape photo of the outside (a barn's outside counts) whose shape is
+  nearest 2400 × 1260, and say so in the report. If there is none, crop
+  the hero anyway and say so.
+  _Tim, 11-06: all six of his meta images are the page's hero, cropped
+  through the middle._
 
 ## Alt text
 
