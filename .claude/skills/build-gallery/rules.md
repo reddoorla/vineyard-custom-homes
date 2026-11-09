@@ -130,21 +130,25 @@ he wrote there._
 
 - **Meta title**: the project name, then ` | Vineyard Custom Homes`
   ("Nantucket Farm | Vineyard Custom Homes").
-- **Meta description**: one sentence, about 140 characters and never more
-  than 160. Name the project and say Vineyard Custom Homes built it. Name
-  the design and architect credits when Tim gave them, as he wrote them.
-  End with a short invitation ("See the finished project.", "Explore the
-  finished project.", "View the project."). Without credits, say what the
-  photos show instead (a barn, a wall of glass, a pool). Only say what you
-  were told or have seen: never a town, a size, a price or a year you were
-  not given, and no selling words.
+- **Meta description**: about 140 characters in all, never more than 160:
+  a sentence naming the project and saying Vineyard Custom Homes built it,
+  then a short invitation ("See the finished project.", "Explore the
+  finished project.", "View the project."). Call it a custom home only
+  when Tim did or the photos plainly show a whole house; a remodel, a barn
+  or a commercial building is called what it is. Name the design and
+  architect credits when Tim gave them, as he wrote them. Without credits,
+  say what the photos show instead (a barn, a wall of glass, a pool). Only
+  say what you were told or have seen: never a town, a size, a price or a
+  year you were not given, and no selling words.
   Tim's, for Nantucket Farm: "Nantucket Farm, a custom home built by
   Vineyard Custom Homes with Rob Nyhof Design and Phil Norman Design
   Group. Explore the finished project."
 - **Meta image**: the hero photo, cropped to the field's wide shape
   (2400 × 1260), keeping the middle. It is already in the media library,
-  so nothing is uploaded. If the hero is portrait, use the widest landscape
-  exterior in the gallery instead, and say so in the report.
+  so nothing is uploaded. If the hero is portrait, use instead the
+  landscape photo of the outside (a barn's outside counts) whose shape is
+  nearest 2400 × 1260, and say so in the report. If there is none, crop
+  the hero anyway and say so.
   _Tim, 11-06: all six of his meta images are the page's hero, cropped
   through the middle._
 

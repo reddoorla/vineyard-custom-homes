@@ -54,9 +54,10 @@ Read these fresh each time, because they change:
    `hero_image`, `preview_image`, `design`, `architect`, `testimonial`,
    `testimonial_attribution`, `slices`), and on its "SEO & Metadata" tab
    `meta_title`, `meta_description` and `meta_image`, with the size in
-   `meta_image`'s constraint (2400 wide, 1260 high when this was written).
-   If that size has changed, crop to the new one in Step 4. If a metadata
-   field is gone, leave it out and say so in the report.
+   `meta_image`'s constraint, which should be 2400 wide and 1260 high. If
+   it is another size, leave `meta_image` empty and say so in the report:
+   the crop below is worked out for 2400 × 1260 only. If a metadata field
+   is gone, leave it out and say so in the report.
 2. `get_shared_slice` for `content_width_media`: its variations (`default`
    is "single", `twoCol` is "two col") and the current options of each
    variation's `image_aspect`. If `twoCol` has options beyond `9:16` and
@@ -203,7 +204,8 @@ it.
    - `hero_image` and `preview_image`: the hero photo.
    - `meta_title` and `meta_description`: written by `rules.md` "Page
      metadata", from the project name, the credits Tim gave and the photos
-     you have seen. Count the description's characters.
+     you have seen. Count the description's characters with code
+     (`len`), not by eye.
    - `meta_image`: the photo `rules.md` "Page metadata" chose, cropped as
      shown below.
    - `slices`: one slice per line of the layout, in order.
@@ -269,15 +271,21 @@ The meta title and meta description are text fields:
 `{"__TYPE__": "FieldContent", "type": "Text", "value": "Nantucket Farm | Vineyard Custom Homes"}`.
 
 The meta image is the chosen photo's library asset, cropped through its
-middle to 2400 × 1260 (or the size Step 1 read). Work out the crop from the
-photo's own width W and height H, in its pixels, rounding to whole pixels:
+middle to 2400 × 1260. Work it out with code from the photo's own width W
+and height H, in its pixels. Compare the photo's **shape**, W ÷ H, with
+2400 ÷ 1260 = 1.905; never compare W with 2400:
 
-- a photo less wide than 2400:1260 (nearly every photo) keeps its full
-  width: crop width = W, crop height = W × 1260 ÷ 2400, rounded;
-  x = 0; y = (H − crop height) ÷ 2, rounded down;
-- a wider photo (a panorama) keeps its full height: crop height = H, crop
-  width = H × 2400 ÷ 1260, rounded; y = 0; x = (W − crop width) ÷ 2,
-  rounded down.
+- W ÷ H at most 1.905 (nearly every photo, portraits included) keeps the
+  full width: crop width = W, crop height = W × 1260 ÷ 2400, rounded half
+  up; x = 0; y = (H − crop height) ÷ 2, rounded down;
+- W ÷ H above 1.905 (a panorama) keeps the full height: crop height = H,
+  crop width = H × 2400 ÷ 1260, rounded half up; y = 0;
+  x = (W − crop width) ÷ 2, rounded down. (No panorama crop has been
+  checked against Prismic yet; say in the report when you used this
+  branch.)
+
+The crop must lie inside the photo: x + crop width ≤ W and
+y + crop height ≤ H. If not, you took the wrong branch.
 
 Then fill the field like this: `origin` is the asset as it is, the outer
 `width` and `height` are the target size, `edit.crop` is the crop's x and
@@ -308,9 +316,13 @@ For a 3000 × 1688 hero: crop 3000 × 1575, x 0, y 56.
    text, that the slices are in the planned order, and that each two col
    carries the `image_aspect` the layout gave it, and each single too when
    Step 1 found the single's `image_aspect` (otherwise a single carries no `image_aspect`).
-   Check too that `meta_title` and `meta_description` are filled, that the
-   description is at most 160 characters, and that `meta_image` is
-   2400 × 1260 with its `origin` the photo you chose.
+   Check too that `meta_title` is exactly the project name followed by
+   ` | Vineyard Custom Homes`; that `meta_description` is filled and at
+   most 160 characters by code (if longer, shorten it and write it again
+   with `update_draft_document` in the same release); and that
+   `meta_image` is 2400 × 1260, its `origin` is the photo you chose, and
+   the `rect` in its url is the same x, y, crop width and crop height as
+   its `edit.crop` and your crop.
 2. `present_release` for the release. Do not publish it.
 3. Report, in this order:
    - the release link,
