@@ -1,6 +1,6 @@
 ---
 name: build-gallery
-description: Build a Vineyard Custom Homes project gallery from finished photos into a draft Prismic project page in an unpublished release. Use for "build a gallery for <project>".
+description: Build a Vineyard Custom Homes project gallery from finished photos into a draft Prismic project page in an unpublished release. Use for "build a gallery for" followed by the project name (for example "build a gallery for Nantucket Farm").
 ---
 
 # Build a Vineyard gallery

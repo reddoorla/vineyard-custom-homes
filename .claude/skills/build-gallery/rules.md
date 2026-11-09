@@ -104,13 +104,17 @@ Prismic media library.
   _The operator, 11-01: follow the library's existing tags._
 - **Room tag**: at most one, from this list:
   `kitchen`, `bathroom`, `fireplace`, `laundry`, `entry`, `front door`,
-  `exterior`. When two fit, the first in this order wins: `front door`,
-  `fireplace`, `kitchen`, `bathroom`, `laundry`, `entry`, `exterior`. A dining
-  room with a fireplace is `fireplace`; a breakfast nook or a butler's pantry
-  is `kitchen`; a mud room or dog wash is `laundry`. A bedroom, office or gym
-  gets no room tag.
+  `barn`, `exterior`. When two fit, the first in this order wins: `front door`,
+  `fireplace`, `kitchen`, `bathroom`, `laundry`, `entry`, `barn`, `exterior`.
+  A dining room with a fireplace is `fireplace`; a breakfast nook or a
+  butler's pantry is `kitchen`; a mud room or dog wash is `laundry`. A barn's
+  outside, its aisle and stalls, and its paddock or run are all `barn`, not
+  `exterior`. A bedroom, office or gym gets no room tag. Use `front door` only
+  when the door is a clear subject of the photo; a wide shot where it is small
+  is `exterior`.
   _Tim, 10-30, with `bathroom` and `exterior` as the library already spells
-  them._
+  them. Tim, 11-06: added `barn`, and `front door` only when the door is
+  prominent._
 
 ## Alt text
 
