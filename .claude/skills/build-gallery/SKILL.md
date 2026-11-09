@@ -55,7 +55,7 @@ Read these fresh each time, because they change:
    `testimonial_attribution`, `slices`), and on its "SEO & Metadata" tab
    `meta_title`, `meta_description` and `meta_image`, with the size in
    `meta_image`'s constraint, which should be 2400 wide and 1260 high. If
-   it is another size, leave `meta_image` empty and say so in the report:
+   it has no constraint or another size, leave `meta_image` empty and say so in the report:
    the crop below is worked out for 2400 × 1260 only. If a metadata field
    is gone, leave it out and say so in the report.
 2. `get_shared_slice` for `content_width_media`: its variations (`default`
@@ -272,13 +272,15 @@ The meta title and meta description are text fields:
 
 The meta image is the chosen photo's library asset, cropped through its
 middle to 2400 × 1260. Work it out with code from the photo's own width W
-and height H, in its pixels. Compare the photo's **shape**, W ÷ H, with
-2400 ÷ 1260 = 1.905; never compare W with 2400:
+and height H, in its pixels. Compare the photo's **shape** with
+2400 × 1260 (about 1.905 to 1), in whole numbers: never compare W with
+2400, and never use the rounded 1.905:
 
-- W ÷ H at most 1.905 (nearly every photo, portraits included) keeps the
-  full width: crop width = W, crop height = W × 1260 ÷ 2400, rounded half
-  up; x = 0; y = (H − crop height) ÷ 2, rounded down;
-- W ÷ H above 1.905 (a panorama) keeps the full height: crop height = H,
+- when W × 1260 ≤ H × 2400 (nearly every photo, portraits included), keep
+  the full width: crop width = W, crop height = W × 1260 ÷ 2400, rounded
+  half up but never more than H; x = 0; y = (H − crop height) ÷ 2,
+  rounded down;
+- otherwise (a panorama), keep the full height: crop height = H,
   crop width = H × 2400 ÷ 1260, rounded half up; y = 0;
   x = (W − crop width) ÷ 2, rounded down. (No panorama crop has been
   checked against Prismic yet; say in the report when you used this
@@ -318,11 +320,11 @@ For a 3000 × 1688 hero: crop 3000 × 1575, x 0, y 56.
    Step 1 found the single's `image_aspect` (otherwise a single carries no `image_aspect`).
    Check too that `meta_title` is exactly the project name followed by
    ` | Vineyard Custom Homes`; that `meta_description` is filled and at
-   most 160 characters by code (if longer, shorten it and write it again
-   with `update_draft_document` in the same release); and that
-   `meta_image` is 2400 × 1260, its `origin` is the photo you chose, and
-   the `rect` in its url is the same x, y, crop width and crop height as
-   its `edit.crop` and your crop.
+   most 160 characters by code (if longer, shorten it); and that
+   `meta_image` is 2400 × 1260, its `origin` is the photo you chose, the
+   `rect` in its url starts with the x and y in its `edit.crop`, and the
+   `rect`'s width and height are your crop's. Fix anything wrong here with
+   `update_draft_document` in the same release, then check again.
 2. `present_release` for the release. Do not publish it.
 3. Report, in this order:
    - the release link,

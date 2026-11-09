@@ -125,7 +125,7 @@ Custom Homes", one description for the whole site and one picture for the
 whole site, so the page shares its description and picture with every
 other page.
 _Tim, 11-06: Prismic asked for page metadata and a meta image, and he
-filled them on the six published projects by hand. These rules copy what
+filled them on six of the published projects by hand. These rules copy what
 he wrote there._
 
 - **Meta title**: the project name, then ` | Vineyard Custom Homes`
@@ -134,9 +134,12 @@ he wrote there._
   a sentence naming the project and saying Vineyard Custom Homes built it,
   then a short invitation ("See the finished project.", "Explore the
   finished project.", "View the project."). Call it a custom home only
-  when Tim did or the photos plainly show a whole house; a remodel, a barn
-  or a commercial building is called what it is. Name the design and
-  architect credits when Tim gave them, as he wrote them. Without credits,
+  when Tim did; otherwise say "a home" or "a project", or what Tim called
+  it (a barn, a remodel, a commercial building). Name the design and
+  architect credits when Tim gave them, in prose: a credit of `Client` is
+  "designed by the homeowner", and a labelled one such as "Exterior -
+  Reddoor Creative" is "exterior design by Reddoor Creative", as Tim wrote
+  them on Hipster Barndominium and Enzo's Hand Wash. Without credits,
   say what the photos show instead (a barn, a wall of glass, a pool). Only
   say what you were told or have seen: never a town, a size, a price or a
   year you were not given, and no selling words.
