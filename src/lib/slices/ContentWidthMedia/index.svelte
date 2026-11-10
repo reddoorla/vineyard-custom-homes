@@ -99,8 +99,14 @@
   p: NonNullable<ReturnType<typeof player>>,
   image: ImageField,
   loading: "lazy" | undefined,
+  video = true,
 )}
-  <div class="relative mx-auto overflow-hidden" style={p.style} data-player>
+  <div
+    class="relative mx-auto overflow-hidden"
+    style={p.style}
+    data-player={video ? "" : undefined}
+    data-player-photo={video ? undefined : ""}
+  >
     <PrismicImage
       field={image}
       widths={cappedWidths(image)}
@@ -108,15 +114,17 @@
       {loading}
       class="w-full h-full object-cover"
     />
-    <iframe
-      title={p.title}
-      src={p.src}
-      class="absolute inset-0 w-full h-full"
-      frameborder="0"
-      loading="lazy"
-      allow="fullscreen; picture-in-picture"
-      allowfullscreen
-    ></iframe>
+    {#if video}
+      <iframe
+        title={p.title}
+        src={p.src}
+        class="absolute inset-0 w-full h-full"
+        frameborder="0"
+        loading="lazy"
+        allow="fullscreen; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    {/if}
   </div>
 {/snippet}
 
@@ -150,9 +158,17 @@
   {#if slice.variation === "twoCol"}
     {@const one = player(slice.primary.vimeo_id_one, slice.primary.image_one, true)}
     {@const two = player(slice.primary.vimeo_id_two, slice.primary.image_two, true)}
+    <!-- With the toggle on and a player in only one column, the other column
+         (a photo, or nothing) takes that player's box, so the row's two boxes
+         match (#131). With no player in the row, both keep `image aspect`. -->
+    {@const beside = one ?? two}
     {#if one}
       <div class="mt-9 md:mt-0 md:w-1/2 md:pr-4.5">
         {@render playerBox(one, slice.primary.image_one, "lazy")}
+      </div>
+    {:else if beside}
+      <div class="mt-9 md:mt-0 md:w-1/2 md:pr-4.5">
+        {@render playerBox(beside, slice.primary.image_one, "lazy", false)}
       </div>
     {:else}
       <div class="{aspect.box} mt-9 md:mt-0 md:w-1/2 md:pr-4.5 relative overflow-hidden">
@@ -179,6 +195,10 @@
     {#if two}
       <div class="mt-9 md:mt-0 md:w-1/2 md:pl-4.5">
         {@render playerBox(two, slice.primary.image_two, "lazy")}
+      </div>
+    {:else if beside}
+      <div class="mt-9 md:mt-0 md:w-1/2 md:pl-4.5">
+        {@render playerBox(beside, slice.primary.image_two, "lazy", false)}
       </div>
     {:else}
       <div class="{aspect.box} mt-9 md:mt-0 md:w-1/2 md:pl-4.5 relative overflow-hidden">

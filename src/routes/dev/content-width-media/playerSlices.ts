@@ -64,6 +64,50 @@ const twoCol = (key: string, show_as_player: boolean, image: unknown = empty) =>
     items: [],
   }) as unknown as ContentWidthMediaSlice;
 
+// Two col with the toggle on and a Vimeo id in one column only: the other
+// column is a photo, and takes the player's box (#131). `image aspect` is 1:1,
+// so a photo column left in its old box would be square beside a 9:16 player.
+const mixed = (key: string, videoFirst: boolean) => {
+  const video = { image: empty, vimeo_id: vertical };
+  const photo = { image: poster, vimeo_id: "" };
+  const [one, two] = videoFirst ? [video, photo] : [photo, video];
+  return {
+    id: `content_width_media$player-${key}`,
+    slice_type: "content_width_media",
+    slice_label: null,
+    variation: "twoCol",
+    version: "initial",
+    primary: {
+      image_one: one.image,
+      vimeo_id_one: one.vimeo_id,
+      image_two: two.image,
+      vimeo_id_two: two.vimeo_id,
+      image_aspect: "1:1",
+      show_as_player: true,
+    },
+    items: [],
+  } as unknown as ContentWidthMediaSlice;
+};
+
+// Two col with the toggle on and no Vimeo id at all: two photos in the
+// editor's `image aspect` box, exactly as with the toggle off.
+const photosOnly = {
+  id: "content_width_media$player-two-photos",
+  slice_type: "content_width_media",
+  slice_label: null,
+  variation: "twoCol",
+  version: "initial",
+  primary: {
+    image_one: poster,
+    vimeo_id_one: null,
+    image_two: portrait,
+    vimeo_id_two: "",
+    image_aspect: "1:1",
+    show_as_player: true,
+  },
+  items: [],
+} as unknown as ContentWidthMediaSlice;
+
 export const playerSlices = [
   // On: the vertical promo alone, two to a row, and a landscape alone (so a
   // box that ignores the video's shape fails one way or the other).
@@ -76,6 +120,10 @@ export const playerSlices = [
   // Off, explicitly: must render the muted background loop, exactly as before.
   single("single-off", vertical, false, poster),
   twoCol("two-off", false, poster),
+  // On, two col, a player beside a photo (either side), and photos only.
+  mixed("mixed", true),
+  mixed("mixed-right", false),
+  photosOnly,
 ];
 
 export const playerKey = (slice: ContentWidthMediaSlice) =>
