@@ -8,9 +8,7 @@
   // Behind the /dev guard; tests/smoke/content-width-media.spec.ts measures it.
   import ContentWidthMedia from "$lib/slices/ContentWidthMedia/index.svelte";
   import type { ContentWidthMediaSlice } from "../../../../prismicio-types";
-  import { playerSlices, playerKey } from "./playerSlices";
-
-  let { data } = $props();
+  import { playerSlices, playerKey, playerShapes } from "./playerSlices";
 
   const photo = (id: string, file: string, width: number, height: number) => {
     const url = `https://images.prismic.io/vineyard-custom-homes/${id}_${file}?auto=format,compress`;
@@ -115,7 +113,7 @@
   {/each}
   {#each playerSlices as slice (slice.id)}
     <section data-player-case={playerKey(slice)} aria-label="player case {playerKey(slice)}">
-      <ContentWidthMedia {slice} context={{ vimeo: data.vimeo }} />
+      <ContentWidthMedia {slice} context={{ vimeo: playerShapes }} />
     </section>
   {/each}
 </main>

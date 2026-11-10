@@ -1,11 +1,22 @@
 // ContentWidthMedia slices with the "show as player" toggle, on and off, for
 // /dev/content-width-media. 1245606043 is the client's vertical (1080×1920)
 // press promo Tim asked about on 2026-11-10; 76979871 is a public 16:9 Vimeo
-// video. tests/smoke/content-width-media-player.spec.ts measures them.
+// video. Their shapes are fixed here, as oEmbed reported them on 2026-11-10,
+// so the layout test never depends on Vimeo answering the CI runner;
+// tests/smoke/vimeo-shapes.spec.ts tests the oEmbed lookup itself.
+// "missed" is an id with no shape, as when oEmbed fails at build time.
+// tests/smoke/content-width-media-player.spec.ts measures them.
 import type { ContentWidthMediaSlice } from "../../../../prismicio-types";
+import type { VimeoShapes } from "$lib/vimeoShapes";
 
 const vertical = "1245606043";
 const landscape = "76979871";
+const missed = "1245606043/notarealhash";
+
+export const playerShapes: VimeoShapes = {
+  [vertical]: { width: 1080, height: 1920, title: "VCH - Gempler groundbreaking" },
+  [landscape]: { width: 1920, height: 1080, title: "The New Vimeo Player" },
+};
 
 const poster = {
   id: "z15ZHSHcA_3LaUJX",
@@ -14,6 +25,13 @@ const poster = {
   copyright: null,
   dimensions: { width: 2560, height: 1706 },
   edit: { x: 0, y: 0, zoom: 1, background: "transparent" },
+};
+const portrait = {
+  ...poster,
+  id: "Ape0eYzPlzscvCfj",
+  url: "https://images.prismic.io/vineyard-custom-homes/Ape0eYzPlzscvCfj_VCH_VanderBoom00007.JPG?auto=format,compress",
+  alt: "Groundbreaking at the Gempler site",
+  dimensions: { width: 1920, height: 2560 },
 };
 const empty = { url: null, alt: null, copyright: null, dimensions: null, id: null, edit: null };
 
@@ -52,6 +70,9 @@ export const playerSlices = [
   single("single", vertical, true),
   twoCol("two", true),
   single("landscape", landscape, true, poster),
+  // On, with no oEmbed shape: the poster's shape (3:4), else 16:9.
+  single("missed-poster", missed, true, portrait),
+  single("missed-bare", missed, true),
   // Off, explicitly: must render the muted background loop, exactly as before.
   single("single-off", vertical, false, poster),
   twoCol("two-off", false, poster),

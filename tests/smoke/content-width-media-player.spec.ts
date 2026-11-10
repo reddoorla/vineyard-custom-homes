@@ -6,16 +6,16 @@ import { test, expect, type Page } from "@playwright/test";
 // exactly as before. /dev/content-width-media renders the cases from
 // src/routes/dev/content-width-media/playerSlices.ts.
 const ROUTE = "/dev/content-width-media";
-const VERTICAL = 1080 / 1920; // Vimeo 1245606043, read through oEmbed
+const VERTICAL = 1080 / 1920; // Vimeo 1245606043, as oEmbed reports it
 const LANDSCAPE = 16 / 9; // Vimeo 76979871
 const BACKGROUND_FLAGS = ["background=1", "muted=1", "loop=1", "autoplay=1"];
 
 async function engage(page: Page) {
-  // VimeoGate mounts every iframe on the first input after hydration.
+  // VimeoGate mounts the background iframes on the first input after hydration.
   let x = 10;
   await expect(async () => {
     await page.mouse.move((x += 7), 40);
-    await expect(page.locator(`[data-player-case="single"] iframe`)).toBeAttached({
+    await expect(page.locator(`[data-player-case="single-off"] iframe`)).toBeAttached({
       timeout: 2000,
     });
   }).toPass({ timeout: 30_000 });
@@ -44,8 +44,13 @@ async function boxes(page: Page, key: string) {
 test("a player's embed has controls and sound: no background, autoplay, loop or mute", async ({
   page,
 }) => {
-  await page.goto(ROUTE, { waitUntil: "domcontentloaded" });
-  await engage(page);
+  // A player is content, not decoration: it is there before any input (a
+  // screen reader's swipe may never send one), and lazy instead.
+  await page.goto(ROUTE, { waitUntil: "load" });
+  await expect(frames(page, "single-off")).toHaveCount(0);
+  for (const key of ["single", "two", "landscape", "missed-poster", "missed-bare"])
+    for (const frame of await frames(page, key).all())
+      await expect(frame, key).toHaveAttribute("loading", "lazy");
   for (const key of ["single", "two", "landscape"]) {
     const urls = await srcParams(page, key);
     expect(urls.length, key).toBe(key === "two" ? 2 : 1);
@@ -64,6 +69,15 @@ test("a player's embed has controls and sound: no background, autoplay, loop or 
       await expect(frame, key).not.toHaveAttribute("aria-hidden", "true");
     }
   }
+  // An unlisted video's `<id>/<hash>` becomes the id and `h=`; with no oEmbed
+  // title, the frame is named by the poster's alt text.
+  const [missed] = await srcParams(page, "missed-poster");
+  expect(missed.pathname).toBe("/video/1245606043");
+  expect(missed.searchParams.get("h")).toBe("notarealhash");
+  await expect(frames(page, "missed-poster")).toHaveAttribute(
+    "title",
+    "Groundbreaking at the Gempler site",
+  );
 });
 
 test("with the toggle off, the embed is the muted background loop, as before", async ({ page }) => {
@@ -94,12 +108,14 @@ for (const [viewport, size] of [
   }) => {
     await page.setViewportSize(size);
     await page.goto(ROUTE, { waitUntil: "domcontentloaded" });
-    await engage(page);
 
     for (const [key, ratio] of [
       ["single", VERTICAL],
       ["two", VERTICAL],
       ["landscape", LANDSCAPE],
+      // No oEmbed shape: the poster's (1920×2560), else 16:9.
+      ["missed-poster", 1920 / 2560],
+      ["missed-bare", 16 / 9],
     ] as const) {
       for (const box of await boxes(page, key)) {
         expect
