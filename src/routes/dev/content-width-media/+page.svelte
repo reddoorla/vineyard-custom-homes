@@ -4,9 +4,13 @@
   // and 1706×2560, from the traditional-elegance project), then the single once
   // per its own `image aspect` option, with a landscape photo, plus `none` with
   // the portrait, `none` with a Vimeo id and an old single with no field at all.
+  // Last, the "show as player" cases from ./playerSlices.
   // Behind the /dev guard; tests/smoke/content-width-media.spec.ts measures it.
   import ContentWidthMedia from "$lib/slices/ContentWidthMedia/index.svelte";
   import type { ContentWidthMediaSlice } from "../../../../prismicio-types";
+  import { playerSlices, playerKey } from "./playerSlices";
+
+  let { data } = $props();
 
   const photo = (id: string, file: string, width: number, height: number) => {
     const url = `https://images.prismic.io/vineyard-custom-homes/${id}_${file}?auto=format,compress`;
@@ -107,6 +111,11 @@
   {#each singles as slice (slice.id)}
     <section data-single={singleKey(slice)} aria-label="single at {singleKey(slice)}">
       <ContentWidthMedia {slice} />
+    </section>
+  {/each}
+  {#each playerSlices as slice (slice.id)}
+    <section data-player-case={playerKey(slice)} aria-label="player case {playerKey(slice)}">
+      <ContentWidthMedia {slice} context={{ vimeo: data.vimeo }} />
     </section>
   {/each}
 </main>
