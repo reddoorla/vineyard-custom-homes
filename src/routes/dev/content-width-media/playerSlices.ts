@@ -67,7 +67,7 @@ const twoCol = (key: string, show_as_player: boolean, image: unknown = empty) =>
 // Two col with the toggle on and a Vimeo id in one column only: the other
 // column is a photo, and takes the player's box (#131). `image aspect` is 1:1,
 // so a photo column left in its old box would be square beside a 9:16 player.
-const mixed = (key: string, videoFirst: boolean) => {
+const mixed = (key: string, videoFirst: boolean, show_as_player = true) => {
   const video = { image: empty, vimeo_id: vertical };
   const photo = { image: poster, vimeo_id: "" };
   const [one, two] = videoFirst ? [video, photo] : [photo, video];
@@ -83,7 +83,7 @@ const mixed = (key: string, videoFirst: boolean) => {
       image_two: two.image,
       vimeo_id_two: two.vimeo_id,
       image_aspect: "1:1",
-      show_as_player: true,
+      show_as_player,
     },
     items: [],
   } as unknown as ContentWidthMediaSlice;
@@ -124,6 +124,10 @@ export const playerSlices = [
   mixed("mixed", true),
   mixed("mixed-right", false),
   photosOnly,
+  // Off, the same mix: the id column is the background loop and the photo
+  // column keeps its `image aspect` box, exactly as before.
+  mixed("mixed-off", true, false),
+  mixed("mixed-right-off", false, false),
 ];
 
 export const playerKey = (slice: ContentWidthMediaSlice) =>

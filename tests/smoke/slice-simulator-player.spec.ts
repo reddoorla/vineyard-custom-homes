@@ -69,18 +69,34 @@ const parentHtml = (frameSrc: string) => `<!doctype html>
 
 const empty = { url: null, alt: null, copyright: null, dimensions: null, id: null, edit: null };
 
-test("the slice simulator gives a ticked player its video's own shape", async ({
-  page,
-  baseURL,
-}) => {
+const playerSlice = (image_aspect: string) => ({
+  id: "content_width_media$sim-player",
+  slice_type: "content_width_media",
+  slice_label: null,
+  variation: "default",
+  version: "initial",
+  primary: { image: empty, vimeo_id: VERTICAL, image_aspect, show_as_player: true },
+  items: [],
+});
+
+type Sim = { connected: Promise<void>; setSlices: (s: unknown) => Promise<unknown> };
+
+async function openSimulator(
+  page: import("@playwright/test").Page,
+  baseURL: string | undefined,
+  oembedStatus: number,
+) {
   const oembed: string[] = [];
   await page.route("https://vimeo.com/api/oembed.json**", (route) => {
     oembed.push(route.request().url());
     return route.fulfill({
-      status: 200,
+      status: oembedStatus,
       contentType: "application/json",
       headers: { "access-control-allow-origin": "*" },
-      body: JSON.stringify({ width: 1080, height: 1920, title: "VCH - Gempler groundbreaking" }),
+      body:
+        oembedStatus === 200
+          ? JSON.stringify({ width: 1080, height: 1920, title: "VCH - Gempler groundbreaking" })
+          : "{}",
     });
   });
   await page.route(PARENT, (route) =>
@@ -97,39 +113,47 @@ test("the slice simulator gives a ticked player its video's own shape", async ({
   });
 
   await page.goto(PARENT);
-  await page.evaluate(() => (window as unknown as { connected: Promise<void> }).connected);
-  await page.evaluate(
-    (slices) =>
-      (window as unknown as { setSlices: (s: unknown) => Promise<unknown> }).setSlices(slices),
-    [
-      {
-        id: "content_width_media$sim-player",
-        slice_type: "content_width_media",
-        slice_label: null,
-        variation: "default",
-        version: "initial",
-        primary: { image: empty, vimeo_id: VERTICAL, image_aspect: "16:9", show_as_player: true },
-        items: [],
-      },
-    ],
-  );
+  await page.evaluate(() => (window as unknown as Sim).connected);
+  const post = (slices: unknown) =>
+    page.evaluate((s) => (window as unknown as Sim).setSlices(s), slices);
+  return { oembed, post, box: page.frameLocator("#sim").locator("[data-player]") };
+}
 
-  const sim = page.frameLocator("#sim");
-  const box = sim.locator("[data-player]");
+const ratioOff = (box: import("@playwright/test").Locator, ratio: number) => async () => {
+  const r = await box.evaluate((el) => el.getBoundingClientRect());
+  return Math.abs(r.width / r.height / ratio - 1);
+};
+
+test("the slice simulator gives a ticked player its video's own shape", async ({
+  page,
+  baseURL,
+}) => {
+  const { oembed, post, box } = await openSimulator(page, baseURL, 200);
+  await post([playerSlice("16:9")]);
   await expect(box).toHaveCount(1);
   // The lookup ran in the browser, for this id.
   await expect.poll(() => oembed.length).toBeGreaterThan(0);
   expect(new URL(oembed[0]).searchParams.get("url")).toBe(`https://vimeo.com/${VERTICAL}`);
   // 9:16, not the 16:9 fallback: poll, since the shape arrives after the slice.
   await expect
-    .poll(
-      async () => {
-        const r = await box.evaluate((el) => el.getBoundingClientRect());
-        return Math.abs(r.width / r.height / (1080 / 1920) - 1);
-      },
-      { message: "the player box is 9:16 within 1%" },
-    )
+    .poll(ratioOff(box, 1080 / 1920), { message: "the player box is 9:16 within 1%" })
     .toBeLessThan(0.01);
   // The frame is named by the video's own title, which also comes from oEmbed.
   await expect(box.locator("iframe")).toHaveAttribute("title", "VCH - Gempler groundbreaking");
+
+  // Prismic posts the whole slice zone on every edit. An edit to any other
+  // field keeps the shape and asks Vimeo nothing new.
+  await post([playerSlice("4:3")]);
+  await page.waitForTimeout(1000);
+  expect(oembed.length, "one oEmbed request in all").toBe(1);
+  expect(await ratioOff(box, 1080 / 1920)(), "still 9:16 after the edit").toBeLessThan(0.01);
+});
+
+test("when Vimeo refuses, the simulator's player falls back to 16:9", async ({ page, baseURL }) => {
+  const { oembed, post, box } = await openSimulator(page, baseURL, 403);
+  await post([playerSlice("16:9")]);
+  await expect(box).toHaveCount(1);
+  await expect.poll(() => oembed.length).toBeGreaterThan(0);
+  await page.waitForTimeout(500);
+  expect(await ratioOff(box, 16 / 9)(), "16:9 with no oEmbed shape").toBeLessThan(0.01);
 });

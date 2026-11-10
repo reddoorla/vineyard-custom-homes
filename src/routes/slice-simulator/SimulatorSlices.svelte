@@ -18,16 +18,26 @@
 
   let vimeo: VimeoShapes = $state({});
   // Keyed by the ids, so an edit to any other field (Prismic posts the whole
-  // slice zone on every keystroke) asks Vimeo nothing new.
+  // slice zone on every keystroke) asks Vimeo nothing new. Debounced, and the
+  // previous lookup aborted, so typing an id asks once, for the finished id,
+  // not for every partial one.
   const ids = $derived(playerVimeoIds(sliceList).join("\n"));
   $effect(() => {
     if (!ids) return;
-    let stale = false;
-    untrack(() => vimeoShapes(sliceList, fetch)).then((found) => {
-      if (!stale) vimeo = found;
-    });
+    const abort = new AbortController();
+    const signalled: typeof fetch = (input, init) =>
+      fetch(input, {
+        ...init,
+        signal: init?.signal ? AbortSignal.any([init.signal, abort.signal]) : abort.signal,
+      });
+    const timer = setTimeout(() => {
+      untrack(() => vimeoShapes(sliceList, signalled)).then((found) => {
+        if (!abort.signal.aborted) vimeo = found;
+      });
+    }, 300);
     return () => {
-      stale = true;
+      clearTimeout(timer);
+      abort.abort();
     };
   });
 </script>
