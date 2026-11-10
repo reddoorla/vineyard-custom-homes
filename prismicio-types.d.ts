@@ -917,6 +917,17 @@ export interface ContentWidthMediaSliceDefaultPrimary {
 	 * - **Documentation**: https://prismic.io/docs/fields/select
 	 */
 	image_aspect: prismic.SelectField<"16:9" | "4:3" | "3:2" | "1:1" | "none", "filled">;
+	
+	/**
+	 * show as player (controls and sound) field in *ContentWidthMedia → single → Primary*
+	 *
+	 * - **Field Type**: Boolean
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: false
+	 * - **API ID Path**: content_width_media.default.primary.show_as_player
+	 * - **Documentation**: https://prismic.io/docs/fields/boolean
+	 */
+	show_as_player: prismic.BooleanField;
 }
 
 /**
@@ -982,6 +993,17 @@ export interface ContentWidthMediaSliceTwoColPrimary {
 	 * - **Documentation**: https://prismic.io/docs/fields/select
 	 */
 	image_aspect: prismic.SelectField<"9:16" | "1:1" | "3:4" | "2:3", "filled">;
+	
+	/**
+	 * show as player (controls and sound) field in *ContentWidthMedia → two col → Primary*
+	 *
+	 * - **Field Type**: Boolean
+	 * - **Placeholder**: *None*
+	 * - **Default Value**: false
+	 * - **API ID Path**: content_width_media.twoCol.primary.show_as_player
+	 * - **Documentation**: https://prismic.io/docs/fields/boolean
+	 */
+	show_as_player: prismic.BooleanField;
 }
 
 /**

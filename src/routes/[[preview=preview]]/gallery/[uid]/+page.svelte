@@ -65,7 +65,7 @@
     </ContentWidth>
   </section>
 
-  <SliceZone slices={data.page.data.slices} {components} />
+  <SliceZone slices={data.page.data.slices} {components} context={{ vimeo: data.vimeo }} />
 
   <section class="py-32">
     <ContentWidth>
