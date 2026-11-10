@@ -93,10 +93,9 @@ async function openSimulator(
       status: oembedStatus,
       contentType: "application/json",
       headers: { "access-control-allow-origin": "*" },
-      body:
-        oembedStatus === 200
-          ? JSON.stringify({ width: 1080, height: 1920, title: "VCH - Gempler groundbreaking" })
-          : "{}",
+      // A refusal carries a shape too, so a lookup that ignored the status
+      // would take it.
+      body: JSON.stringify({ width: 1080, height: 1920, title: "VCH - Gempler groundbreaking" }),
     });
   });
   await page.route(PARENT, (route) =>
@@ -151,7 +150,8 @@ test("the slice simulator gives a ticked player its video's own shape", async ({
 
 test("when Vimeo refuses, the simulator's player falls back to 16:9", async ({ page, baseURL }) => {
   const { oembed, post, box } = await openSimulator(page, baseURL, 403);
-  await post([playerSlice("16:9")]);
+  // 1:1 `image aspect`, so a player that fell back to it would be square.
+  await post([playerSlice("1:1")]);
   await expect(box).toHaveCount(1);
   await expect.poll(() => oembed.length).toBeGreaterThan(0);
   await page.waitForTimeout(500);

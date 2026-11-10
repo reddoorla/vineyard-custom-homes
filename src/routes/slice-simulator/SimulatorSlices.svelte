@@ -5,7 +5,6 @@
   // posts in, so it asks Vimeo's oEmbed from here (it answers CORS with `*`).
   // Until the answer comes, or if it never does, a player takes its poster's
   // shape, or 16:9, exactly as on a page whose build-time lookup missed.
-  import { untrack } from "svelte";
   import { SliceZone } from "@prismicio/svelte";
   import { components } from "$lib/slices";
   import type { SliceZone as SliceZoneField } from "@prismicio/client";
@@ -25,13 +24,16 @@
   $effect(() => {
     if (!ids) return;
     const abort = new AbortController();
-    const signalled: typeof fetch = (input, init) =>
-      fetch(input, {
-        ...init,
-        signal: init?.signal ? AbortSignal.any([init.signal, abort.signal]) : abort.signal,
-      });
+    // One signal for both the caller's (oEmbed's 8s timeout) and ours, by
+    // listeners rather than AbortSignal.any, which older Safari lacks.
+    const signalled: typeof fetch = (input, init) => {
+      const both = new AbortController();
+      for (const signal of [abort.signal, init?.signal])
+        signal?.addEventListener("abort", () => both.abort(signal.reason), { once: true });
+      return fetch(input, { ...init, signal: both.signal });
+    };
     const timer = setTimeout(() => {
-      untrack(() => vimeoShapes(sliceList, signalled)).then((found) => {
+      vimeoShapes(sliceList, signalled).then((found) => {
         if (!abort.signal.aborted) vimeo = found;
       });
     }, 300);
