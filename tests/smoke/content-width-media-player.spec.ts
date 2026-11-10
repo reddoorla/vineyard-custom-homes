@@ -145,3 +145,106 @@ for (const [viewport, size] of [
     }
   });
 }
+
+// Two col, toggle on, a Vimeo id in one column only (#131): the photo column
+// takes the player's box, so the row's two boxes match, and the photo is
+// cropped to it, not stretched. Toggle on with no id at all is untouched: two
+// photos in the editor's `image aspect` box (1:1 here; 4:3 below md).
+for (const [viewport, size] of [
+  ["desktop", { width: 1280, height: 900 }],
+  ["phone", { width: 390, height: 844 }],
+] as const) {
+  test(`a photo beside a player takes the player's box, at ${viewport} width`, async ({ page }) => {
+    await page.setViewportSize(size);
+    await page.goto(ROUTE, { waitUntil: "domcontentloaded" });
+
+    for (const key of ["mixed", "mixed-right"]) {
+      await expect(frames(page, key), key).toHaveCount(1);
+      const [player] = await boxes(page, key);
+      const img = page.locator(`[data-player-case="${key}"] img`);
+      await expect(img, key).toHaveCount(1);
+      const photo = await img.evaluate((el) => {
+        const r = el.getBoundingClientRect();
+        return {
+          width: r.width,
+          height: r.height,
+          fit: getComputedStyle(el).objectFit,
+          fills: Math.abs(r.height - el.parentElement!.clientHeight) < 1,
+        };
+      });
+      const label = `${key} at ${viewport}: photo ${photo.width.toFixed(1)}×${photo.height.toFixed(1)}, player ${player.width.toFixed(1)}×${player.height.toFixed(1)}`;
+      expect
+        .soft(Math.abs(photo.height / player.height - 1), `${label}: height`)
+        .toBeLessThan(0.01);
+      expect
+        .soft(
+          Math.abs(photo.width / photo.height / (player.width / player.height) - 1),
+          `${label}: ratio`,
+        )
+        .toBeLessThan(0.01);
+      expect(photo.fit, label).toBe("cover");
+      expect(photo.fills, `${label}: image fills its box`).toBe(true);
+    }
+  });
+
+  test(`toggle on with no Vimeo id keeps the image aspect box, at ${viewport} width`, async ({
+    page,
+  }) => {
+    await page.setViewportSize(size);
+    await page.goto(ROUTE, { waitUntil: "domcontentloaded" });
+    const section = page.locator(`[data-player-case="two-photos"]`);
+    await expect(section.locator("iframe, [data-player], [data-player-photo]")).toHaveCount(0);
+    const imgs = section.locator("img");
+    await expect(imgs).toHaveCount(2);
+    const expected = viewport === "desktop" ? 1 : 4 / 3;
+    for (const box of await imgs.evaluateAll((els) =>
+      els.map((el) => {
+        const r = el.parentElement!.getBoundingClientRect();
+        return { ratio: r.width / r.height, width: r.width };
+      }),
+    )) {
+      expect(box.ratio, `two-photos at ${viewport}`).toBeCloseTo(expected, 2);
+      if (viewport === "desktop") expect(box.width).toBeLessThan(size.width / 2);
+    }
+  });
+}
+
+// Toggle off with an id in one column only: the id column is still the muted
+// background loop, and both columns keep the `image aspect` box (1:1 here;
+// 4:3 below md), exactly as before #131.
+for (const [viewport, size] of [
+  ["desktop", { width: 1280, height: 900 }],
+  ["phone", { width: 390, height: 844 }],
+] as const) {
+  test(`toggle off, an id in one column: background loop and image aspect boxes, at ${viewport} width`, async ({
+    page,
+  }) => {
+    await page.setViewportSize(size);
+    await page.goto(ROUTE, { waitUntil: "domcontentloaded" });
+    await engage(page);
+    const expected = viewport === "desktop" ? 1 : 4 / 3;
+    for (const key of ["mixed-off", "mixed-right-off"]) {
+      const section = page.locator(`[data-player-case="${key}"]`);
+      await expect(section.locator("[data-player], [data-player-photo]"), key).toHaveCount(0);
+      const urls = await srcParams(page, key);
+      expect(urls.length, `${key}: one background video`).toBe(1);
+      for (const flag of BACKGROUND_FLAGS) expect(urls[0].href, `${key}: ${flag}`).toContain(flag);
+      // Each column's box, padding included, as content-width-media.spec.ts
+      // measures the two-col boxes.
+      const ratios = await section.evaluate((el) =>
+        [...el.querySelectorAll(":scope > div > div")].map((col) => {
+          const r = col.getBoundingClientRect();
+          return r.width / r.height;
+        }),
+      );
+      expect(ratios.length, key).toBe(2);
+      for (const ratio of ratios)
+        expect
+          .soft(
+            Math.abs(ratio / expected - 1),
+            `${key} at ${viewport}: ${ratio.toFixed(4)} against ${expected.toFixed(4)}`,
+          )
+          .toBeLessThan(0.01);
+    }
+  });
+}
