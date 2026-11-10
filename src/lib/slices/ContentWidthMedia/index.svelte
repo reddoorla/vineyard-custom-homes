@@ -25,7 +25,11 @@
   // Unlike the background loop, a player is not behind VimeoGate: it is
   // content the visitor came for, and the gate waits for input that a
   // screen reader's swipe may never send. It is lazy, so a player below the
-  // fold loads nothing from Vimeo until it nears the viewport.
+  // fold loads nothing from Vimeo until it nears the viewport. The trade, taken
+  // knowingly: VimeoGate exists to keep Vimeo's `__cf_bm` cookie off a page
+  // until input (#73, Lighthouse best practices 78 without it), so a gallery
+  // page whose player loads without input sets that cookie, on that page only.
+  // A click-to-load poster would avoid it but costs a second click to play.
   const asPlayer = $derived(slice.primary.show_as_player === true);
   const player = (raw: string | null | undefined, poster: ImageField, column: boolean) => {
     const { key, id, hash } = parseVimeo(raw);
@@ -34,6 +38,9 @@
     const { width: pw = 0, height: ph = 0 } = poster?.dimensions ?? {};
     const [w, h] = shape ? [shape.width, shape.height] : pw > 0 && ph > 0 ? [pw, ph] : [16, 9];
     const cap = `calc(85svh * ${w} / ${h})`;
+    // `sizes` in vh: it only picks a poster file, and vh is the unit every
+    // sizes parser knows.
+    const capSizes = `calc(85vh * ${w} / ${h})`;
     return {
       src:
         `https://player.vimeo.com/video/${encodeURIComponent(id)}?dnt=1` +
@@ -41,8 +48,8 @@
       title: shape?.title || poster?.alt || "Video",
       style: `aspect-ratio: ${w} / ${h}; width: min(100%, ${cap})`,
       sizes: column
-        ? `(min-width: 768px) min(46vw, ${cap}), min(92vw, ${cap})`
-        : `min(92vw, ${cap})`,
+        ? `(min-width: 768px) min(46vw, ${capSizes}), min(92vw, ${capSizes})`
+        : `min(92vw, ${capSizes})`,
     };
   };
 

@@ -48,9 +48,11 @@ test("a player's embed has controls and sound: no background, autoplay, loop or 
   // screen reader's swipe may never send one), and lazy instead.
   await page.goto(ROUTE, { waitUntil: "load" });
   await expect(frames(page, "single-off")).toHaveCount(0);
-  for (const key of ["single", "two", "landscape", "missed-poster", "missed-bare"])
+  for (const key of ["single", "two", "landscape", "missed-poster", "missed-bare"]) {
+    await expect(frames(page, key), key).toHaveCount(key === "two" ? 2 : 1);
     for (const frame of await frames(page, key).all())
       await expect(frame, key).toHaveAttribute("loading", "lazy");
+  }
   for (const key of ["single", "two", "landscape"]) {
     const urls = await srcParams(page, key);
     expect(urls.length, key).toBe(key === "two" ? 2 : 1);
@@ -117,6 +119,7 @@ for (const [viewport, size] of [
       ["missed-poster", 1920 / 2560],
       ["missed-bare", 16 / 9],
     ] as const) {
+      await expect(frames(page, key), key).toHaveCount(key === "two" ? 2 : 1);
       for (const box of await boxes(page, key)) {
         expect
           .soft(
