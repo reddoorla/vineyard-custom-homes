@@ -4,8 +4,54 @@
   import { PrismicImage } from "@prismicio/svelte";
   import type { ContentWidthMediaSlice } from "../../../../prismicio-types";
   import { cappedWidths } from "@reddoorla/maintenance/images";
+  import type { ImageField } from "@prismicio/client";
+  import { parseVimeo, type VimeoShapes } from "$lib/vimeoShapes";
 
-  let { slice }: { slice: ContentWidthMediaSlice } = $props();
+  let {
+    slice,
+    context = {},
+  }: { slice: ContentWidthMediaSlice; context?: { vimeo?: VimeoShapes } } = $props();
+
+  // "Show as player (controls and sound)": off, and on every slice written
+  // before the field existed, the video is the muted background loop below,
+  // exactly as it always was. On, a column with a Vimeo id is a normal Vimeo
+  // player: controls, sound, no autoplay, no loop, no `background=1`.
+  //
+  // Its box takes the video's own shape, from oEmbed via `context.vimeo`; when
+  // that missed (see $lib/vimeoShapes), the poster photo's shape, then 16:9.
+  // It is never taller than 85% of the screen, so its controls stay in reach:
+  // a 9:16 promo at full content width would be ~2000px tall.
+  //
+  // Unlike the background loop, a player is not behind VimeoGate: it is
+  // content the visitor came for, and the gate waits for input that a
+  // screen reader's swipe may never send. It is lazy, so a player below the
+  // fold loads nothing from Vimeo until it nears the viewport. The trade, taken
+  // knowingly: VimeoGate exists to keep Vimeo's `__cf_bm` cookie off a page
+  // until input (#73, Lighthouse best practices 78 without it), so a gallery
+  // page whose player loads without input sets that cookie, on that page only.
+  // A click-to-load poster would avoid it but costs a second click to play.
+  const asPlayer = $derived(slice.primary.show_as_player === true);
+  const player = (raw: string | null | undefined, poster: ImageField, column: boolean) => {
+    const { key, id, hash } = parseVimeo(raw);
+    if (!asPlayer || !id) return null;
+    const shape = context?.vimeo?.[key];
+    const { width: pw = 0, height: ph = 0 } = poster?.dimensions ?? {};
+    const [w, h] = shape ? [shape.width, shape.height] : pw > 0 && ph > 0 ? [pw, ph] : [16, 9];
+    const cap = `calc(85svh * ${w} / ${h})`;
+    // `sizes` in vh: it only picks a poster file, and vh is the unit every
+    // sizes parser knows.
+    const capSizes = `calc(85vh * ${w} / ${h})`;
+    return {
+      src:
+        `https://player.vimeo.com/video/${encodeURIComponent(id)}?dnt=1` +
+        (hash ? `&h=${encodeURIComponent(hash)}` : ""),
+      title: shape?.title || poster?.alt || "Video",
+      style: `aspect-ratio: ${w} / ${h}; width: min(100%, ${cap})`,
+      sizes: column
+        ? `(min-width: 768px) min(46vw, ${capSizes}), min(92vw, ${capSizes})`
+        : `min(92vw, ${capSizes})`,
+    };
+  };
 
   // Each column's box, and its background video's, by the editor's `image aspect`.
   // Full class strings, so Tailwind's scanner sees every one. 9:16 and 1:1 fall
@@ -49,69 +95,113 @@
   });
 </script>
 
+{#snippet playerBox(
+  p: NonNullable<ReturnType<typeof player>>,
+  image: ImageField,
+  loading: "lazy" | undefined,
+)}
+  <div class="relative mx-auto overflow-hidden" style={p.style} data-player>
+    <PrismicImage
+      field={image}
+      widths={cappedWidths(image)}
+      sizes={p.sizes}
+      {loading}
+      class="w-full h-full object-cover"
+    />
+    <iframe
+      title={p.title}
+      src={p.src}
+      class="absolute inset-0 w-full h-full"
+      frameborder="0"
+      loading="lazy"
+      allow="fullscreen; picture-in-picture"
+      allowfullscreen
+    ></iframe>
+  </div>
+{/snippet}
+
 <ContentWidth class="mt-9 flex flex-col md:flex-row relative overflow-hidden">
   {#if slice.variation === "default"}
-    <div class="{single.box} w-full overflow-hidden" style={single.style}>
-      <PrismicImage
-        field={slice.primary.image}
-        widths={cappedWidths(slice.primary.image)}
-        sizes="92vw"
-        class="w-full h-full object-cover"
-      />
-      {#if slice.primary.vimeo_id}
-        <VimeoGate>
-          <iframe
-            title="background video"
-            src={`https://player.vimeo.com/video/${slice.primary.vimeo_id}?background=1&muted=1&loop=1&autoplay=1&dnt=1`}
-            class="absolute top-1/2 left-1/2 -translate-1/2 h-full aspect-video"
-            frameborder="0"
-            allowfullscreen
-          ></iframe>
-        </VimeoGate>
-      {/if}
-    </div>
+    {@const p = player(slice.primary.vimeo_id, slice.primary.image, false)}
+    {#if p}
+      {@render playerBox(p, slice.primary.image, undefined)}
+    {:else}
+      <div class="{single.box} w-full overflow-hidden" style={single.style}>
+        <PrismicImage
+          field={slice.primary.image}
+          widths={cappedWidths(slice.primary.image)}
+          sizes="92vw"
+          class="w-full h-full object-cover"
+        />
+        {#if slice.primary.vimeo_id}
+          <VimeoGate>
+            <iframe
+              title="background video"
+              src={`https://player.vimeo.com/video/${slice.primary.vimeo_id}?background=1&muted=1&loop=1&autoplay=1&dnt=1`}
+              class="absolute top-1/2 left-1/2 -translate-1/2 h-full aspect-video"
+              frameborder="0"
+              allowfullscreen
+            ></iframe>
+          </VimeoGate>
+        {/if}
+      </div>
+    {/if}
   {/if}
   {#if slice.variation === "twoCol"}
-    <div class="{aspect.box} mt-9 md:mt-0 md:w-1/2 md:pr-4.5 relative overflow-hidden">
-      <PrismicImage
-        field={slice.primary.image_one}
-        widths={cappedWidths(slice.primary.image_one)}
-        sizes="(min-width: 768px) 46vw, 92vw"
-        loading="lazy"
-        class="w-full h-full object-cover"
-      />
-      {#if slice.primary.vimeo_id_one}
-        <VimeoGate>
-          <iframe
-            title="background video"
-            src={`https://player.vimeo.com/video/${slice.primary.vimeo_id_one}?background=1&muted=1&loop=1&autoplay=1&dnt=1`}
-            class="absolute top-1/2 left-1/2 -translate-1/2 w-full {aspect.video}"
-            frameborder="0"
-            allowfullscreen
-          ></iframe>
-        </VimeoGate>
-      {/if}
-    </div>
-    <div class="{aspect.box} mt-9 md:mt-0 md:w-1/2 md:pl-4.5 relative overflow-hidden">
-      <PrismicImage
-        field={slice.primary.image_two}
-        widths={cappedWidths(slice.primary.image_two)}
-        sizes="(min-width: 768px) 46vw, 92vw"
-        loading="lazy"
-        class="w-full h-full object-cover"
-      />
-      {#if slice.primary.vimeo_id_two}
-        <VimeoGate>
-          <iframe
-            title="background video"
-            src={`https://player.vimeo.com/video/${slice.primary.vimeo_id_two}?background=1&muted=1&loop=1&autoplay=1&dnt=1`}
-            class="absolute top-1/2 left-1/2 -translate-1/2 w-full {aspect.video}"
-            frameborder="0"
-            allowfullscreen
-          ></iframe>
-        </VimeoGate>
-      {/if}
-      <div class="absolute h-full w-0 md:w-5 bg-white top-0 -left-0.5"></div>
-    </div>
+    {@const one = player(slice.primary.vimeo_id_one, slice.primary.image_one, true)}
+    {@const two = player(slice.primary.vimeo_id_two, slice.primary.image_two, true)}
+    {#if one}
+      <div class="mt-9 md:mt-0 md:w-1/2 md:pr-4.5">
+        {@render playerBox(one, slice.primary.image_one, "lazy")}
+      </div>
+    {:else}
+      <div class="{aspect.box} mt-9 md:mt-0 md:w-1/2 md:pr-4.5 relative overflow-hidden">
+        <PrismicImage
+          field={slice.primary.image_one}
+          widths={cappedWidths(slice.primary.image_one)}
+          sizes="(min-width: 768px) 46vw, 92vw"
+          loading="lazy"
+          class="w-full h-full object-cover"
+        />
+        {#if slice.primary.vimeo_id_one}
+          <VimeoGate>
+            <iframe
+              title="background video"
+              src={`https://player.vimeo.com/video/${slice.primary.vimeo_id_one}?background=1&muted=1&loop=1&autoplay=1&dnt=1`}
+              class="absolute top-1/2 left-1/2 -translate-1/2 w-full {aspect.video}"
+              frameborder="0"
+              allowfullscreen
+            ></iframe>
+          </VimeoGate>
+        {/if}
+      </div>
+    {/if}
+    {#if two}
+      <div class="mt-9 md:mt-0 md:w-1/2 md:pl-4.5">
+        {@render playerBox(two, slice.primary.image_two, "lazy")}
+      </div>
+    {:else}
+      <div class="{aspect.box} mt-9 md:mt-0 md:w-1/2 md:pl-4.5 relative overflow-hidden">
+        <PrismicImage
+          field={slice.primary.image_two}
+          widths={cappedWidths(slice.primary.image_two)}
+          sizes="(min-width: 768px) 46vw, 92vw"
+          loading="lazy"
+          class="w-full h-full object-cover"
+        />
+        {#if slice.primary.vimeo_id_two}
+          <VimeoGate>
+            <iframe
+              title="background video"
+              src={`https://player.vimeo.com/video/${slice.primary.vimeo_id_two}?background=1&muted=1&loop=1&autoplay=1&dnt=1`}
+              class="absolute top-1/2 left-1/2 -translate-1/2 w-full {aspect.video}"
+              frameborder="0"
+              allowfullscreen
+            ></iframe>
+          </VimeoGate>
+        {/if}
+        <div class="absolute h-full w-0 md:w-5 bg-white top-0 -left-0.5"></div>
+      </div>
+    {/if}
   {/if}
 </ContentWidth>

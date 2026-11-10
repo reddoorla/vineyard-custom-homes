@@ -35,6 +35,15 @@
             "options": ["16:9", "4:3", "3:2", "1:1", "none"],
             "default_value": "16:9"
           }
+        },
+        "show_as_player": {
+          "type": "Boolean",
+          "config": {
+            "label": "show as player (controls and sound)",
+            "default_value": false,
+            "placeholder_true": "player: controls and sound, the video's own shape",
+            "placeholder_false": "background: muted loop"
+          }
         }
       },
       "items": {}
@@ -84,6 +93,15 @@
             "placeholder": "",
             "options": ["9:16", "1:1", "3:4", "2:3"],
             "default_value": "9:16"
+          }
+        },
+        "show_as_player": {
+          "type": "Boolean",
+          "config": {
+            "label": "show as player (controls and sound)",
+            "default_value": false,
+            "placeholder_true": "player: controls and sound, the video's own shape",
+            "placeholder_false": "background: muted loop"
           }
         }
       },

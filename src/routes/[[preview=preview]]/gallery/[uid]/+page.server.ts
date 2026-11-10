@@ -2,6 +2,7 @@ import { createClient } from "$lib/prismicio";
 import { isFilled } from "@prismicio/client";
 import { error } from "@sveltejs/kit";
 import type { ProjectDocument } from "../../../../../prismicio-types";
+import { vimeoShapes } from "$lib/vimeoShapes";
 
 export async function load({ params, fetch, cookies }) {
   const client = createClient({ fetch, cookies });
@@ -19,8 +20,13 @@ export async function load({ params, fetch, cookies }) {
   if (isFilled.contentRelationship(page.data.related_two))
     recTwo = await client.getByUID("project", page.data.related_two.uid || "");
 
+  // The shape and title of each video shown as a player, so its box keeps the
+  // video's own aspect ratio (see $lib/vimeoShapes). Empty when none is.
+  const vimeo = await vimeoShapes(page.data.slices, fetch);
+
   return {
     page,
+    vimeo,
     recOne,
     recTwo,
     title: page.data.title,
