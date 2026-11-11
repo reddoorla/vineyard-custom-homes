@@ -63,6 +63,29 @@
           "placeholder": ""
         }
       },
+      "team": {
+        "type": "Group",
+        "config": {
+          "label": "the extended team",
+          "repeat": true,
+          "fields": {
+            "name": {
+              "type": "Text",
+              "config": {
+                "label": "name",
+                "placeholder": "Bob Thompson"
+              }
+            },
+            "label": {
+              "type": "Text",
+              "config": {
+                "label": "label",
+                "placeholder": "Architect"
+              }
+            }
+          }
+        }
+      },
       "testimonial": {
         "type": "Text",
         "config": {
