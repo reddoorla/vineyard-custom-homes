@@ -1,7 +1,8 @@
 import { test, expect, type Locator } from "@playwright/test";
 
 // A project's "The extended team" credits. /dev/extended-team renders the
-// component once with two credits, one, none, and one blank row.
+// component once each with two credits, one, rows missing a name or a label,
+// none, and rows with neither.
 const ROUTE = "/dev/extended-team";
 
 test.beforeEach(async ({ page }) => {
@@ -98,6 +99,8 @@ test("a row with only a label or only a name is one line, with no blank line", a
   }
   await expect(entries.nth(0).locator("[data-team-name]")).toHaveCount(0);
   await expect(entries.nth(0).locator("[data-team-label]")).toHaveText("Architect");
+  await expect(entries.nth(1).locator("[data-team-name]")).toHaveCount(0);
+  await expect(entries.nth(1).locator("[data-team-label]")).toHaveText("Landscape Design");
   await expect(entries.nth(2).locator("[data-team-name]")).toHaveText("Bob Thompson");
   await expect(entries.nth(2).locator("[data-team-label]")).toHaveCount(0);
 });

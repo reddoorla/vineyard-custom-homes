@@ -1,9 +1,9 @@
 <script lang="ts">
   // The project page's credits block once per case: two credits (the pair in
-  // Tim's screenshot), one, rows missing a name or a label, none, and a group whose rows have neither a name
-  // nor a label: nulls (a row the editor added and never filled), missing
-  // keys, and a whitespace-only name. Behind the /dev guard;
-  // tests/smoke/extended-team.spec.ts measures it.
+  // Tim's screenshot), one, rows missing a name or a label, none, and a group
+  // whose rows have neither a name nor a label: nulls (a row the editor added
+  // and never filled), missing keys, and a whitespace-only name. Behind the
+  // /dev guard; tests/smoke/extended-team.spec.ts measures it.
   import ExtendedTeam from "$lib/components/ExtendedTeam.svelte";
 
   const cases = {
