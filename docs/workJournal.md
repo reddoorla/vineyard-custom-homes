@@ -384,6 +384,7 @@ Tim asked in `#vineyard-website` (11:49 and 11:52am PT) for the project page's f
 **Tests and mutations.** `/dev/extended-team` renders: two credits, one, partial rows, none, and blank rows (null, `{}`, whitespace). `tests/smoke/extended-team.spec.ts` pins the order heading, arrow, entry, rule, entry; the colours; the 23×1 centred rule; the 25px gaps; and the half-height partial rows. Mutations, each red: drop the rule; render the block when empty; swap name and label; drop the whitespace trim; render every line unconditionally.
 
 **Review.** Three Opus lenses.
+
 - Round 1: no code defect, plus the rollout critical, which went to the operator. Minors folded in or filed as #139 (credits as h3 headings), #140 (blank band above the testimonial when there are no credits) and #141 (no smoke test of a real project page).
 - Round 2: the partial-row blank line, a reproduced behaviour defect, fixed.
 - Round 3: minors only, so clean.
@@ -391,6 +392,7 @@ Tim asked in `#vineyard-website` (11:49 and 11:52am PT) for the project page's f
 **What stopped it.** At 12:16pm PT every Actions job across the org stopped starting: runs stay `queued`, and CodeQL got `startup_failure` (reddoorla/reddoor-maintenance#2039). The required `ci / ci` never ran on #142, so it cannot merge. Separately, `land-prs` printed "checks passed" while that required check had no run at all (reddoorla/reddoor-maintenance#2035).
 
 **Not done here.**
+
 - #142 is unmerged.
 - The model is not on Prismic.
 - The migration release `avTIfRIAAKO_O1oy` is created and empty.
