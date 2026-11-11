@@ -50,17 +50,29 @@ test("two credits: heading, arrow, the two entries with one rule between them", 
 
   // Name dark, label light, as the old Design / Architect labels were.
   const color = (l: Locator) => l.evaluate((el) => getComputedStyle(el).color);
+  expect(await color(block.locator("h3").first())).toBe("rgb(123, 160, 196)");
   expect(await color(entries.nth(0).locator("[data-team-name]"))).toBe("rgb(0, 38, 62)");
   expect(await color(entries.nth(0).locator("[data-team-label]"))).toBe("rgb(123, 160, 196)");
 
-  // The rule: about 45px wide, 1px tall, light blue, centred under the entries.
+  // The rule: 23px wide (Figma), 1px tall, light blue, centred under the entries.
   const rule = block.locator("[data-team-rule]");
   const box = (await rule.boundingBox())!;
-  expect(box.width).toBeCloseTo(45, 0);
+  expect(box.width).toBeCloseTo(23, 0);
   expect(box.height).toBeCloseTo(1, 0);
   expect(await rule.evaluate((el) => getComputedStyle(el).backgroundColor)).toBe(
     "rgb(123, 160, 196)",
   );
+  // Figma spaces every child 25px from the next.
+  const boxes = await block.evaluate((el) =>
+    [...el.children].map((child) => {
+      const r = child.getBoundingClientRect();
+      return { top: r.top, bottom: r.bottom };
+    }),
+  );
+  for (let i = 1; i < boxes.length; i++) {
+    expect(boxes[i].top - boxes[i - 1].bottom, `gap before child ${i}`).toBeCloseTo(25, 0);
+  }
+
   const blockBox = (await block.boundingBox())!;
   expect(box.x + box.width / 2).toBeCloseTo(blockBox.x + blockBox.width / 2, 0);
 });

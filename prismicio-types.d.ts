@@ -660,7 +660,7 @@ interface ProjectDocumentData {
 	hero_vimeo_id: prismic.KeyTextField;
 	
 	/**
-	 * design credit field in *project*
+	 * design credit (retired: use the extended team) field in *project*
 	 *
 	 * - **Field Type**: Text
 	 * - **Placeholder**: *None*
@@ -671,7 +671,7 @@ interface ProjectDocumentData {
 	design: prismic.KeyTextField;
 	
 	/**
-	 * architect field in *project*
+	 * architect (retired: use the extended team) field in *project*
 	 *
 	 * - **Field Type**: Text
 	 * - **Placeholder**: *None*

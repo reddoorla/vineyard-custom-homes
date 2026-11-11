@@ -52,14 +52,14 @@
       "design": {
         "type": "Text",
         "config": {
-          "label": "design credit",
+          "label": "design credit (retired: use the extended team)",
           "placeholder": ""
         }
       },
       "architect": {
         "type": "Text",
         "config": {
-          "label": "architect",
+          "label": "architect (retired: use the extended team)",
           "placeholder": ""
         }
       },

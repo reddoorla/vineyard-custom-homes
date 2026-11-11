@@ -1,22 +1,26 @@
 <script lang="ts">
   // A project's credits: "The extended team", a down-arrow, then each entry as
   // its name (dark) over its label (light), with a short rule between entries.
+  // Spacing (25px) and the 23×1 rule are from Tim's Figma frame (VCH-Website,
+  // node 4401:58), which overrides the "about 45px" of the written brief.
   // Nothing at all when no entry has a name or a label: Prismic hands back a
   // group the editor never filled as an empty list or as items whose fields
-  // are all null, and either means no credits.
+  // are all null or missing, and any of those means no credits.
   import { isFilled, type KeyTextField } from "@prismicio/client";
 
-  type Entry = { name: KeyTextField; label: KeyTextField };
+  type Entry = { name?: KeyTextField; label?: KeyTextField };
 
   let { team }: { team: Entry[] | null | undefined } = $props();
 
+  // A name or label of only whitespace (a stray paste) counts as empty.
+  const filled = (field: KeyTextField | undefined) => isFilled.keyText(field?.trim());
   const entries = $derived(
-    (team ?? []).filter((entry) => isFilled.keyText(entry.name) || isFilled.keyText(entry.label)),
+    (team ?? []).filter((entry) => filled(entry.name) || filled(entry.label)),
   );
 </script>
 
 {#if entries.length > 0}
-  <div class="flex flex-col items-center gap-9" data-extended-team>
+  <div class="flex flex-col items-center gap-[25px]" data-extended-team>
     <h3 class="text-light text-center">The extended team</h3>
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -34,7 +38,7 @@
     </svg>
     {#each entries as entry, i (i)}
       {#if i > 0}
-        <div class="w-[45px] h-px bg-light" aria-hidden="true" data-team-rule></div>
+        <div class="w-[23px] h-px bg-light" aria-hidden="true" data-team-rule></div>
       {/if}
       <h3 class="text-center" data-team-entry>
         <span class="text-dark" data-team-name>{entry.name}</span>
