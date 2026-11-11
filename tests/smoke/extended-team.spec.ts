@@ -87,6 +87,21 @@ test("one credit: heading, arrow and the entry, no rule", async ({ page }) => {
   expect(await nameAboveLabel(entry)).toBe(true);
 });
 
+test("a row with only a label or only a name is one line, with no blank line", async ({ page }) => {
+  const block = page.locator('[data-case="partial"] [data-extended-team]');
+  const entries = block.locator("[data-team-entry]");
+  await expect(entries).toHaveCount(3);
+  const full = (await page.locator('[data-case="one"] [data-team-entry]').boundingBox())!.height;
+  for (const i of [0, 1, 2]) {
+    const { height } = (await entries.nth(i).boundingBox())!;
+    expect(height, `entry ${i}`).toBeCloseTo(full / 2, 0);
+  }
+  await expect(entries.nth(0).locator("[data-team-name]")).toHaveCount(0);
+  await expect(entries.nth(0).locator("[data-team-label]")).toHaveText("Architect");
+  await expect(entries.nth(2).locator("[data-team-name]")).toHaveText("Bob Thompson");
+  await expect(entries.nth(2).locator("[data-team-label]")).toHaveCount(0);
+});
+
 for (const key of ["none", "blank"]) {
   test(`no credits (${key}): no block, no heading, no arrow`, async ({ page }) => {
     const section = page.locator(`[data-case="${key}"]`);

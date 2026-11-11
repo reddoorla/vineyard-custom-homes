@@ -41,9 +41,18 @@
         <div class="w-[23px] h-px bg-light" aria-hidden="true" data-team-rule></div>
       {/if}
       <h3 class="text-center" data-team-entry>
-        <span class="text-dark" data-team-name>{entry.name}</span>
-        <br />
-        <span class="text-light" data-team-label>{entry.label}</span>
+        <!-- Each line only when it has text: an empty span still holds a line
+             open (the global span rule makes it inline-block), so a row with
+             only a label would sit under a blank line. -->
+        {#if filled(entry.name)}
+          <span class="text-dark" data-team-name>{entry.name}</span>
+        {/if}
+        {#if filled(entry.name) && filled(entry.label)}
+          <br />
+        {/if}
+        {#if filled(entry.label)}
+          <span class="text-light" data-team-label>{entry.label}</span>
+        {/if}
       </h3>
     {/each}
   </div>

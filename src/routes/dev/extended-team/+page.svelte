@@ -1,6 +1,6 @@
 <script lang="ts">
   // The project page's credits block once per case: two credits (the pair in
-  // Tim's screenshot), one, none, and a group whose rows have neither a name
+  // Tim's screenshot), one, rows missing a name or a label, none, and a group whose rows have neither a name
   // nor a label: nulls (a row the editor added and never filled), missing
   // keys, and a whitespace-only name. Behind the /dev guard;
   // tests/smoke/extended-team.spec.ts measures it.
@@ -12,6 +12,12 @@
       { name: "Bob Thompson", label: "Architect" },
     ],
     one: [{ name: "Branch & Board", label: "Design" }],
+    // A row with only a label, a whitespace name, or only a name.
+    partial: [
+      { name: null, label: "Architect" },
+      { name: " ", label: "Landscape Design" },
+      { name: "Bob Thompson", label: null },
+    ],
     none: [],
     blank: [{ name: null, label: null }, {}, { name: " ", label: "" }],
   };
