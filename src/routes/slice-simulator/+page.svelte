@@ -1,10 +1,10 @@
 <script>
-  import { SliceSimulator, SliceZone } from "@prismicio/svelte";
-  import { components } from "$lib/slices";
+  import { SliceSimulator } from "@prismicio/svelte";
+  import SimulatorSlices from "./SimulatorSlices.svelte";
 </script>
 
 <SliceSimulator>
   {#snippet children({ slices })}
-    <SliceZone {slices} {components} />
+    <SimulatorSlices {slices} />
   {/snippet}
 </SliceSimulator>

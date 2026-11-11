@@ -325,3 +325,48 @@ At 2:01pm PT Tim asked how to put a video with controls and sound in a gallery, 
 **Proof.** `content-width-media-player.spec.ts` was red on `staging` and green after. The brief's three mutations each turn it red: `background=1` kept on a player (1 failed), controls on a toggle-off video (1 failed), a forced 16:9 box (2 failed). Two review rounds: round 1 three majors, fixed; round 2 minors only, folded where the file was already touched, two filed (#130 the slice simulator shows 16:9, having no `context`; #131 a two-col with one video mixes heights). Toggle-off is DOM-identical but not byte-identical: Svelte's hydration comments wrap the new `{#if}`.
 
 **Not done here.** The model reaches Prismic only on merge to `main` (`prismic-models.yml` filters on `main`), so Tim cannot tick the field until the promotion PR #132 is merged, which is the operator's. Screenshots are from the dev fixture, not a deploy preview: dev routes 404 on a preview build and no gallery has the field yet.
+
+## 2026-11-10 — The gallery player's two follow-ups: its shape in the slice simulator, and a photo beside it (#134, `9a1e57e`; closes #130, #131)
+
+The operator asked for both at 2:53pm PT ("fix 130 and 131 too"). They were the two minors filed from #129's round-2 review.
+
+**#130, the simulator.** `/slice-simulator` rendered `SliceZone` with no `context`. So a slice ticked "show as player" fell back to the poster's shape, or 16:9, in Prismic's page builder, while the page itself showed 9:16. The simulator renders client-side from slices Prismic posts in, so it now asks Vimeo oEmbed from the browser. `curl -H 'Origin: https://slice-machine.prismic.io'` returned `access-control-allow-origin: *`. The lookup lives in `SimulatorSlices.svelte`, inside the simulator's route, so the simulator stays code-split. It is keyed by the joined ids, waits 300ms, and aborts the previous lookup. Prismic posts the whole slice zone on every keystroke, so a first version asked Vimeo for every partial id while an id was typed (`/1`, `/12`, `/124`…). Review round 2 caught that `AbortSignal.any` would have needed Safari 17.4+. On an older browser it throws inside `lookUp`'s try, so the player would silently stay 16:9. The signals are now joined by listeners.
+
+**Driving the real simulator in a test took two corrections.**
+
+- **The origin.** `@prismicio/simulator`'s receiver ignores postMessage from anything but `*.prismic.io` in a production build. It skips that check only when `NODE_ENV === "development"`. So the spec serves its parent page on a stub `reddoor-test.prismic.io`, speaking the protocol by hand: the frame says `ready`, the parent sends `connect` with a MessagePort, then `setSliceZone` over the port.
+- **The frame.** The first run timed out on the handshake. The frame had never loaded: Chromium refused `net::ERR_BLOCKED_BY_LOCAL_NETWORK_ACCESS_CHECKS`, because a public origin may not frame `localhost`. The frame is now served from a second stub prismic.io host, proxied to the test server with `route.fetch`. Changing Chromium's flags for the whole suite was the alternative.
+
+oEmbed is stubbed throughout. The spec checks three things:
+
+- the 9:16 box within 1%;
+- one request in all after a second edit to another field;
+- the 16:9 fallback on a 403 that still carries a 9:16 body, on a 1:1 slice, so neither "ignore the status" nor "fall back to `image aspect`" passes.
+
+**#131, a photo beside a player.** In two col with the toggle on and an id in one column only, the photo column kept its `image aspect` box. Measured with 1:1 and the 9:16 promo:
+
+| Width | Photo       | Player      |
+| ----- | ----------- | ----------- |
+| 1280  | 570.8×765.0 | 430.3×765.0 |
+| 390   | 358.8×269.1 | 358.8×637.9 |
+
+The heights already matched at 1280 only because the flex row stretches the column; the ratios did not. Now the column with no player renders through the same `playerBox` snippet, without the iframe. It takes the player's ratio and 85svh cap, with the photo `object-cover`, and matches within 1% at both widths, with the video on either side. Toggle on with no ids, and toggle off, take the old branches unchanged, because `beside` comes from `player()`, which is null in both.
+
+**Review.** Three lenses on Opus.
+
+- **Round 1 was dirty, with one major.** No fixture had the toggle off with an id in one column only, and a mutation giving that row a player box passed all 20 tests. `mixed-off` and `mixed-right-off` now pin it.
+- **Round 2 had minors only.** Those in touched files were folded in. The rest are #135: a test for the debounce, a false "no oEmbed shape" warning on an aborted lookup, an empty column beside a player now being the player's height (637px on a phone, a design call), and an older broken background src for a whitespace-only id.
+
+**Mutations, each red:**
+
+- the simulator without `context`;
+- the photo column's old box;
+- a different box for the toggle on with no ids;
+- the toggle-off 1:1 box changed;
+- round 1's toggle-off player box;
+- a simulator that refetches and resets on every post;
+- `vimeoShapes` ignoring `res.ok`.
+
+The full smoke suite against a production build: 101 passed.
+
+**Not done here.** It is on `staging`; production is the promotion PR's merge, which is the operator's. Nothing changes on a live page until an editor ticks the toggle: no prerendered page carries `data-player` yet.
