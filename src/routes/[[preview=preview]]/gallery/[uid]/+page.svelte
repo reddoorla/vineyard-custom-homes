@@ -4,6 +4,7 @@
   import RichTextSlice from "$lib/slices/RichText/index.svelte";
   import ContentWidthMediaSlice from "$lib/slices/ContentWidthMedia/index.svelte";
   import ProjectImage from "$lib/components/ProjectImage.svelte";
+  import ExtendedTeam from "$lib/components/ExtendedTeam.svelte";
   import ScreenWidthMedia from "$lib/components/ScreenWidth/ScreenWidthMedia.svelte";
 
   const components = {
@@ -42,22 +43,7 @@
 
   <section class="py-32">
     <ContentWidth class="gap-9 flex flex-col items-center">
-      <h3 class="text-light text-center">
-        Design
-        <br />
-        <span class="text-dark">{content.design}</span>
-      </h3>
-      <svg xmlns="http://www.w3.org/2000/svg" width="7" height="60" viewBox="0 0 7 60" fill="none">
-        <path
-          d="M3.5 60L6.38675 55L0.613251 55L3.5 60ZM3.5 0L3 2.18557e-08L3 55.5L3.5 55.5L4 55.5L4 -2.18557e-08L3.5 0Z"
-          fill="#7BA0C4"
-        />
-      </svg>
-      <h3 class="text-light text-center">
-        Architect
-        <br />
-        <span class="text-dark">{content.architect}</span>
-      </h3>
+      <ExtendedTeam team={content.team} />
       <div>
         <h1 class="text-dark uppercase text-center max-w-[900px] mt-32">{content.testimonial}</h1>
         <h3 class="text-dark mt-16 text-center">{content.testimonial_attribution}</h3>
