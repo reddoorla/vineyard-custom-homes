@@ -573,6 +573,31 @@ interface PageDocumentData {
  */
 export type PageDocument<Lang extends string = string> = prismic.PrismicDocumentWithUID<Simplify<PageDocumentData>, "page", Lang>;
 
+/**
+ * Item in *project → the extended team*
+ */
+export interface ProjectDocumentDataTeamItem {
+	/**
+	 * name field in *project → the extended team*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: Bob Thompson
+	 * - **API ID Path**: project.team[].name
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	name: prismic.KeyTextField;
+	
+	/**
+	 * label field in *project → the extended team*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: Architect
+	 * - **API ID Path**: project.team[].label
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	label: prismic.KeyTextField;
+}
+
 type ProjectDocumentDataSlicesSlice = RichTextSlice | ContentWidthMediaSlice
 
 /**
@@ -635,7 +660,7 @@ interface ProjectDocumentData {
 	hero_vimeo_id: prismic.KeyTextField;
 	
 	/**
-	 * design credit field in *project*
+	 * design credit (retired: use the extended team) field in *project*
 	 *
 	 * - **Field Type**: Text
 	 * - **Placeholder**: *None*
@@ -646,7 +671,7 @@ interface ProjectDocumentData {
 	design: prismic.KeyTextField;
 	
 	/**
-	 * architect field in *project*
+	 * architect (retired: use the extended team) field in *project*
 	 *
 	 * - **Field Type**: Text
 	 * - **Placeholder**: *None*
@@ -655,6 +680,17 @@ interface ProjectDocumentData {
 	 * - **Documentation**: https://prismic.io/docs/fields/text
 	 */
 	architect: prismic.KeyTextField;
+	
+	/**
+	 * the extended team field in *project*
+	 *
+	 * - **Field Type**: Group
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: project.team[]
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/repeatable-group
+	 */
+	team: prismic.GroupField<Simplify<ProjectDocumentDataTeamItem>>;
 	
 	/**
 	 * testimonial field in *project*
@@ -1101,6 +1137,7 @@ declare module "@prismicio/client" {
 			PageDocumentDataSlicesSlice,
 			ProjectDocument,
 			ProjectDocumentData,
+			ProjectDocumentDataTeamItem,
 			ProjectDocumentDataSlicesSlice,
 			TestimonialsDocument,
 			TestimonialsDocumentData,

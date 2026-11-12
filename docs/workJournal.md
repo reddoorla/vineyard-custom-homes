@@ -370,3 +370,31 @@ The heights already matched at 1280 only because the flex row stretches the colu
 The full smoke suite against a production build: 101 passed.
 
 **Not done here.** It is on `staging`; production is the promotion PR's merge, which is the operator's. Nothing changes on a live page until an editor ticks the toggle: no prerendered page carries `data-player` yet.
+
+## 2026-11-11 — Project credits become "The extended team", a repeatable name/label group (#138, #142; held for the migration release)
+
+Tim asked in `#vineyard-website` (11:49 and 11:52am PT) for the project page's fixed "Design / Architect" pair to become a heading, "THE EXTENDED TEAM", the arrow, then one to three credits, each a name over its role, with a short rule between entries. Two fixed fields cannot hold roles that vary by project ("Interior Design", "Landscape Design", ...), so the `project` type gains a repeatable `team` group (`name`, `label`). The page reads only that group, through `ExtendedTeam.svelte`, which renders nothing when no row has text. `design` and `architect` stay in the model, because removing them is a model delete (🔴, a dashboard action). The operator chose to migrate their values rather than fall back to them (workspace `decisions/2026-11-11-1954-…-credits.md`, (a)).
+
+**Figma overrode the written brief.** Tim's frame (VCH-Website, node `4401:58`, posted 11:54am PT) spaces every child 25px apart, not the page's old 36px (`gap-9`), and draws a 23×1 `#7BA0C4` rule, not "about 45px". The arrow in Figma (`Line 4`, 60×5.77, a 55.5 shaft and a 5-unit head) is the page's existing 7×60 arrow rotated, so it is reused, not redrawn.
+
+**The belief corrected on contact: an empty span is not nothing here.** The site's global `span { display: inline-block }` makes an empty or whitespace-only span hold a line box open. Before the round-2 fix, a label-only row, a whitespace-name row and a name-only row all measured **51px**, the height of a full two-line entry: a blank line above or below the text. Round 1's design reviewer had measured 22.5–25.5px for the same case on a static copy of the CSS and called it fine; the round-2 reviewer said otherwise; a probe on the real dev server settled it at 51. Each line and the `<br>` now render only when they have text, and the partial rows measure **25.5px**, exactly half (22.5 against 45 at 390px and 320px, with Typekit loaded or blocked).
+
+**The rollout order was the real finding.** The migration release cannot be written until `team` exists in Prismic, and models reach Prismic only on push to `main` (`prismic-models.yml`). A dry-run `update_document` of `team` at about 12:00pm PT was refused: `These paths matched no field on the document: ["team"]`. Promoting #138 as it stood would have blanked the credits on all 11 live project pages, which are prerendered, until the release was published. The operator chose (a), model first (workspace `decisions/2026-11-11-2012-…-rollout-order.md`). #142 carries only the model, so the model reaches Prismic with no visible change. The release is then written and published while live pages still read `design`/`architect`, and only after that does #138 ship. The "(retired)" relabel of the old fields rides #138, not #142, because until #138 ships those fields are the live ones.
+
+**Tests and mutations.** `/dev/extended-team` renders: two credits, one, partial rows, none, and blank rows (null, `{}`, whitespace). `tests/smoke/extended-team.spec.ts` pins the order heading, arrow, entry, rule, entry; the colours; the 23×1 centred rule; the 25px gaps; and the half-height partial rows. Mutations, each red: drop the rule; render the block when empty; swap name and label; drop the whitespace trim; render every line unconditionally.
+
+**Review.** Three Opus lenses.
+
+- Round 1: no code defect, plus the rollout critical, which went to the operator. Minors folded in or filed as #139 (credits as h3 headings), #140 (blank band above the testimonial when there are no credits) and #141 (no smoke test of a real project page).
+- Round 2: the partial-row blank line, a reproduced behaviour defect, fixed.
+- Round 3: minors only, so clean.
+
+**What stopped it.** At 12:16pm PT every Actions job across the org stopped starting: runs stay `queued`, and CodeQL got `startup_failure` (reddoorla/reddoor-maintenance#2039). The required `ci / ci` never ran on #142, so it cannot merge. Separately, `land-prs` printed "checks passed" while that required check had no run at all (reddoorla/reddoor-maintenance#2035).
+
+**Not done here.**
+
+- #142 is unmerged.
+- The model is not on Prismic.
+- The migration release `avTIfRIAAKO_O1oy` is created and empty.
+- #138 is held.
+- Nothing has changed for a visitor.
