@@ -12,6 +12,57 @@ const section = (page: Page, key: string) => page.locator(`[data-player-case="${
 const markup = (page: Page, key: string) =>
   section(page, key).evaluate((el) => el.innerHTML.replace(/<!--[^]*?-->/g, ""));
 
+/**
+ * The text column's place in its row: the column the editor filled (0 or 1),
+ * half the row and in order on a desktop, stacked in order 36px apart on a
+ * phone, with the column's own gutter, the text block left in it, at most
+ * 520px wide and in the site's dark blue. And the fixture's photo, still
+ * filled behind the text, is not shown.
+ */
+async function textColumn(page: Page, key: string, column: 0 | 1, desktop: boolean) {
+  const row = section(page, key);
+  await expect(row.locator(`img[src*="z15ZHSHcA_3LaUJX"]`), `${key}: no photo`).toHaveCount(0);
+  const g = await row.locator(":scope > div").evaluate((rowEl) => {
+    const rect = (el: Element) => el.getBoundingClientRect();
+    const cols = [...rowEl.querySelectorAll(":scope > div")];
+    const cell = rowEl.querySelector("[data-text-cell]")!;
+    const inner = cell.firstElementChild!;
+    const cs = getComputedStyle(cell);
+    return {
+      row: rect(rowEl).toJSON(),
+      cols: cols.map((c) => rect(c).toJSON()),
+      index: cols.indexOf(cell),
+      cell: rect(cell).toJSON(),
+      inner: rect(inner).toJSON(),
+      padLeft: parseFloat(cs.paddingLeft),
+      padRight: parseFloat(cs.paddingRight),
+      marginTop: parseFloat(cs.marginTop),
+      color: getComputedStyle(inner.querySelector("p")!).color,
+    };
+  });
+  expect(g.cols.length, key).toBe(2);
+  expect(g.index, `${key}: the text is column ${column + 1}`).toBe(column);
+  expect(g.inner.width, `${key}: measure`).toBeLessThanOrEqual(520);
+  expect(g.color, `${key}: text-dark`).toBe("rgb(0, 38, 62)");
+  expect(
+    Math.abs(g.inner.left - (g.cell.left + g.padLeft)),
+    `${key}: text block left`,
+  ).toBeLessThan(1);
+  if (desktop) {
+    expect(Math.abs(g.cell.width - g.row.width / 2), `${key}: half the row`).toBeLessThan(1);
+    expect(g.cols[1].left, `${key}: columns in order`).toBeGreaterThanOrEqual(g.cols[0].right - 1);
+    expect(
+      Math.abs(g.cols[1].right - g.row.right),
+      `${key}: column two at the right edge`,
+    ).toBeLessThan(1);
+    // The gutter: 18px on the side facing the other column.
+    expect([g.padLeft, g.padRight], `${key}: gutter`).toEqual(column === 0 ? [0, 18] : [18, 0]);
+  } else {
+    expect(g.cols[1].top, `${key}: stacked in order`).toBeGreaterThanOrEqual(g.cols[0].bottom);
+    expect(g.marginTop, `${key}: 36px above`).toBe(36);
+  }
+}
+
 for (const [viewport, size] of [
   ["desktop", { width: 1280, height: 900 }],
   ["phone", { width: 390, height: 844 }],
@@ -54,6 +105,7 @@ for (const [viewport, size] of [
       };
     });
     expect(text.align).not.toBe("center");
+    await textColumn(page, "text-left", 0, viewport === "desktop");
     if (viewport === "desktop") {
       // Beside the video, as tall as it, with the text in its middle.
       expect(text.right).toBeLessThanOrEqual(player.left);
@@ -87,6 +139,7 @@ for (const [viewport, size] of [
         return r.width / r.height;
       });
     expect(Math.abs(ratio / expected - 1)).toBeLessThan(0.01);
+    await textColumn(page, "text-right-off", 1, viewport === "desktop");
   });
 }
 
