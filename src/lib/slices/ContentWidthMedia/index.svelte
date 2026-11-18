@@ -2,9 +2,10 @@
   import VimeoGate from "$lib/components/VimeoGate.svelte";
   import ContentWidth from "$lib/components/ContentWidth/ContentWidth.svelte";
   import { PrismicImage } from "@prismicio/svelte";
+  import TextBlock from "$lib/components/TextBlock.svelte";
   import type { ContentWidthMediaSlice } from "../../../../prismicio-types";
   import { cappedWidths } from "@reddoorla/maintenance/images";
-  import type { ImageField } from "@prismicio/client";
+  import { isFilled, type ImageField, type RichTextField } from "@prismicio/client";
   import { parseVimeo, type VimeoShapes } from "$lib/vimeoShapes";
 
   let {
@@ -53,6 +54,27 @@
     };
   };
 
+  // Two col's "text one" / "text two" (2026-11-18, Tim: "a text block on the
+  // left where I give the video some context"). Filled, the column is that
+  // text instead of its image and video; empty (`[]`, one blank paragraph) or
+  // absent, as on every slice written before the field existed, the column is
+  // exactly what it was. Blank blocks count as empty: two empty paragraphs,
+  // or one holding a space, must not swap the photo for a blank column.
+  // A text column has no player, so a video beside it keeps its own box, and
+  // the row's flex stretch makes the text column that tall; the text sits in
+  // its middle, in $lib/components/TextBlock's homepage look.
+  // Paragraphs and h2/h3 only: the site's global `a` (12px uppercase) and
+  // Tailwind's unstyled lists would look broken inside a 22px paragraph.
+  // Blank blocks are dropped before rendering too, so a stray empty line
+  // (Enter at the end) adds no gap and the text stays centred. Zero-width
+  // spaces, which `trim` keeps, count as blank.
+  const blank = (block: RichTextField[number]) =>
+    !("text" in block) || !block.text.replace(/[\s\u200B-\u200D\u2060\uFEFF]/g, "");
+  const text = (field: RichTextField | null | undefined) => {
+    const kept = isFilled.richText(field) ? field.filter((block) => !blank(block)) : [];
+    return kept.length ? (kept as RichTextField) : null;
+  };
+
   // Each column's box, and its background video's, by the editor's `image aspect`.
   // Full class strings, so Tailwind's scanner sees every one. 9:16 and 1:1 fall
   // back to 4:3 below md, as they always have; 3:4 and 2:3 are mild enough to
@@ -94,6 +116,12 @@
     return { box: singleAspects[key], style: undefined };
   });
 </script>
+
+{#snippet textCell(field: RichTextField, pad: string)}
+  <div class="mt-9 md:mt-0 md:w-1/2 {pad} flex flex-col justify-center" data-text-cell>
+    <TextBlock {field} />
+  </div>
+{/snippet}
 
 {#snippet playerBox(
   p: NonNullable<ReturnType<typeof player>>,
@@ -156,13 +184,21 @@
     {/if}
   {/if}
   {#if slice.variation === "twoCol"}
-    {@const one = player(slice.primary.vimeo_id_one, slice.primary.image_one, true)}
-    {@const two = player(slice.primary.vimeo_id_two, slice.primary.image_two, true)}
+    {@const textOne = text(slice.primary.text_one)}
+    {@const textTwo = text(slice.primary.text_two)}
+    {@const one = textOne
+      ? null
+      : player(slice.primary.vimeo_id_one, slice.primary.image_one, true)}
+    {@const two = textTwo
+      ? null
+      : player(slice.primary.vimeo_id_two, slice.primary.image_two, true)}
     <!-- With the toggle on and a player in only one column, the other column
          (a photo, or nothing) takes that player's box, so the row's two boxes
          match (#131). With no player in the row, both keep `image aspect`. -->
     {@const beside = one ?? two}
-    {#if one}
+    {#if textOne}
+      {@render textCell(textOne, "md:pr-4.5")}
+    {:else if one}
       <div class="mt-9 md:mt-0 md:w-1/2 md:pr-4.5">
         {@render playerBox(one, slice.primary.image_one, "lazy")}
       </div>
@@ -192,7 +228,9 @@
         {/if}
       </div>
     {/if}
-    {#if two}
+    {#if textTwo}
+      {@render textCell(textTwo, "md:pl-4.5")}
+    {:else if two}
       <div class="mt-9 md:mt-0 md:w-1/2 md:pl-4.5">
         {@render playerBox(two, slice.primary.image_two, "lazy")}
       </div>

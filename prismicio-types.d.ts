@@ -1000,6 +1000,16 @@ export interface ContentWidthMediaSliceTwoColPrimary {
 	vimeo_id_one: prismic.KeyTextField;
 	
 	/**
+	 * text one (instead of image one) field in *ContentWidthMedia → two col → Primary*
+	 *
+	 * - **Field Type**: Rich Text
+	 * - **Placeholder**: A few lines of context, shown instead of this column's image and video. Italics show in light blue.
+	 * - **API ID Path**: content_width_media.twoCol.primary.text_one
+	 * - **Documentation**: https://prismic.io/docs/fields/rich-text
+	 */
+	text_one: prismic.RichTextField;
+	
+	/**
 	 * image two field in *ContentWidthMedia → two col → Primary*
 	 *
 	 * - **Field Type**: Image
@@ -1018,6 +1028,16 @@ export interface ContentWidthMediaSliceTwoColPrimary {
 	 * - **Documentation**: https://prismic.io/docs/fields/text
 	 */
 	vimeo_id_two: prismic.KeyTextField;
+	
+	/**
+	 * text two (instead of image two) field in *ContentWidthMedia → two col → Primary*
+	 *
+	 * - **Field Type**: Rich Text
+	 * - **Placeholder**: A few lines of context, shown instead of this column's image and video. Italics show in light blue.
+	 * - **API ID Path**: content_width_media.twoCol.primary.text_two
+	 * - **Documentation**: https://prismic.io/docs/fields/rich-text
+	 */
+	text_two: prismic.RichTextField;
 	
 	/**
 	 * image aspect field in *ContentWidthMedia → two col → Primary*

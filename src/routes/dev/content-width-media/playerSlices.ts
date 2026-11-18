@@ -108,6 +108,52 @@ const photosOnly = {
   items: [],
 } as unknown as ContentWidthMediaSlice;
 
+// Two col with "text one" / "text two" (2026-11-18). Tim's row on
+// christmas-miracle-custom-home: a photo in column one, the 9:16 promo as a
+// player in column two, and now text in column one. The photo stays filled,
+// as it will on his page, so a column that still shows it fails.
+const paragraph = (text: string) => ({ type: "paragraph", text, spans: [] });
+const context = [
+  { type: "heading2", text: "A Christmas miracle", spans: [] },
+  paragraph(
+    "Another contractor left this family with nothing. Josiah is donating his time to build their dream home.",
+  ),
+];
+const withText = (
+  key: string,
+  base: ContentWidthMediaSlice,
+  text: { text_one?: unknown; text_two?: unknown },
+) =>
+  ({
+    ...base,
+    id: `content_width_media$player-${key}`,
+    primary: { ...base.primary, ...text },
+  }) as unknown as ContentWidthMediaSlice;
+
+export const textSlices = [
+  // Tim's case: text instead of the photo, beside a player.
+  // Blank paragraphs between and after the text, as Enter leaves them.
+  withText("text-left", mixed("", false), {
+    text_one: [context[0], paragraph(""), context[1], paragraph("")],
+  }),
+  // Mirrored, toggle off: text instead of column two's photo, beside a
+  // background-loop column that keeps its `image aspect` box.
+  withText("text-right-off", mixed("", true, false), { text_two: context }),
+  // The field present but empty, as the API returns it once the model has it:
+  // `[]`, and one blank paragraph. Must render exactly as `mixed-right`.
+  withText("text-empty", mixed("", false), { text_one: [], text_two: [paragraph("")] }),
+  // Blank blocks only: two empty paragraphs, and a single space. Also as
+  // `mixed-right`.
+  withText("text-blank", mixed("", false), {
+    text_one: [paragraph(""), paragraph("")],
+    text_two: [paragraph(" \u200B")],
+  }),
+  // Text in column one over a Vimeo id there, toggle on, a photo in column
+  // two: the id is not a player, so the photo keeps its 1:1 box (4:3 below md)
+  // rather than taking a player's box.
+  withText("text-over-video", mixed("", true), { text_one: context }),
+];
+
 export const playerSlices = [
   // On: the vertical promo alone, two to a row, and a landscape alone (so a
   // box that ignores the video's shape fails one way or the other).
@@ -128,6 +174,7 @@ export const playerSlices = [
   // column keeps its `image aspect` box, exactly as before.
   mixed("mixed-off", true, false),
   mixed("mixed-right-off", false, false),
+  ...textSlices,
 ];
 
 export const playerKey = (slice: ContentWidthMediaSlice) =>
