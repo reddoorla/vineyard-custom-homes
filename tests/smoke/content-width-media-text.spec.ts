@@ -102,7 +102,7 @@ for (const [viewport, size] of [
 
     const text = await cell.evaluate((el) => {
       const r = el.getBoundingClientRect();
-      const inner = el.firstElementChild!.getBoundingClientRect();
+      const inner = el.querySelector("[data-text-block]")!.getBoundingClientRect();
       return {
         top: r.top,
         bottom: r.bottom,

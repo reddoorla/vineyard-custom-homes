@@ -1,7 +1,8 @@
 <script lang="ts">
   import VimeoGate from "$lib/components/VimeoGate.svelte";
   import ContentWidth from "$lib/components/ContentWidth/ContentWidth.svelte";
-  import { PrismicImage, PrismicRichText } from "@prismicio/svelte";
+  import { PrismicImage } from "@prismicio/svelte";
+  import TextBlock from "$lib/components/TextBlock.svelte";
   import type { ContentWidthMediaSlice } from "../../../../prismicio-types";
   import { cappedWidths } from "@reddoorla/maintenance/images";
   import { isFilled, type ImageField, type RichTextField } from "@prismicio/client";
@@ -61,17 +62,14 @@
   // or one holding a space, must not swap the photo for a blank column.
   // A text column has no player, so a video beside it keeps its own box, and
   // the row's flex stretch makes the text column that tall; the text sits in
-  // its middle. Tim asked (11-18 1:34pm PT) for it to
-  // look like the homepage's "Legacy of Craftsmanship" block, centred: the
-  // same classes (`items-center gap-8 text-center`, `h2` uppercase, `text-dark`)
-  // and its 640px measure, and the site's global `p` / `h2` / `h3`.
+  // its middle, in $lib/components/TextBlock's homepage look.
   // Paragraphs and h2/h3 only: the site's global `a` (12px uppercase) and
   // Tailwind's unstyled lists would look broken inside a 22px paragraph.
   // Blank blocks are dropped before rendering too, so a stray empty line
   // (Enter at the end) adds no gap and the text stays centred. Zero-width
   // spaces, which `trim` keeps, count as blank.
   const blank = (block: RichTextField[number]) =>
-    !("text" in block) || !block.text.replace(/[\s\u200B\uFEFF]/g, "");
+    !("text" in block) || !block.text.replace(/[\s\u200B-\u200D\u2060\uFEFF]/g, "");
   const text = (field: RichTextField | null | undefined) => {
     const kept = isFilled.richText(field) ? field.filter((block) => !blank(block)) : [];
     return kept.length ? (kept as RichTextField) : null;
@@ -121,11 +119,7 @@
 
 {#snippet textCell(field: RichTextField, pad: string)}
   <div class="mt-9 md:mt-0 md:w-1/2 {pad} flex flex-col justify-center" data-text-cell>
-    <div
-      class="mx-auto w-full max-w-[640px] flex flex-col items-center gap-8 text-center text-dark [&_h2]:uppercase"
-    >
-      <PrismicRichText {field} />
-    </div>
+    <TextBlock {field} />
   </div>
 {/snippet}
 
