@@ -398,3 +398,23 @@ Tim asked in `#vineyard-website` (11:49 and 11:52am PT) for the project page's f
 - The migration release `avTIfRIAAKO_O1oy` is created and empty.
 - #138 is held.
 - Nothing has changed for a visitor.
+
+## 2026-11-18 — Two col takes text instead of a photo; editor text takes the homepage paragraph's look (#146, into `staging`)
+
+Tim asked in `#vineyard-website` at 1:04pm PT how to put "a text block on the left where I give the video some context" beside the 9:16 promo on `christmas-miracle-custom-home`, whose slice 0 is a two col with "show as player" on: a photo in column one, Vimeo `1245606043` in column two. "Text instead of photo." Two col gains `text_one` / `text_two`. Filled in, a column is that text instead of its image and video. Empty, blank (`[]`, empty paragraphs, whitespace, zero-width characters) or absent, it renders markup identical to before; the spec compares it against the existing photo-beside-player fixture. A text column has no player, so a video beside it keeps its 9:16 box, and the flex row stretches the text column to the player's height.
+
+**The look changed twice, and that is the useful lesson.** With no spec from Tim, I first followed the site's one text-beside-photo precedent, TestimonialSlider: left-aligned, centred vertically. Thirty minutes later Tim wrote what he wanted: "the paragraph from the homepage by default ... All the text should be centered-aligned." So `$lib/components/TextBlock.svelte` now uses the "Legacy of Craftsmanship" block's own classes (`items-center gap-8 text-center`, `h2` uppercase, `text-dark`, 640px). `text-block.spec.ts` measures it against the homepage block itself, not against numbers copied from it. Tim's screenshot was of the standalone **RichText slice**: a 600px block in a system font stack, black and left-aligned. Restyling it changes two published pages (`equestrian-dream` slice 3, `traditional-elegance` slice 6), which the brief made a stop. The operator chose to restyle it (workspace `decisions/2026-11-18-2144-…`, A). Spacing to neighbouring slices measured unchanged at 102px. Then, from the operator's own exchange with Tim at 1:43pm PT ("italic wil be light"), italics render upright in `text-light-display`, as the homepage h1 sets "utmost care".
+
+**Beliefs corrected on contact.**
+
+- The brief called `vineyard-custom-homes-staging.netlify.app` staging. It is production; staging is `staging--…` (2026-11-04 entry).
+- My decision file said equestrian-dream's block held h1, h3 and h6. The published version is one h2 and a paragraph; Tim's test headings are in a draft.
+- Links and lists were first offered in the text fields. The site's global `a` is 12px uppercase, and preflight strips list bullets, so both rendered broken (round 1 major). They are gone from the new fields. The RichText slice still allows them, equally broken before and after.
+- A first mutation loop "survived" `gap-1` and `text-dark` swaps because `str.replace(…, 1)` hit the component's comment, which names those classes, before the class attribute. Run on the attribute, `gap-1` is red.
+- `[&_p]:text-base` and `[&_h2]:font-bold` stay green for a real reason: app.css's unlayered element rules beat Tailwind's layered utilities. They make no visible change, the same trap as the 11-02 and 11-05 entries; `!text-base` is red.
+
+**Review.** Five Opus rounds; the full list is in the PR body. Round 1 (three lenses) was dirty: the links-and-lists major, and eight layout mutations that the first spec let through (text beside its photo, wrong side, wrong gutter, no half width…), now each red. Rounds 2 to 5 had minors only, all folded in. One note for the operator, not fixed, because the colour is the client's: `#7196b9` on white is 3.10:1. Italic words pass WCAG AA only as large text (h1, and h2 on desktop); in a paragraph they fall below 4.5:1.
+
+**Not done here.** The fields and the new look reach Tim, and a visitor, only when the operator promotes `staging` → `main`; `prismic-models.yml` pushes models on `push: main`. The dry run is exactly `+ twoCol.primary.text_one`, `+ twoCol.primary.text_two`. Tim then writes the text himself; nothing was written to Prismic. At 1280 the player stays centred in its half, about 180px from the text: a design call left as is.
+
+Usage: $16.29 at the time of writing, 8,257/139,619 tokens, 40,820,054/917,829 cache, rate limit allowed (the session's cumulative figure).
