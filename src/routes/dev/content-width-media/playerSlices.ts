@@ -114,7 +114,7 @@ const photosOnly = {
 // as it will on his page, so a column that still shows it fails.
 const paragraph = (text: string) => ({ type: "paragraph", text, spans: [] });
 const context = [
-  { type: "heading3", text: "A Christmas miracle", spans: [] },
+  { type: "heading2", text: "A Christmas miracle", spans: [] },
   paragraph(
     "Another contractor left this family with nothing. Josiah is donating his time to build their dream home.",
   ),

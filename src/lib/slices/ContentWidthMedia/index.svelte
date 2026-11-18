@@ -58,10 +58,13 @@
   // text instead of its image and video; empty (`[]`, one blank paragraph) or
   // absent, as on every slice written before the field existed, the column is
   // exactly what it was. Blank blocks count as empty: two empty paragraphs,
-  // or one holding a space, must not swap the photo for a blank column. A text column has no player, so a video beside it
-  // keeps its own box, and the row's flex stretch makes the text column that
-  // tall; the text sits in its middle and reads left-aligned, as the
-  // testimonial slider's text sits beside its photo.
+  // or one holding a space, must not swap the photo for a blank column.
+  // A text column has no player, so a video beside it keeps its own box, and
+  // the row's flex stretch makes the text column that tall; the text sits in
+  // its middle. Tim asked (11-18 1:34pm PT) for it to
+  // look like the homepage's "Legacy of Craftsmanship" block, centred: the
+  // same classes (`items-center gap-8 text-center`, `h2` uppercase, `text-dark`)
+  // and its 640px measure, and the site's global `p` / `h2` / `h3`.
   // Paragraphs and h2/h3 only: the site's global `a` (12px uppercase) and
   // Tailwind's unstyled lists would look broken inside a 22px paragraph.
   const text = (field: RichTextField | null | undefined) =>
@@ -113,7 +116,9 @@
 
 {#snippet textCell(field: RichTextField, pad: string)}
   <div class="mt-9 md:mt-0 md:w-1/2 {pad} flex flex-col justify-center" data-text-cell>
-    <div class="flex flex-col gap-6 max-w-[520px] text-dark">
+    <div
+      class="mx-auto w-full max-w-[640px] flex flex-col items-center gap-8 text-center text-dark [&_h2]:uppercase"
+    >
       <PrismicRichText {field} />
     </div>
   </div>
