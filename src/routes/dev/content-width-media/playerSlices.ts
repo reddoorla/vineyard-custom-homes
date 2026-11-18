@@ -139,6 +139,16 @@ export const textSlices = [
   // The field present but empty, as the API returns it once the model has it:
   // `[]`, and one blank paragraph. Must render exactly as `mixed-right`.
   withText("text-empty", mixed("", false), { text_one: [], text_two: [paragraph("")] }),
+  // Blank blocks only: two empty paragraphs, and a single space. Also as
+  // `mixed-right`.
+  withText("text-blank", mixed("", false), {
+    text_one: [paragraph(""), paragraph("")],
+    text_two: [paragraph(" ")],
+  }),
+  // Text in column one over a Vimeo id there, toggle on, a photo in column
+  // two: the id is not a player, so the photo keeps its 1:1 box (4:3 below md)
+  // rather than taking a player's box.
+  withText("text-over-video", mixed("", true), { text_one: context }),
 ];
 
 export const playerSlices = [

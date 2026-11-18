@@ -57,12 +57,17 @@
   // left where I give the video some context"). Filled, the column is that
   // text instead of its image and video; empty (`[]`, one blank paragraph) or
   // absent, as on every slice written before the field existed, the column is
-  // exactly what it was. A text column has no player, so a video beside it
+  // exactly what it was. Blank blocks count as empty: two empty paragraphs,
+  // or one holding a space, must not swap the photo for a blank column. A text column has no player, so a video beside it
   // keeps its own box, and the row's flex stretch makes the text column that
   // tall; the text sits in its middle and reads left-aligned, as the
   // testimonial slider's text sits beside its photo.
+  // Paragraphs and h2/h3 only: the site's global `a` (12px uppercase) and
+  // Tailwind's unstyled lists would look broken inside a 22px paragraph.
   const text = (field: RichTextField | null | undefined) =>
-    isFilled.richText(field) ? field : null;
+    isFilled.richText(field) && field.some((block) => "text" in block && block.text.trim())
+      ? field
+      : null;
 
   // Each column's box, and its background video's, by the editor's `image aspect`.
   // Full class strings, so Tailwind's scanner sees every one. 9:16 and 1:1 fall

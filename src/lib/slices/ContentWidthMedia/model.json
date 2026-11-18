@@ -76,8 +76,7 @@
           "config": {
             "label": "text one (instead of image one)",
             "placeholder": "A few lines of context. Filled in, this replaces the column's image and video.",
-            "allowTargetBlank": true,
-            "multi": "paragraph,heading2,heading3,strong,em,hyperlink,list-item"
+            "multi": "paragraph,heading2,heading3,strong,em"
           }
         },
         "image_two": {
@@ -100,8 +99,7 @@
           "config": {
             "label": "text two (instead of image two)",
             "placeholder": "A few lines of context. Filled in, this replaces the column's image and video.",
-            "allowTargetBlank": true,
-            "multi": "paragraph,heading2,heading3,strong,em,hyperlink,list-item"
+            "multi": "paragraph,heading2,heading3,strong,em"
           }
         },
         "image_aspect": {

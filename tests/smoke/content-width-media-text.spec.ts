@@ -98,4 +98,31 @@ test("an empty text field leaves the row exactly as it was", async ({ page }) =>
   await expect(section(page, "text-empty").locator("[data-text-cell]")).toHaveCount(0);
   await expect(section(page, "text-empty").locator("[data-player-photo] img")).toHaveCount(1);
   expect(await markup(page, "text-empty")).toBe(await markup(page, "mixed-right"));
+  // Blank blocks only (two empty paragraphs; one space) are empty too.
+  expect(await markup(page, "text-blank")).toBe(await markup(page, "mixed-right"));
 });
+
+for (const [viewport, size] of [
+  ["desktop", { width: 1280, height: 900 }],
+  ["phone", { width: 390, height: 844 }],
+] as const) {
+  test(`text over a Vimeo id makes no player, so the photo beside it keeps its box, at ${viewport} width`, async ({
+    page,
+  }) => {
+    // Column one: text over the 9:16 id, toggle on. Column two: a photo.
+    await page.setViewportSize(size);
+    await page.goto(ROUTE, { waitUntil: "domcontentloaded" });
+    const row = section(page, "text-over-video");
+    await expect(row.locator("[data-text-cell]")).toHaveCount(1);
+    await expect(row.locator("iframe, [data-player], [data-player-photo]")).toHaveCount(0);
+    const expected = viewport === "desktop" ? 1 : 4 / 3;
+    const ratio = await row
+      .locator(":scope > div > div")
+      .nth(1)
+      .evaluate((el) => {
+        const r = el.getBoundingClientRect();
+        return r.width / r.height;
+      });
+    expect(Math.abs(ratio / expected - 1)).toBeLessThan(0.01);
+  });
+}
