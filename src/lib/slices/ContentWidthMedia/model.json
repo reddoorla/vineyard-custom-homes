@@ -75,7 +75,7 @@
           "type": "StructuredText",
           "config": {
             "label": "text one (instead of image one)",
-            "placeholder": "A few lines of context. Filled in, this replaces the column's image and video.",
+            "placeholder": "A few lines of context, shown instead of this column's image and video. Italics show in light blue.",
             "multi": "paragraph,heading2,heading3,strong,em"
           }
         },
@@ -98,7 +98,7 @@
           "type": "StructuredText",
           "config": {
             "label": "text two (instead of image two)",
-            "placeholder": "A few lines of context. Filled in, this replaces the column's image and video.",
+            "placeholder": "A few lines of context, shown instead of this column's image and video. Italics show in light blue.",
             "multi": "paragraph,heading2,heading3,strong,em"
           }
         },

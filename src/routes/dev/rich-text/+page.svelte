@@ -13,7 +13,12 @@
     version: "initial",
     primary: {
       content: [
-        { type: "heading2", text: "Construction process", spans: [] },
+        // "process" in italics: the light blue, upright.
+        {
+          type: "heading2",
+          text: "Construction process",
+          spans: [{ start: 13, end: 20, type: "em" }],
+        },
         {
           type: "paragraph",
           text: "Another contractor left this family with nothing. Josiah is donating his time to build their dream home, and this is how it is going.",

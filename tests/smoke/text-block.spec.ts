@@ -74,6 +74,20 @@ for (const [viewport, size] of [
     const rt = page.locator("[data-rich-text-fixture] [data-text-block]");
     expect(await look(rt.locator("h2"), rt.locator("p")), "RichText slice").toEqual(home);
     await centred(page, rt, "RichText slice");
+    // Italics are the light blue, upright, like the homepage h1's "utmost care".
+    const em = rt.locator("h2 em");
+    await expect(em).toHaveText("process");
+    const accent = await page.evaluate(() => {
+      const probe = document.createElement("span");
+      probe.className = "text-light-display";
+      document.body.append(probe);
+      const color = getComputedStyle(probe).color;
+      probe.remove();
+      return color;
+    });
+    expect(accent).toBe("rgb(113, 150, 185)");
+    await expect(em).toHaveCSS("color", accent);
+    await expect(em).toHaveCSS("font-style", "normal");
 
     await page.goto("/dev/content-width-media", { waitUntil: "domcontentloaded" });
     const cell = page.locator('[data-player-case="text-left"] [data-text-block]');
