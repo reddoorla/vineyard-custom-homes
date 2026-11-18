@@ -132,7 +132,10 @@ const withText = (
 
 export const textSlices = [
   // Tim's case: text instead of the photo, beside a player.
-  withText("text-left", mixed("", false), { text_one: context }),
+  // Blank paragraphs between and after the text, as Enter leaves them.
+  withText("text-left", mixed("", false), {
+    text_one: [context[0], paragraph(""), context[1], paragraph("")],
+  }),
   // Mirrored, toggle off: text instead of column two's photo, beside a
   // background-loop column that keeps its `image aspect` box.
   withText("text-right-off", mixed("", true, false), { text_two: context }),
@@ -143,7 +146,7 @@ export const textSlices = [
   // `mixed-right`.
   withText("text-blank", mixed("", false), {
     text_one: [paragraph(""), paragraph("")],
-    text_two: [paragraph(" ")],
+    text_two: [paragraph(" \u200B")],
   }),
   // Text in column one over a Vimeo id there, toggle on, a photo in column
   // two: the id is not a player, so the photo keeps its 1:1 box (4:3 below md)

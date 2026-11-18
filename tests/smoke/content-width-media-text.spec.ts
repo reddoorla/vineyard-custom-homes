@@ -82,6 +82,8 @@ for (const [viewport, size] of [
     const cell = row.locator("[data-text-cell]");
     await expect(cell).toHaveCount(1);
     await expect(cell.locator("h2")).toHaveText("A Christmas miracle");
+    // The fixture's blank paragraphs are dropped: one paragraph, no empty gap.
+    await expect(cell.locator("p")).toHaveCount(1);
     await expect(cell.locator("p")).toContainText("Josiah is donating his time");
     // The fixture's photo (z15ZHSHcA_3LaUJX) is filled in column one; the
     // player in column two has no poster.

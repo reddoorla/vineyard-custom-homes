@@ -67,10 +67,15 @@
   // and its 640px measure, and the site's global `p` / `h2` / `h3`.
   // Paragraphs and h2/h3 only: the site's global `a` (12px uppercase) and
   // Tailwind's unstyled lists would look broken inside a 22px paragraph.
-  const text = (field: RichTextField | null | undefined) =>
-    isFilled.richText(field) && field.some((block) => "text" in block && block.text.trim())
-      ? field
-      : null;
+  // Blank blocks are dropped before rendering too, so a stray empty line
+  // (Enter at the end) adds no gap and the text stays centred. Zero-width
+  // spaces, which `trim` keeps, count as blank.
+  const blank = (block: RichTextField[number]) =>
+    !("text" in block) || !block.text.replace(/[\s\u200B\uFEFF]/g, "");
+  const text = (field: RichTextField | null | undefined) => {
+    const kept = isFilled.richText(field) ? field.filter((block) => !blank(block)) : [];
+    return kept.length ? (kept as RichTextField) : null;
+  };
 
   // Each column's box, and its background video's, by the editor's `image aspect`.
   // Full class strings, so Tailwind's scanner sees every one. 9:16 and 1:1 fall
