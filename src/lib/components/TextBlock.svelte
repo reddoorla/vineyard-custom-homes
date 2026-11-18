@@ -16,7 +16,7 @@
 </script>
 
 <div
-  class="mx-auto w-full max-w-[640px] flex flex-col items-center gap-8 text-center text-dark [&_h2]:uppercase [&_em]:not-italic [&_em]:text-light-display"
+  class="mx-auto w-full max-w-[640px] flex flex-col items-center gap-8 text-center text-dark [&_h2]:uppercase [&_em]:not-italic [&_em]:text-light-display [&_pre]:text-left"
   data-text-block
 >
   <PrismicRichText {field} />
