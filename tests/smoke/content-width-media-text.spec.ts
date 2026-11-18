@@ -8,9 +8,20 @@ import { test, expect, type Page } from "@playwright/test";
 const ROUTE = "/dev/content-width-media";
 const section = (page: Page, key: string) => page.locator(`[data-player-case="${key}"]`);
 
-/** The section's markup, minus Svelte's hydration comments. */
+/**
+ * The section's markup, minus Svelte's hydration comments. The comment nodes
+ * are removed from a clone through the DOM rather than by a regex over the
+ * HTML string, which CodeQL reads as an incomplete sanitizer (#147).
+ */
 const markup = (page: Page, key: string) =>
-  section(page, key).evaluate((el) => el.innerHTML.replace(/<!--[^]*?-->/g, ""));
+  section(page, key).evaluate((el) => {
+    const clone = el.cloneNode(true) as Element;
+    const walker = document.createTreeWalker(clone, NodeFilter.SHOW_COMMENT);
+    const comments: Node[] = [];
+    while (walker.nextNode()) comments.push(walker.currentNode);
+    for (const c of comments) c.parentNode!.removeChild(c);
+    return clone.innerHTML;
+  });
 
 /**
  * The text column's place in its row: the column the editor filled (0 or 1),
