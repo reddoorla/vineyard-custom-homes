@@ -9,28 +9,58 @@ const ROUTE = "/dev/gallery-grid";
 
 type Box = { x: number; y: number; width: number; height: number };
 
-/** Each rendered tile's box in one case, keyed by slot number. */
+/**
+ * Each rendered tile's box in one case, keyed by slot number, and the grid's
+ * content box, all read in one pass so a reflow (a viewport change settling)
+ * cannot fall between them.
+ */
 async function tiles(page: Page, key: string) {
-  const section = page.locator(`[data-case="${key}"]`);
-  const boxes = await section.locator('a[href^="/gallery/slot-"]').evaluateAll((as) =>
-    as.map((a) => {
-      const r = a.getBoundingClientRect();
-      const n = Number(a.getAttribute("href")!.replace("/gallery/slot-", ""));
-      return [n, { x: r.x, y: r.y + scrollY, width: r.width, height: r.height }] as const;
-    }),
-  );
-  const grid = await section.locator(":scope > div").evaluate((el) => {
+  const { boxes, grid } = await page.locator(`[data-case="${key}"] > div`).evaluate((el) => {
     const r = el.getBoundingClientRect();
     const s = getComputedStyle(el);
-    const left = r.x + parseFloat(s.paddingLeft);
-    return { left, width: r.width - parseFloat(s.paddingLeft) - parseFloat(s.paddingRight) };
+    const boxes = [...el.querySelectorAll('a[href^="/gallery/slot-"]')].map((a) => {
+      const b = a.getBoundingClientRect();
+      const n = Number(a.getAttribute("href")!.replace("/gallery/slot-", ""));
+      return [n, { x: b.x, y: b.y + scrollY, width: b.width, height: b.height }] as const;
+    });
+    const grid = {
+      left: r.x + parseFloat(s.paddingLeft),
+      width: r.width - parseFloat(s.paddingLeft) - parseFloat(s.paddingRight),
+      top: r.y + scrollY + parseFloat(s.paddingTop),
+      bottom: r.bottom + scrollY - parseFloat(s.paddingBottom),
+    };
+    return { boxes, grid };
   });
   return { slots: new Map<number, Box>(boxes), grid };
 }
 
 const centre = (b: Box) => b.x + b.width / 2;
 
-const allCases = ["all", "live", "lone-seven", "lone-nine", "lone-ten"];
+const allCases = [
+  "all",
+  "live",
+  "lone-seven",
+  "lone-nine",
+  "lone-ten",
+  "pairs-empty",
+  "middle-empty",
+];
+
+/**
+ * The vertical gaps between the case's rows: tiles whose boxes overlap
+ * vertically are one row (2-5 is one), and every row is 36px (gap-9) below
+ * the one before. An empty row left in the markup shows as a wider gap.
+ */
+function rowGaps(slots: Map<number, Box>) {
+  const boxes = [...slots.values()].sort((a, b) => a.y - b.y);
+  const rows: { top: number; bottom: number }[] = [];
+  for (const b of boxes) {
+    const last = rows.at(-1);
+    if (last && b.y < last.bottom - 0.5) last.bottom = Math.max(last.bottom, b.y + b.height);
+    else rows.push({ top: b.y, bottom: b.y + b.height });
+  }
+  return rows.slice(1).map((r, i) => r.top - rows[i].bottom);
+}
 
 test.beforeEach(async ({ page }) => {
   await page.goto(ROUTE, { waitUntil: "domcontentloaded" });
@@ -49,6 +79,24 @@ test.describe("desktop, 1440px", () => {
       expect(get(n).width, `slot ${n} width`).toBeCloseTo(grid.width, 0);
       expect(get(n).x, `slot ${n} left`).toBeCloseTo(grid.left, 0);
     }
+    // Rows 2-5, unchanged: 2 over 3 in a 2/5 column with a 36px gutter,
+    // beside 4 over 5 in a 3/5 column.
+    const colLeft = grid.width * 0.4 - 36;
+    const colRight = grid.width * 0.6;
+    for (const n of [2, 3]) {
+      expect(get(n).x, `slot ${n} left`).toBeCloseTo(grid.left, 0);
+      expect(get(n).width, `slot ${n} width`).toBeCloseTo(colLeft, 0);
+    }
+    for (const n of [4, 5]) {
+      expect(get(n).x + get(n).width, `slot ${n} right`).toBeCloseTo(grid.left + grid.width, 0);
+      expect(get(n).width, `slot ${n} width`).toBeCloseTo(colRight, 0);
+    }
+    expect(get(2).y).toBeCloseTo(get(4).y, 0);
+    // The two columns end together: 3's bottom is 5's.
+    expect(get(3).y + get(3).height).toBeCloseTo(get(5).y + get(5).height, 0);
+    expect(get(3).y).toBeGreaterThan(get(2).y + get(2).height);
+    expect(get(5).y).toBeGreaterThan(get(4).y + get(4).height);
+
     // Rows top to bottom: 1, then 2|4, then 6|7, then 8, then 9|10.
     expect(get(2).y).toBeGreaterThan(get(1).y + get(1).height);
     expect(get(6).y).toBeGreaterThan(get(5).y + get(5).height - 1);
@@ -107,6 +155,17 @@ test.describe("desktop, 1440px", () => {
 test.describe("phone, 390px", () => {
   test.use({ viewport: { width: 390, height: 844 } });
 
+  // Before this change slot 6 rendered 0x0 on a phone (staging, 2026-11-19):
+  // its row's items-center shrank the column to its content, and every child
+  // of a tile is absolutely positioned. Phone visitors did not see it.
+  test("the live gallery: slot 6 shows, full width, below slot 5", async ({ page }) => {
+    const { slots: s, grid } = await tiles(page, "live");
+    const six = s.get(6)!;
+    expect(six.width).toBeCloseTo(grid.width, 0);
+    expect(six.width).toBeGreaterThan(six.height);
+    expect(six.y).toBeGreaterThan(s.get(5)!.y + s.get(5)!.height);
+  });
+
   test("all ten stack in slot order at full width, tall tiles tall", async ({ page }) => {
     const { slots: s, grid } = await tiles(page, "all");
     let previousBottom = -Infinity;
@@ -119,6 +178,26 @@ test.describe("phone, 390px", () => {
       else expect(b.width, `slot ${n} landscape`).toBeGreaterThan(b.height);
     }
   });
+});
+
+test("every case at either width keeps a 36px gap between rows, and none outside them", async ({
+  page,
+}) => {
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const key of allCases) {
+      const { slots: s, grid } = await tiles(page, key);
+      for (const [i, gap] of rowGaps(s).entries()) {
+        expect(gap, `${key} at ${width}px, gap after row ${i + 1}`).toBeCloseTo(36, 0);
+      }
+      // Nothing empty above the first row or below the last.
+      const boxes = [...s.values()];
+      const first = Math.min(...boxes.map((b) => b.y));
+      const last = Math.max(...boxes.map((b) => b.y + b.height));
+      expect(first, `${key} at ${width}px, grid top`).toBeCloseTo(grid.top, 0);
+      expect(last, `${key} at ${width}px, grid bottom`).toBeCloseTo(grid.bottom, 0);
+    }
+  }
 });
 
 test("no case at either width renders an empty or zero-size tile", async ({ page }) => {

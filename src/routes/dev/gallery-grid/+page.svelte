@@ -2,7 +2,7 @@
   // The main gallery's ten slots, once per case: all ten filled (Tim's mockup,
   // 2026-11-19), the live gallery on that day (slots 1-6; 7 holds a hidden
   // project, 8-10 are new and empty), and each two-tile row left with one
-  // tile. Behind the /dev guard; tests/smoke/gallery-grid.spec.ts measures it.
+  // tile, or with none. Behind the /dev guard; tests/smoke/gallery-grid.spec.ts measures it.
   import GalleryGrid from "$lib/components/GalleryGrid.svelte";
   import ContentWidth from "$lib/components/ContentWidth/ContentWidth.svelte";
   import type { ProjectDocument } from "../../../../prismicio-types";
@@ -36,6 +36,10 @@
     "lone-seven": only(...all.filter((n) => n !== 6)),
     "lone-nine": only(...all.filter((n) => n !== 10)),
     "lone-ten": only(...all.filter((n) => n !== 9)),
+    // Both tiles of each pair empty: rows 3 and 5 render nothing.
+    "pairs-empty": only(1, 2, 3, 4, 5, 8),
+    // Rows 2-5 empty, as when all four of their projects are hidden.
+    "middle-empty": only(1, 6, 7, 8, 9, 10),
   };
 </script>
 

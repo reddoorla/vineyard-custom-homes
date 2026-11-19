@@ -7,8 +7,11 @@
   //   8 full width
   //   9 tall | 10 wide
   // `slots[i]` is slot i + 1, null when the editor left it empty or picked a
-  // hidden project. An empty slot renders nothing, and a row left with one
-  // tile centres it, as the 6 | 7 row always has when 7 is empty.
+  // hidden project. An empty slot renders nothing, and a row with no tile
+  // renders nothing, so the 36px gap between rows holds. In the 6 | 7 and
+  // 9 | 10 rows a tile left alone is centred; slot 6 alone keeps its 36px
+  // right gutter, so it sits 18px left of centre, as it did before slots 8-10.
+  // In rows 2-5 an empty slot's column keeps its place, as it always has.
   import type { ProjectDocument } from "../../../prismicio-types";
   import ProjectImage from "$lib/components/ProjectImage.svelte";
 
@@ -18,16 +21,18 @@
 </script>
 
 <ProjectImage class="aspect-[4/3] md:aspect-video" project={slot(1)} />
-<div class="w-full flex flex-col md:flex-row gap-9 md:gap-0">
-  <div class="flex flex-col md:pr-9 md:w-2/5 gap-9">
-    <ProjectImage class="aspect-[3/4]" isVertical={true} project={slot(2)} />
-    <ProjectImage class="aspect-[4/3]" project={slot(3)} />
+{#if slot(2) || slot(3) || slot(4) || slot(5)}
+  <div class="w-full flex flex-col md:flex-row gap-9 md:gap-0">
+    <div class="flex flex-col md:pr-9 md:w-2/5 gap-9">
+      <ProjectImage class="aspect-[3/4]" isVertical={true} project={slot(2)} />
+      <ProjectImage class="aspect-[4/3]" project={slot(3)} />
+    </div>
+    <div class="flex flex-col md:w-3/5 gap-9">
+      <ProjectImage class="aspect-[4/3] md:aspect-square" project={slot(4)} />
+      <ProjectImage class="aspect-[4/3] md:aspect-auto md:h-full" project={slot(5)} />
+    </div>
   </div>
-  <div class="flex flex-col md:w-3/5 gap-9">
-    <ProjectImage class="aspect-[4/3] md:aspect-square" project={slot(4)} />
-    <ProjectImage class="aspect-[4/3] md:aspect-auto md:h-full" project={slot(5)} />
-  </div>
-</div>
+{/if}
 <!-- A tall tile takes its partner's height on a desktop; alone it keeps 3:4,
      since h-full of a row with nothing else in it is zero. -->
 {#if slot(6) || slot(7)}
