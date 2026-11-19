@@ -49,6 +49,7 @@ const allCases = [
   "right-empty",
   "two-alone",
   "two-empty",
+  "three-empty",
   "five-empty",
 ];
 
@@ -281,7 +282,9 @@ test.describe("phone, 390px", () => {
     expect(six.y).toBeGreaterThan(s.get(5)!.y + s.get(5)!.height);
   });
 
-  test("all ten stack in slot order at full width, tall tiles tall", async ({ page }) => {
+  test("all ten stack in slot order at full width, 3:4 tall tiles and 4:3 others", async ({
+    page,
+  }) => {
     const { slots: s, grid } = await tiles(page, "all");
     let previousBottom = -Infinity;
     for (let n = 1; n <= 10; n++) {
@@ -289,8 +292,9 @@ test.describe("phone, 390px", () => {
       expect(b.width, `slot ${n} width`).toBeCloseTo(grid.width, 0);
       expect(b.y, `slot ${n} below slot ${n - 1}`).toBeGreaterThan(previousBottom);
       previousBottom = b.y + b.height;
-      if ([2, 7, 9].includes(n)) expect(b.height, `slot ${n} tall`).toBeGreaterThan(b.width);
-      else expect(b.width, `slot ${n} landscape`).toBeGreaterThan(b.height);
+      // On a phone every tile is 3:4 (tall) or 4:3, whatever its desktop shape.
+      const ratio = [2, 7, 9].includes(n) ? 3 / 4 : 4 / 3;
+      expect(b.width / b.height, `slot ${n} aspect`).toBeCloseTo(ratio, 2);
     }
   });
 });
