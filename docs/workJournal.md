@@ -418,3 +418,25 @@ Tim asked in `#vineyard-website` at 1:04pm PT how to put "a text block on the le
 **Not done here.** The fields and the new look reach Tim, and a visitor, only when the operator promotes `staging` → `main`; `prismic-models.yml` pushes models on `push: main`. The dry run is exactly `+ twoCol.primary.text_one`, `+ twoCol.primary.text_two`. Tim then writes the text himself; nothing was written to Prismic. At 1280 the player stays centred in its half, about 180px from the text: a design call left as is.
 
 Usage: $16.29 at the time of writing, 8,257/139,619 tokens, 40,820,054/917,829 cache, rate limit allowed (the session's cumulative figure).
+
+## 2026-11-19 — The gallery holds ten projects, in the rows of Tim's mockup (#150, into `staging`)
+
+Tim asked in `#vineyard-website` at 1:29pm PT for the new tiles in his red-tinted mockup, "so that I will have 10 spots for projects", and linked the Figma page at 1:30pm PT. Frame `4402:2` there is the mockup's source: 1 full width; 2 over 3 beside 4 over 5; 6 wide | 7 tall; 8 full width; 9 tall | 10 wide (1201×565, 440×645 and 723×645 tiles on a 1201 grid). The `gallery` type gains `project_eight`, `project_nine` and `project_ten` (Link to `project`, like one to six), and the tiles move into `$lib/components/GalleryGrid.svelte`, which takes the ten slots in order. The model reaches Prismic only on promotion to `main`; the PR's dry run is exactly the three added fields.
+
+**Beliefs corrected on contact.**
+
+- The brief, and the mockup, said six existing tiles and four new. There were seven slots: `project_seven`, the tall tile beside 6, existed and holds "Modern & Cozy ADU", tagged `hide`. So visitors saw six, Tim's "NEW PROJECT" is slot 7, and three fields were added, not four.
+- Slot 7 had never shown a project. Filled with a visible one it rendered 530×0 at 1440 and 0×0 at 390: its row's `items-center` gave the tall tile's `h-full` nothing to fill. The same `items-center` hid **slot 6 on every phone** (0×0 at 390 on the live site, "Enzo's Hand Wash"): it shrank the column to its content, and all of a tile's children are absolute. Dropping it is the one visible change to the live page.
+- I measured "staging" at `vineyard-custom-homes-staging.netlify.app`, which the 11-18 entry already says is production. Both ran the same gallery code (#147), so the numbers hold.
+- The first one-empty test assumed slot 4 keeps its height when slot 2 is hidden. It does not: the row shrinks with the shorter left column, on staging too.
+- The tile names in the mockup (Heartland, Blackwing…) are Figma placeholders; no Prismic project has those titles.
+
+**Empty slots.** As the brief asked, the page keeps today's treatment of a missing project: it renders nothing, and in rows 2–5 the missing tile's space stays blank on a desktop. Fixed only where the old page broke a tile or added a gap: a row with no tile renders nothing (rows 2–5 used to leave 72px, or 108px on a phone); slot 5 collapsed to 0 high when 2–4 were empty, and now keeps 4:3; an empty column of rows 2–5 added a gap on a phone and is now dropped there. A lone tile in rows 3 and 5 is centred; slot 6 alone keeps its 18px-left position from its gutter, exactly as live.
+
+**Review.** Four Opus rounds so far, each dirty, each measuring more fill states than the last (the last two all 1024, at four widths, against the staging markup). Round 1: the undisclosed phone change and missing empty-row guards. Round 2: slot 5's collapse and the phone gaps, both older than this PR. Round 3 and 4: test strength only, ending with every tile's exact box at 1440 pinned. 28 mutations each turn the spec red. Round 3's blank space in rows 2–5 was kept, as the brief's chosen behaviour, and the PR's earlier claim that "the 36px gap always holds" was corrected.
+
+**Left for the operator.** Row 3 is not the mockup's widths: slot 7 is 530 wide where 2 and 9 are 494, and slot 6 759 where 4 and 10 are 795. Matching would widen slot 6, a tile visitors see today, which the brief made a question. Reflowing rows 2–5 around a missing tile is the same kind of question. Filed: the page's field-to-slot wiring and reactivity have no test (#151); full-width tiles load a half-width image (`ProjectImage`'s `sizes`, #152).
+
+**Not done here.** Tim sees the three new fields, and a visitor sees anything in slots 8–10, only after the operator promotes `staging` → `main`. Nothing was written to Prismic.
+
+Usage: $18.22 at the time of writing, 4,597/188,220 tokens, 47,352,526/838,217 cache, rate limit allowed (the session's cumulative figure; review round 5 and the landing run in a continuation session).

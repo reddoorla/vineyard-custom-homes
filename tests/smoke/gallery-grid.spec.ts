@@ -176,6 +176,48 @@ test.describe("desktop, 1440px", () => {
     });
   }
 
+  // Every tile's exact box at 1440 (grid 1324.8px wide), measured
+  // 2026-11-19. Slots 1-6 in "live", "two-empty", "three-empty" and
+  // "five-empty" are the staging markup's boxes for the same fill (review
+  // rounds 3 and 4 measured all of them identical); "all" and the lone cases
+  // are the new rows. Pins heights, pair widths and gutters, which the
+  // relational checks above leave free.
+  const boxes1440: Record<string, Record<number, [number, number]>> = {
+    live: {
+      2: [493.91, 658.53],
+      3: [493.91, 370.42],
+      4: [794.88, 439.77],
+      5: [794.88, 589.19],
+      6: [758.88, 758.88],
+    },
+    "two-empty": { 3: [493.91, 370.42], 4: [794.88, 388.64], 5: [794.88, 406.23] },
+    "three-empty": { 2: [493.91, 658.53], 4: [794.88, 388.64], 5: [794.88, 406.23] },
+    "five-empty": { 2: [493.91, 658.53], 3: [493.91, 370.42], 4: [794.88, 794.88] },
+    all: {
+      1: [1324.8, 745.19],
+      6: [758.88, 758.88],
+      7: [529.91, 758.88],
+      8: [1324.8, 745.19],
+      9: [493.91, 794.88],
+      10: [794.88, 794.88],
+    },
+    "lone-seven": { 7: [529.91, 706.53] },
+    "lone-nine": { 9: [529.91, 706.53] },
+    "lone-ten": { 10: [794.88, 794.88] },
+  };
+  for (const [key, expected] of Object.entries(boxes1440)) {
+    test(`${key}: every tile's box at 1440`, async ({ page }) => {
+      const { slots: s, grid } = await tiles(page, key);
+      expect(grid.width).toBeCloseTo(1324.8, 0);
+      for (const [n, [w, h]] of Object.entries(expected)) {
+        const b = s.get(Number(n))!;
+        expect(b, `${key} slot ${n} rendered`).toBeTruthy();
+        expect(b.width, `${key} slot ${n} width`).toBeCloseTo(w, 0);
+        expect(b.height, `${key} slot ${n} height`).toBeCloseTo(h, 0);
+      }
+    });
+  }
+
   // Rows 2-5 partly empty: each column keeps its place, and slot 5 without a
   // left column to match keeps 4:3 instead of collapsing to nothing.
   test("rows 2-5 partly empty: columns keep their places; slot 5 keeps a shape", async ({

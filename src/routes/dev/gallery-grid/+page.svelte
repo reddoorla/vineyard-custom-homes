@@ -50,6 +50,7 @@
     // on the live page (the missing tile's space stays blank).
     "two-empty": only(1, 3, 4, 5, 6),
     "five-empty": only(1, 2, 3, 4, 6),
+    "three-empty": only(1, 2, 4, 5, 6),
   };
 </script>
 
