@@ -342,6 +342,39 @@ interface GalleryDocumentData {
 	project_seven: prismic.ContentRelationshipField;
 	
 	/**
+	 * project eight field in *gallery*
+	 *
+	 * - **Field Type**: Content Relationship
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: gallery.project_eight
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/content-relationship
+	 */
+	project_eight: prismic.ContentRelationshipField<"project">;
+	
+	/**
+	 * project nine field in *gallery*
+	 *
+	 * - **Field Type**: Content Relationship
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: gallery.project_nine
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/content-relationship
+	 */
+	project_nine: prismic.ContentRelationshipField<"project">;
+	
+	/**
+	 * project ten field in *gallery*
+	 *
+	 * - **Field Type**: Content Relationship
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: gallery.project_ten
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/content-relationship
+	 */
+	project_ten: prismic.ContentRelationshipField<"project">;
+	
+	/**
 	 * Slice Zone field in *gallery*
 	 *
 	 * - **Field Type**: Slice Zone
