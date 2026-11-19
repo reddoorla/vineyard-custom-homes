@@ -440,3 +440,18 @@ Tim asked in `#vineyard-website` at 1:29pm PT for the new tiles in his red-tinte
 **Not done here.** Tim sees the three new fields, and a visitor sees anything in slots 8–10, only after the operator promotes `staging` → `main`. Nothing was written to Prismic.
 
 Usage: $18.22 at the time of writing, 4,597/188,220 tokens, 47,352,526/838,217 cache, rate limit allowed (the session's cumulative figure; review round 5 and the landing run in a continuation session).
+
+## 2026-11-19 — Gallery ten slots: review round 5 clean, phone tile shapes pinned (#150, `abe01fa`)
+
+The continuation session that picked #150 up after hand-off ran review round 5 on `b583e1d`. It used a fresh Opus agent with three lenses: wiring, layout against the staging markup, and test strength. It was given the code and the brief's empty-slot rule, but not the earlier rounds' conclusions. It measured all 1024 fill states at 1440, 768 and 390, and all 64 subsets of slots 1–6 in the staging markup. It found no behaviour defect, so the round is clean with minors only.
+
+- The six live tiles keep their exact boxes at 1440. Slot 6 is 0×0 at 390 on the staging deploy, and 358.80×269.09 at 390 on deploy-preview-150.
+- **Folded in:** a phone aspect change passed the old tall-or-landscape check; slot 8 at 16:9 stayed green. Each phone tile is now pinned to exactly 3:4 or 4:3, and that mutation is red (M29).
+- **Folded in:** `three-empty` had been checked only through its pinned boxes, and is now in the every-case gap and size checks.
+- **Corrected in the PR body:** it said "no tile under 100×100", but the test checks area > 10,000px².
+- **Filed:** `project_seven` takes any document type, unlike the other nine slots (#153). This is older than #150. Narrowing an existing field of the live model is outside this brief.
+- **Already disclosed or filed, and unchanged:** the untested field-to-slot wiring (#151), the blank space in rows 2–5, and the row 3 widths.
+
+Five rounds in all; the first four were dirty, the fifth clean. No sixth round was needed.
+
+Usage: $2.88 at the time of writing, 1,088/26,474 tokens, 4,478,447/234,584 cache, rate limit allowed (this continuation session only; the review agent's own tokens are not in it).
