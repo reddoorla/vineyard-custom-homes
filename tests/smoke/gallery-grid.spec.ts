@@ -44,6 +44,10 @@ const allCases = [
   "lone-ten",
   "pairs-empty",
   "middle-empty",
+  "five-alone",
+  "left-empty",
+  "right-empty",
+  "two-alone",
 ];
 
 /**
@@ -66,64 +70,80 @@ test.beforeEach(async ({ page }) => {
   await page.goto(ROUTE, { waitUntil: "domcontentloaded" });
 });
 
+// The desktop layout from md (768px) up: Tim's mockup is 1440 wide, and 768
+// is the narrowest width that takes it.
+for (const width of [1440, 768]) {
+  test.describe(`desktop, ${width}px`, () => {
+    test.use({ viewport: { width, height: 900 } });
+
+    test("all ten filled: the mockup's rows, shapes and order", async ({ page }) => {
+      const { slots: s, grid } = await tiles(page, "all");
+      expect([...s.keys()].sort((a, b) => a - b)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+      const get = (n: number) => s.get(n)!;
+
+      // Full width: 1 and 8 span the grid.
+      for (const n of [1, 8]) {
+        expect(get(n).width, `slot ${n} width`).toBeCloseTo(grid.width, 0);
+        expect(get(n).x, `slot ${n} left`).toBeCloseTo(grid.left, 0);
+      }
+      // Rows 2-5, unchanged: 2 over 3 in a 2/5 column with a 36px gutter,
+      // beside 4 over 5 in a 3/5 column.
+      const colLeft = grid.width * 0.4 - 36;
+      const colRight = grid.width * 0.6;
+      for (const n of [2, 3]) {
+        expect(get(n).x, `slot ${n} left`).toBeCloseTo(grid.left, 0);
+        expect(get(n).width, `slot ${n} width`).toBeCloseTo(colLeft, 0);
+      }
+      for (const n of [4, 5]) {
+        expect(get(n).x + get(n).width, `slot ${n} right`).toBeCloseTo(grid.left + grid.width, 0);
+        expect(get(n).width, `slot ${n} width`).toBeCloseTo(colRight, 0);
+      }
+      expect(get(2).y).toBeCloseTo(get(4).y, 0);
+      // The two columns end together: 3's bottom is 5's.
+      expect(get(3).y + get(3).height).toBeCloseTo(get(5).y + get(5).height, 0);
+      expect(get(3).y).toBeGreaterThan(get(2).y + get(2).height);
+      expect(get(5).y).toBeGreaterThan(get(4).y + get(4).height);
+
+      // Shapes: 1 and 8 are 16:9; 6 and 10, the wide tiles beside a tall one, square.
+      for (const n of [1, 8]) {
+        expect(get(n).height, `slot ${n} is 16:9`).toBeCloseTo((get(n).width * 9) / 16, 0);
+      }
+      for (const n of [6, 10]) {
+        expect(get(n).height, `slot ${n} is square`).toBeCloseTo(get(n).width, 0);
+      }
+
+      // Rows top to bottom: 1, then 2|4, then 6|7, then 8, then 9|10.
+      expect(get(2).y).toBeGreaterThan(get(1).y + get(1).height);
+      expect(get(6).y).toBeGreaterThan(get(5).y + get(5).height - 1);
+      expect(get(8).y).toBeGreaterThan(get(6).y + get(6).height);
+      expect(get(9).y).toBeGreaterThan(get(8).y + get(8).height);
+
+      // The two mirrored pairs: tall beside wide, sharing a top and a height.
+      for (const [tall, wide, tallFirst] of [
+        [7, 6, false],
+        [9, 10, true],
+      ] as const) {
+        const t = get(tall);
+        const w = get(wide);
+        expect(t.height, `slot ${tall} has a height`).toBeGreaterThan(100);
+        expect(t.height, `slot ${tall} is tall`).toBeGreaterThan(t.width);
+        expect(w.width, `slot ${wide} is wider than ${tall}`).toBeGreaterThan(t.width);
+        expect(t.y).toBeCloseTo(w.y, 0);
+        expect(t.height).toBeCloseTo(w.height, 0);
+        if (tallFirst) expect(t.x + t.width).toBeLessThan(w.x);
+        else expect(w.x + w.width).toBeLessThan(t.x);
+        // Together they span the grid, as rows 2-3 do.
+        const left = Math.min(t.x, w.x);
+        const right = Math.max(t.x + t.width, w.x + w.width);
+        expect(left).toBeCloseTo(grid.left, 0);
+        expect(right - left).toBeCloseTo(grid.width, 0);
+      }
+    });
+  });
+}
+
 test.describe("desktop, 1440px", () => {
   test.use({ viewport: { width: 1440, height: 900 } });
-
-  test("all ten filled: the mockup's rows, shapes and order", async ({ page }) => {
-    const { slots: s, grid } = await tiles(page, "all");
-    expect([...s.keys()].sort((a, b) => a - b)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
-    const get = (n: number) => s.get(n)!;
-
-    // Full width: 1 and 8 span the grid.
-    for (const n of [1, 8]) {
-      expect(get(n).width, `slot ${n} width`).toBeCloseTo(grid.width, 0);
-      expect(get(n).x, `slot ${n} left`).toBeCloseTo(grid.left, 0);
-    }
-    // Rows 2-5, unchanged: 2 over 3 in a 2/5 column with a 36px gutter,
-    // beside 4 over 5 in a 3/5 column.
-    const colLeft = grid.width * 0.4 - 36;
-    const colRight = grid.width * 0.6;
-    for (const n of [2, 3]) {
-      expect(get(n).x, `slot ${n} left`).toBeCloseTo(grid.left, 0);
-      expect(get(n).width, `slot ${n} width`).toBeCloseTo(colLeft, 0);
-    }
-    for (const n of [4, 5]) {
-      expect(get(n).x + get(n).width, `slot ${n} right`).toBeCloseTo(grid.left + grid.width, 0);
-      expect(get(n).width, `slot ${n} width`).toBeCloseTo(colRight, 0);
-    }
-    expect(get(2).y).toBeCloseTo(get(4).y, 0);
-    // The two columns end together: 3's bottom is 5's.
-    expect(get(3).y + get(3).height).toBeCloseTo(get(5).y + get(5).height, 0);
-    expect(get(3).y).toBeGreaterThan(get(2).y + get(2).height);
-    expect(get(5).y).toBeGreaterThan(get(4).y + get(4).height);
-
-    // Rows top to bottom: 1, then 2|4, then 6|7, then 8, then 9|10.
-    expect(get(2).y).toBeGreaterThan(get(1).y + get(1).height);
-    expect(get(6).y).toBeGreaterThan(get(5).y + get(5).height - 1);
-    expect(get(8).y).toBeGreaterThan(get(6).y + get(6).height);
-    expect(get(9).y).toBeGreaterThan(get(8).y + get(8).height);
-
-    // The two mirrored pairs: tall beside wide, sharing a top and a height.
-    for (const [tall, wide, tallFirst] of [
-      [7, 6, false],
-      [9, 10, true],
-    ] as const) {
-      const t = get(tall);
-      const w = get(wide);
-      expect(t.height, `slot ${tall} has a height`).toBeGreaterThan(100);
-      expect(t.height, `slot ${tall} is tall`).toBeGreaterThan(t.width);
-      expect(w.width, `slot ${wide} is wider than ${tall}`).toBeGreaterThan(t.width);
-      expect(t.y).toBeCloseTo(w.y, 0);
-      expect(t.height).toBeCloseTo(w.height, 0);
-      if (tallFirst) expect(t.x + t.width).toBeLessThan(w.x);
-      else expect(w.x + w.width).toBeLessThan(t.x);
-      // Together they span the grid, as rows 2-3 do.
-      const left = Math.min(t.x, w.x);
-      const right = Math.max(t.x + t.width, w.x + w.width);
-      expect(left).toBeCloseTo(grid.left, 0);
-      expect(right - left).toBeCloseTo(grid.width, 0);
-    }
-  });
 
   test("the live gallery (slots 1-6): six tiles, slot 6 where it was", async ({ page }) => {
     const { slots: s, grid } = await tiles(page, "live");
@@ -150,6 +170,33 @@ test.describe("desktop, 1440px", () => {
       if (lone !== 10) expect(b.height, `slot ${lone} stays tall`).toBeGreaterThan(b.width);
     });
   }
+
+  // Rows 2-5 partly empty: each column keeps its place, and slot 5 without a
+  // left column to match keeps 4:3 instead of collapsing to nothing.
+  test("rows 2-5 partly empty: columns keep their places; slot 5 keeps a shape", async ({
+    page,
+  }) => {
+    const right = (b: Box, grid: { left: number; width: number }) =>
+      expect(b.x + b.width).toBeCloseTo(grid.left + grid.width, 0);
+    {
+      const { slots: s, grid } = await tiles(page, "five-alone");
+      const five = s.get(5)!;
+      right(five, grid);
+      expect(five.width).toBeCloseTo(grid.width * 0.6, 0);
+      expect(five.height, "slot 5 is 4:3").toBeCloseTo((five.width * 3) / 4, 0);
+    }
+    {
+      const { slots: s, grid } = await tiles(page, "left-empty");
+      for (const n of [4, 5]) right(s.get(n)!, grid);
+    }
+    {
+      const { slots: s, grid } = await tiles(page, "right-empty");
+      for (const n of [2, 3]) {
+        expect(s.get(n)!.x).toBeCloseTo(grid.left, 0);
+        expect(s.get(n)!.width).toBeCloseTo(grid.width * 0.4 - 36, 0);
+      }
+    }
+  });
 });
 
 test.describe("phone, 390px", () => {

@@ -40,6 +40,12 @@
     "pairs-empty": only(1, 2, 3, 4, 5, 8),
     // Rows 2-5 empty, as when all four of their projects are hidden.
     "middle-empty": only(1, 6, 7, 8, 9, 10),
+    // Rows 2-5 partly empty: only slot 5; no left column; no right column;
+    // only slot 2, the grid's one tile.
+    "five-alone": only(1, 5, 6, 8),
+    "left-empty": only(1, 4, 5, 6),
+    "right-empty": only(1, 2, 3, 6),
+    "two-alone": only(2),
   };
 </script>
 
