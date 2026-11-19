@@ -89,6 +89,33 @@
           "repeat": false
         }
       },
+      "project_eight": {
+        "type": "Link",
+        "config": {
+          "label": "project eight",
+          "select": "document",
+          "repeat": false,
+          "customtypes": ["project"]
+        }
+      },
+      "project_nine": {
+        "type": "Link",
+        "config": {
+          "label": "project nine",
+          "select": "document",
+          "repeat": false,
+          "customtypes": ["project"]
+        }
+      },
+      "project_ten": {
+        "type": "Link",
+        "config": {
+          "label": "project ten",
+          "select": "document",
+          "repeat": false,
+          "customtypes": ["project"]
+        }
+      },
       "slices": {
         "type": "Slices",
         "fieldset": "Slice Zone",

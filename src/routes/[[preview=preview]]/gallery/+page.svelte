@@ -4,7 +4,7 @@
   import ContentWidth from "$lib/components/ContentWidth/ContentWidth.svelte";
   import { isFilled } from "@prismicio/client";
   import type { ProjectDocument } from "../../../../prismicio-types.js";
-  import ProjectImage from "$lib/components/ProjectImage.svelte";
+  import GalleryGrid from "$lib/components/GalleryGrid.svelte";
   import ScreenWidthMedia from "$lib/components/ScreenWidth/ScreenWidthMedia.svelte";
 
   let { data } = $props();
@@ -20,40 +20,24 @@
     return projects.find((proj) => proj.id === id) ?? null;
   };
 
-  const projectOne: ProjectDocument | null = $derived(
-    isFilled.contentRelationship(content.project_one)
-      ? setProjectFromId(content.project_one.id)
-      : null,
-  );
-  const projectTwo: ProjectDocument | null = $derived(
-    isFilled.contentRelationship(content.project_two)
-      ? setProjectFromId(content.project_two.id)
-      : null,
-  );
-  const projectThree: ProjectDocument | null = $derived(
-    isFilled.contentRelationship(content.project_three)
-      ? setProjectFromId(content.project_three.id)
-      : null,
-  );
-  const projectFour: ProjectDocument | null = $derived(
-    isFilled.contentRelationship(content.project_four)
-      ? setProjectFromId(content.project_four.id)
-      : null,
-  );
-  const projectFive: ProjectDocument | null = $derived(
-    isFilled.contentRelationship(content.project_five)
-      ? setProjectFromId(content.project_five.id)
-      : null,
-  );
-  const projectSix: ProjectDocument | null = $derived(
-    isFilled.contentRelationship(content.project_six)
-      ? setProjectFromId(content.project_six.id)
-      : null,
-  );
-  const projectSeven: ProjectDocument | null = $derived(
-    isFilled.contentRelationship(content.project_seven)
-      ? setProjectFromId(content.project_seven.id)
-      : null,
+  // The ten gallery slots, in order. A slot is null when it is empty or its
+  // project is hidden (tagged "hide", filtered out by +page.server.ts).
+  const slotFields = $derived([
+    content.project_one,
+    content.project_two,
+    content.project_three,
+    content.project_four,
+    content.project_five,
+    content.project_six,
+    content.project_seven,
+    content.project_eight,
+    content.project_nine,
+    content.project_ten,
+  ]);
+  const slots: (ProjectDocument | null)[] = $derived(
+    slotFields.map((field) =>
+      isFilled.contentRelationship(field) ? setProjectFromId(field.id) : null,
+    ),
   );
 </script>
 
@@ -84,30 +68,6 @@
 </section>
 <section class="pb-32">
   <ContentWidth class="flex flex-col gap-9">
-    <ProjectImage class="aspect-[4/3] md:aspect-video" project={projectOne} />
-    <div class="w-full flex flex-col md:flex-row gap-9 md:gap-0">
-      <div class="flex flex-col md:pr-9 md:w-2/5 gap-9">
-        <ProjectImage class="aspect-[3/4]" isVertical={true} project={projectTwo} />
-        <ProjectImage class="aspect-[4/3]" project={projectThree} />
-      </div>
-      <div class="flex flex-col md:w-3/5 gap-9">
-        <ProjectImage class="aspect-[4/3] md:aspect-square" project={projectFour} />
-        <ProjectImage class="aspect-[4/3] md:aspect-auto md:h-full" project={projectFive} />
-      </div>
-    </div>
-    <div class="w-full flex flex-col md:flex-row gap-9 md:gap-0 items-center justify-center">
-      <div class="flex flex-col md:pr-9 md:w-3/5 gap-9">
-        <ProjectImage class="aspect-[4/3] md:aspect-square" project={projectSix} />
-      </div>
-      {#if projectSeven}
-        <div class="flex flex-col md:w-2/5 gap-9">
-          <ProjectImage
-            class="aspect-[4/3] md:aspect-auto md:h-full"
-            isVertical={true}
-            project={projectSeven}
-          />
-        </div>
-      {/if}
-    </div>
+    <GalleryGrid {slots} />
   </ContentWidth>
 </section>
