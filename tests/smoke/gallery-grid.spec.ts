@@ -48,6 +48,8 @@ const allCases = [
   "left-empty",
   "right-empty",
   "two-alone",
+  "two-empty",
+  "five-empty",
 ];
 
 /**
@@ -104,7 +106,10 @@ for (const width of [1440, 768]) {
       expect(get(3).y).toBeGreaterThan(get(2).y + get(2).height);
       expect(get(5).y).toBeGreaterThan(get(4).y + get(4).height);
 
-      // Shapes: 1 and 8 are 16:9; 6 and 10, the wide tiles beside a tall one, square.
+      // Shapes: 2 is 3:4 and 3 is 4:3, as on the live page.
+      expect(get(2).height, "slot 2 is 3:4").toBeCloseTo((get(2).width * 4) / 3, 0);
+      expect(get(3).height, "slot 3 is 4:3").toBeCloseTo((get(3).width * 3) / 4, 0);
+      // 1 and 8 are 16:9; 6 and 10, the wide tiles beside a tall one, square.
       for (const n of [1, 8]) {
         expect(get(n).height, `slot ${n} is 16:9`).toBeCloseTo((get(n).width * 9) / 16, 0);
       }
@@ -188,6 +193,8 @@ test.describe("desktop, 1440px", () => {
     {
       const { slots: s, grid } = await tiles(page, "left-empty");
       for (const n of [4, 5]) right(s.get(n)!, grid);
+      // With no left column to share, slot 4 takes its own square shape.
+      expect(s.get(4)!.height, "slot 4 is square").toBeCloseTo(s.get(4)!.width, 0);
     }
     {
       const { slots: s, grid } = await tiles(page, "right-empty");
@@ -195,6 +202,25 @@ test.describe("desktop, 1440px", () => {
         expect(s.get(n)!.x).toBeCloseTo(grid.left, 0);
         expect(s.get(n)!.width).toBeCloseTo(grid.width * 0.4 - 36, 0);
       }
+    }
+    // One slot empty: every other tile of rows 2-5 keeps its live column (x
+    // and width) and its own shape, both columns start at the row's top, and
+    // the missing tile's space stays blank, as the page has always done.
+    const live = (await tiles(page, "live")).slots;
+    for (const [key, gone] of [
+      ["two-empty", 2],
+      ["five-empty", 5],
+    ] as const) {
+      const { slots: s } = await tiles(page, key);
+      const kept = [2, 3, 4, 5].filter((n) => n !== gone);
+      for (const n of kept) {
+        expect(s.get(n)!.x, `${key} slot ${n} x`).toBeCloseTo(live.get(n)!.x, 0);
+        expect(s.get(n)!.width, `${key} slot ${n} width`).toBeCloseTo(live.get(n)!.width, 0);
+      }
+      const leftTop = s.get(gone === 2 ? 3 : 2)!.y;
+      expect(s.get(4)!.y, `${key}: columns start together`).toBeCloseTo(leftTop, 0);
+      if (s.has(2)) expect(s.get(2)!.height).toBeCloseTo((s.get(2)!.width * 4) / 3, 0);
+      expect(s.get(3)!.height).toBeCloseTo((s.get(3)!.width * 3) / 4, 0);
     }
   });
 });
@@ -227,10 +253,10 @@ test.describe("phone, 390px", () => {
   });
 });
 
-test("every case at either width keeps a 36px gap between rows, and none outside them", async ({
+test("every case at 1440, 1024 and 390 keeps a 36px gap between rows, and none outside them", async ({
   page,
 }) => {
-  for (const width of [1440, 390]) {
+  for (const width of [1440, 1024, 390]) {
     await page.setViewportSize({ width, height: 900 });
     for (const key of allCases) {
       const { slots: s, grid } = await tiles(page, key);
@@ -247,8 +273,8 @@ test("every case at either width keeps a 36px gap between rows, and none outside
   }
 });
 
-test("no case at either width renders an empty or zero-size tile", async ({ page }) => {
-  for (const width of [1440, 390]) {
+test("no case at 1440, 1024 or 390 renders an empty or zero-size tile", async ({ page }) => {
+  for (const width of [1440, 1024, 390]) {
     await page.setViewportSize({ width, height: 900 });
     for (const key of allCases) {
       const { slots: s } = await tiles(page, key);

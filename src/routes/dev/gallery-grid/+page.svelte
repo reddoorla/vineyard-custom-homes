@@ -46,6 +46,10 @@
     "left-empty": only(1, 4, 5, 6),
     "right-empty": only(1, 2, 3, 6),
     "two-alone": only(2),
+    // One slot of rows 2-5 empty or hidden: the rest keep their places, as
+    // on the live page (the missing tile's space stays blank).
+    "two-empty": only(1, 3, 4, 5, 6),
+    "five-empty": only(1, 2, 3, 4, 6),
   };
 </script>
 
