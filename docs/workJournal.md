@@ -463,19 +463,19 @@ Tim, Fri 11-20 at 7:56am PT: "slow down this slide show on the about us page so 
 **Why a word-count hold rather than a flat delay.** Each card now holds for its words at 200 a minute, with an 8000ms floor, plus the 1400ms fade. A flat 12s would have held a short quote too long and still cut the 123-word card off at about a third. This was measured on the staging branch deploy against the real Prismic content, on a paused fake clock at a 100ms step. Every card advanced exactly when predicted:
 
 | card | words | time between slides |
-|---|---|---|
-| 1 | 84 | 26.6s |
-| 2 | 87 | 27.5s |
-| 3 | 90 | 28.4s |
-| 4 | 123 | 38.3s |
-| 5 | 78 | 24.8s |
-| 6 | 71 | 22.7s |
+| ---- | ----- | ------------------- |
+| 1    | 84    | 26.6s               |
+| 2    | 87    | 27.5s               |
+| 3    | 90    | 28.4s               |
+| 4    | 123   | 38.3s               |
+| 5    | 78    | 24.8s               |
+| 6    | 71    | 22.7s               |
 
 Hover held card 1 for 120s. 60s after the mouse left, the slider was on card 3, as predicted.
 
 **Pausing.** The operator asked mid-session for a pause on hover, "see how we did the rubrik ones". Autoplay now stops under a mouse or a hovering pen, and under `:focus-visible` keyboard focus. Leaving restarts the full hold for the card showing. Touch does not pause it, because touch has no hover. A mouse click on a dot does not pause it either, because the button would keep focus. Under `prefers-reduced-motion` the slider does not autoplay. The timer is now one `setTimeout` per shown card in an `$effect` keyed on the card and the pause state, which also restarts the hold after a dot click or a swipe.
 
-**Belief corrected: the Rubrik slideshow does not pause on hover.** The Rubrik Zero Labs case study on reddoorla.com uses reddoor-website's shared `Slideshow.svelte`. On hover it only *reveals* its controls (prev/next, dots and a pause button), and the slides keep moving until someone clicks pause. This change builds a real hover pause, takes Rubrik's reduced-motion behaviour, and leaves out Rubrik's visible pause button, because the brief said not to change the look. That button is #156.
+**Belief corrected: the Rubrik slideshow does not pause on hover.** The Rubrik Zero Labs case study on reddoorla.com uses reddoor-website's shared `Slideshow.svelte`. On hover it only _reveals_ its controls (prev/next, dots and a pause button), and the slides keep moving until someone clicks pause. This change builds a real hover pause, takes Rubrik's reduced-motion behaviour, and leaves out Rubrik's visible pause button, because the brief said not to change the look. That button is #156.
 
 **The test instrument lied three times before it was trusted.** The spec, `tests/smoke/testimonial-slider.spec.ts`, drives a `/dev/testimonial-slider` fixture holding 90-, 10- and 50-word cards. Seven mutations were named before the code; each now turns a test red. Getting there took three fixes to the test, not to the slider:
 
