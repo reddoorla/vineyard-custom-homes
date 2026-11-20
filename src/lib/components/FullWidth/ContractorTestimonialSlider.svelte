@@ -1,6 +1,6 @@
 <script lang="ts">
   import { fade } from "svelte/transition";
-  import { onMount, onDestroy } from "svelte";
+  import { onMount } from "svelte";
   import ContentWidth from "../ContentWidth/ContentWidth.svelte";
   import type { ImageField } from "@prismicio/client";
   import { useSwipe, type SwipeCustomEvent } from "svelte-gestures";
@@ -17,7 +17,6 @@
   // Props interface
   interface Props {
     testimonials?: Testimonial[];
-    autoplayDelay?: number; // in milliseconds
   }
 
   // Placeholder data with proper typing
@@ -47,60 +46,94 @@
 
   let currentIndex = $state<number>(0);
   let isAutoPlaying = $state<boolean>(true);
-  let autoplayInterval: ReturnType<typeof setInterval> | null = null;
 
-  const AUTOPLAY_DELAY = 5000; // 5 seconds
-  const TRANSITION_DURATION = 1400; // 0.5 seconds
+  const TRANSITION_DURATION = 1400; // the out-fade, then the in-fade, 700ms each
 
-  // Props with proper typing
-  let { testimonials = [], autoplayDelay = AUTOPLAY_DELAY }: Props = $props();
-
-  const startAutoplay = (): void => {
-    if (autoplayInterval) clearInterval(autoplayInterval);
-    autoplayInterval = setInterval(() => {
-      if (isAutoPlaying) {
-        currentIndex = (currentIndex + 1) % testimonialArray.length;
-      }
-    }, autoplayDelay);
+  // How long a card stays fully readable before it starts to fade out (Tim,
+  // 2026-11-20: "slow down this slide show ... so people can read the
+  // testimonials"). Read at about 200 words a minute, so the 90-word partner
+  // quote holds ~27s; a short quote still holds MIN_HOLD_MS. The time between
+  // advances is this plus TRANSITION_DURATION, because a card is only legible
+  // once its in-fade finishes. It was a flat 5000ms interval before, which left
+  // a card readable for ~3.6s whatever its length.
+  const WORDS_PER_MINUTE = 200;
+  const MIN_HOLD_MS = 8000;
+  const wordCount = (text: string | null): number => {
+    const trimmed = text?.trim();
+    return trimmed ? trimmed.split(/\s+/).length : 0;
   };
+  const holdFor = (t: Testimonial | undefined): number =>
+    Math.max(
+      MIN_HOLD_MS,
+      Math.round((wordCount(t?.testimonial ?? null) * 60000) / WORDS_PER_MINUTE),
+    );
 
-  const stopAutoplay = (): void => {
-    if (autoplayInterval) {
-      clearInterval(autoplayInterval);
-      autoplayInterval = null;
+  let { testimonials = [] }: Props = $props();
+
+  // Autoplay stops while someone is reading: a mouse over the slider, or
+  // keyboard focus inside it. Touch is left out on purpose — a tap fires
+  // pointerenter with no matching pointerleave, which would freeze the slider
+  // for good on a phone. Mouse focus from clicking a dot is left out for the
+  // same reason (the button keeps focus); only :focus-visible pauses. Reduced
+  // motion turns autoplay off, as the shared Slideshow on reddoorla.com does.
+  let hovered = $state(false);
+  let keyboardFocused = $state(false);
+  let reduceMotion = $state(false);
+  $effect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    reduceMotion = mq.matches;
+    const on = () => (reduceMotion = mq.matches);
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  });
+  const paused = $derived(!isAutoPlaying || hovered || keyboardFocused || reduceMotion);
+
+  const onPointerEnter = (e: PointerEvent): void => {
+    if (e.pointerType === "mouse") hovered = true;
+  };
+  const onPointerLeave = (e: PointerEvent): void => {
+    if (e.pointerType === "mouse") hovered = false;
+  };
+  const onFocusIn = (e: FocusEvent): void => {
+    keyboardFocused = e.target instanceof Element && e.target.matches(":focus-visible");
+  };
+  const onFocusOut = (e: FocusEvent): void => {
+    const container = e.currentTarget as Element;
+    if (!(e.relatedTarget instanceof Node && container.contains(e.relatedTarget))) {
+      keyboardFocused = false;
     }
   };
+
+  // One timer per shown card. Re-runs whenever the card changes (autoplay, a
+  // dot, a swipe) or the slider pauses or resumes, so every change restarts the
+  // full hold for the card now showing — a reader who moves the mouse away gets
+  // the whole card again, not the remainder.
+  $effect(() => {
+    const count = testimonialArray.length;
+    if (paused || count < 2) return;
+    const index = currentIndex;
+    const timer = setTimeout(
+      () => (currentIndex = (index + 1) % count),
+      TRANSITION_DURATION + holdFor(testimonialArray[index]),
+    );
+    return () => clearTimeout(timer);
+  });
 
   const goToSlide = (index: number): void => {
     currentIndex = index;
-    // Restart autoplay after manual interaction
-    if (isAutoPlaying) {
-      startAutoplay();
-    }
   };
 
   const _toggleAutoplay = (): void => {
     isAutoPlaying = !isAutoPlaying;
-    if (isAutoPlaying) {
-      startAutoplay();
-    } else {
-      stopAutoplay();
-    }
   };
 
   onMount(() => {
     if (testimonials.length > 0) {
       testimonialArray = testimonials;
     }
-    startAutoplay();
-  });
-
-  onDestroy(() => {
-    stopAutoplay();
   });
 
   const handleSwipe = (e: SwipeCustomEvent): void => {
-    startAutoplay();
     if (e.detail.direction === "left") currentIndex = (currentIndex + 1) % testimonialArray.length;
     if (e.detail.direction === "right") {
       currentIndex = currentIndex - 1;
@@ -110,7 +143,16 @@
 </script>
 
 <ContentWidth>
-  <div class="w-full h-full relative bg-white">
+  <div
+    class="w-full h-full relative bg-white"
+    role="group"
+    aria-roledescription="carousel"
+    aria-label="Testimonials from our partners"
+    onpointerenter={onPointerEnter}
+    onpointerleave={onPointerLeave}
+    onfocusin={onFocusIn}
+    onfocusout={onFocusOut}
+  >
     <div class="mb-12 text-center">
       <h3 class="text-sm lg:text-base tracking-[0.2em] text-light font-light uppercase">
         FROM OUR PARTNERS
