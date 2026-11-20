@@ -265,6 +265,28 @@ interface GalleryDocumentData {
 	title: prismic.KeyTextField;
 	
 	/**
+	 * Hero image (shown until the video plays; a frame from the video's opening avoids a jump) field in *gallery*
+	 *
+	 * - **Field Type**: Image
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: gallery.hero_image
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/image
+	 */
+	hero_image: prismic.ImageField<never>;
+	
+	/**
+	 * Hero Vimeo ID field in *gallery*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: The number in the video's Vimeo link, e.g. 1092190178. Empty keeps today's video.
+	 * - **API ID Path**: gallery.hero_vimeo_id
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	hero_vimeo_id: prismic.KeyTextField;
+	
+	/**
 	 * project one field in *gallery*
 	 *
 	 * - **Field Type**: Content Relationship
@@ -540,6 +562,39 @@ interface PageDocumentData {
 	 * - **Documentation**: https://prismic.io/docs/fields/rich-text
 	 */
 	title: prismic.RichTextField;
+	
+	/**
+	 * Hero image (shown until the video plays; a frame from the video's opening avoids a jump) field in *Page*
+	 *
+	 * - **Field Type**: Image
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: page.hero_image
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/image
+	 */
+	hero_image: prismic.ImageField<never>;
+	
+	/**
+	 * Hero Vimeo ID field in *Page*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: The number in the video's Vimeo link, e.g. 1092190178. Empty keeps today's video.
+	 * - **API ID Path**: page.hero_vimeo_id
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	hero_vimeo_id: prismic.KeyTextField;
+	
+	/**
+	 * Second video image (home page, behind 'View our work'; its video is 'vimeo id for video') field in *Page*
+	 *
+	 * - **Field Type**: Image
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: page.second_hero_image
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/image
+	 */
+	second_hero_image: prismic.ImageField<never>;
 	
 	/**
 	 * vimeo id for video field in *Page*
