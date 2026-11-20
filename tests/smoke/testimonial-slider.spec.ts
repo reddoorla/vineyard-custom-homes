@@ -9,7 +9,7 @@ import { test, expect, type Page } from "@playwright/test";
 // words at 200 a minute with an 8000ms floor.
 //   90 words -> 1400 + 27000 = 28400ms
 //   10 words -> 1400 +  8000 =  9400ms (floor)
-//   50 words -> 1400 + 15000 = 16400ms
+//   50 words -> 1400 + 15000 = 16400ms (not asserted; card 3 only marks time)
 const ROUTE = "/dev/testimonial-slider";
 
 // The shared config emulates reduced motion fleet-wide
@@ -99,7 +99,7 @@ test("keyboard focus inside the slider holds the card until focus leaves", async
   await expectCurrent(page, 2);
 });
 
-test("a touch pointer does not pause it: a tap must not freeze the slider", async ({ page }) => {
+test("a touch pointer does not pause it: touch has no hover", async ({ page }) => {
   await open(page);
 
   await slider(page).dispatchEvent("pointerenter", { pointerType: "touch" });

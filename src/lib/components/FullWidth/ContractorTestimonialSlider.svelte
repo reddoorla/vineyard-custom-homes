@@ -70,12 +70,14 @@
 
   let { testimonials = [] }: Props = $props();
 
-  // Autoplay stops while someone is reading: a mouse over the slider, or
-  // keyboard focus inside it. Touch is left out on purpose — a tap fires
-  // pointerenter with no matching pointerleave, which would freeze the slider
-  // for good on a phone. Mouse focus from clicking a dot is left out for the
-  // same reason (the button keeps focus); only :focus-visible pauses. Reduced
-  // motion turns autoplay off, as the shared Slideshow on reddoorla.com does.
+  // Autoplay stops while someone is reading: a mouse or a hovering pen over
+  // the slider, or keyboard focus inside it. Touch has no hover, so a tap only
+  // "hovers" while the finger is down and pausing on it would do nothing
+  // useful. Mouse focus from clicking a dot does not pause (only :focus-visible
+  // does), or the slider would stay paused until the visitor clicked elsewhere.
+  // Reduced motion turns autoplay off, as reddoor-website's shared Slideshow
+  // (the Rubrik Zero Labs case study on reddoorla.com) does; the dots and a
+  // swipe still move between cards.
   let hovered = $state(false);
   let keyboardFocused = $state(false);
   let reduceMotion = $state(false);
@@ -89,10 +91,10 @@
   const paused = $derived(!isAutoPlaying || hovered || keyboardFocused || reduceMotion);
 
   const onPointerEnter = (e: PointerEvent): void => {
-    if (e.pointerType === "mouse") hovered = true;
+    if (e.pointerType !== "touch") hovered = true;
   };
   const onPointerLeave = (e: PointerEvent): void => {
-    if (e.pointerType === "mouse") hovered = false;
+    if (e.pointerType !== "touch") hovered = false;
   };
   const onFocusIn = (e: FocusEvent): void => {
     keyboardFocused = e.target instanceof Element && e.target.matches(":focus-visible");

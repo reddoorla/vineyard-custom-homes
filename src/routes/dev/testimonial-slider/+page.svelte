@@ -1,13 +1,15 @@
 <script lang="ts">
   // The /about "FROM OUR PARTNERS" slider with cards of known length: a 90-word
   // quote (the length of Mike Yanyk's, the card in Tim's 2026-11-20 screenshot),
-  // a 10-word one that falls back to the floor, and a 50-word one. Behind the
+  // a 10-word one that falls back to the floor, and a 50-word one that sits third
+  // so a pause can be checked where an unpaused slider would have moved on. Behind the
   // /dev guard; tests/smoke/testimonial-slider.spec.ts drives it on a fake clock.
   import { onMount } from "svelte";
   import ContractorTestimonialSlider from "$lib/components/FullWidth/ContractorTestimonialSlider.svelte";
 
   // The spec advances a fake clock, which only means something once the
-  // slider's timer exists, i.e. after hydration. SSR already shows the text.
+  // slider's timer exists, i.e. after hydration. Until then the page shows the
+  // slider's built-in placeholder cards: it copies `testimonials` in onMount.
   let hydrated = $state(false);
   onMount(() => (hydrated = true));
 
