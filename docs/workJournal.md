@@ -472,6 +472,7 @@ Nothing a visitor sees changes until someone fills a field in.
 `ScreenWidthMedia` used to pick the bundled `src` whenever no `field` was passed, and the Prismic image only when there was no `src`. A hero given both would have kept the bundled file forever. It now checks `isFilled.image(field)` first and falls back to `src`.
 
 **Review round 1 found two real defects.**
+
 - The `gallery` and `about` singletons had no entry in the route resolver, so a Prismic preview of either landed on `/`. Prismic accepts a route for a type it does not have yet; that was checked live before adding it.
 - A Prismic still with blank alt text rendered an `<img>` with no `alt` at all. It now goes through the repo's `withFallbackAlt`.
 - The fix also changes the project pages. Four live projects (`traditional-elegance`, `hipster-barndominium`, `enzos`, `nantucket-farm`) have heroes with null alt, and those heroes now say `alt="background image"` instead of having no alt attribute.
@@ -479,13 +480,13 @@ Nothing a visitor sees changes until someone fills a field in.
 
 **The mutation run that lied.** The first run reverted each mutation with `git checkout -- <component> <page> src/lib/hero.ts`. `hero.ts` was untracked, so git refused the whole command, reverted nothing, and the mutations stacked. Mutation 2's "red" result was really mutation 1's. Worse: had the checkout succeeded, it would have reverted the uncommitted feature edits too. The rerun committed the work first and reverted with `git checkout -- .` against that commit. Final suite, 17 tests on `/dev/heroes`, which renders the real page components:
 
-| Mutation | Tests that went red |
-|---|---|
-| Ignore the Prismic image | 4 |
-| Ignore the gallery's Vimeo field | 2 |
-| Render nothing when empty | 5 |
-| Drop the alt | 9 |
-| Drop the round-1 alt fallback | 4 |
-| Drop `priority={false}` | 1 |
+| Mutation                         | Tests that went red |
+| -------------------------------- | ------------------- |
+| Ignore the Prismic image         | 4                   |
+| Ignore the gallery's Vimeo field | 2                   |
+| Render nothing when empty        | 5                   |
+| Drop the alt                     | 9                   |
+| Drop the round-1 alt fallback    | 4                   |
+| Drop `priority={false}`          | 1                   |
 
 Removing the new routes would turn no test red; that is recorded in #163.
