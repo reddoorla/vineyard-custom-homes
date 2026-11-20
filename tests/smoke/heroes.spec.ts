@@ -32,6 +32,8 @@ async function still(page: Page, index: number) {
     src: (await img.getAttribute("src")) ?? "",
     srcset: (await img.getAttribute("srcset")) ?? "",
     alt: await img.getAttribute("alt"),
+    loading: await img.getAttribute("loading"),
+    fetchpriority: await img.getAttribute("fetchpriority"),
   };
 }
 
@@ -94,6 +96,10 @@ for (const [which, index, builtIn, filledId, filledAlt] of cases) {
       const widths = img.srcset.split(",").map((c) => c.trim().split(/\s+/)[1]);
       expect(widths).toEqual(["640w", "828w", "1200w", "1920w"]);
       expect(img.alt).toBe(filledAlt);
+      // Home's second hero is below the fold: lazy, and no claim on the LCP.
+      const lower = which === "home" && index === 1;
+      expect(img.loading).toBe(lower ? "lazy" : "eager");
+      expect(img.fetchpriority).toBe(lower ? null : "high");
       expect(await video(page, index)).toBe(`/video/${filledId}`);
     });
   });

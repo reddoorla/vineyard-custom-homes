@@ -455,3 +455,37 @@ The continuation session that picked #150 up after hand-off ran review round 5 o
 Five rounds in all; the first four were dirty, the fifth clean. No sixth round was needed.
 
 Usage: $2.88 at the time of writing, 1,088/26,474 tokens, 4,478,447/234,584 cache, rate limit allowed (this continuation session only; the review agent's own tokens are not in it).
+
+## 2026-11-20 — Editors set each hero's still and video in Prismic (#159, into `staging`)
+
+Tim, Friday 10:06am PT in `#vineyard-website`: on the gallery, the background video "loads this still image first and then jumps to the first scene". Two minutes later: "No, I just want a different placeholder image." The operator chose to make the still editable rather than swap the file. So each video hero now takes a Prismic image and a Vimeo ID, and every empty field falls back to what was hard-coded:
+
+- gallery: `homethumb.jpg` / 1092190178
+- home top: `riverThumb.jpg` / 1092191048
+- home "View our work": `homethumb.jpg` / home's existing `vimeo_id_for_video`, which is null in Prismic today, so 1092190178
+- About: `forest_still.png` / 1082670713
+
+Nothing a visitor sees changes until someone fills a field in.
+
+**The belief corrected on contact:** the brief named an "About page type". There is none. Prismic held exactly two documents of the relevant types (the `gallery` singleton and `page` uid `home`), and `/about` read only the two testimonial singletons. That went to the operator as a decision (workspace `decisions/2026-11-20-1829-vineyard-about-hero-fields.md`), and he picked a new `about` singleton. It reaches Prismic only when `staging` is promoted to `main`. Until someone creates and publishes the About document, `/about` catches Prismic's `NotFoundError`. That error was probed live, with `getSingle("gallery")` as the control, and it is the same error whether the type is missing or only the document is. Any other Prismic error still throws.
+
+`ScreenWidthMedia` used to pick the bundled `src` whenever no `field` was passed, and the Prismic image only when there was no `src`. A hero given both would have kept the bundled file forever. It now checks `isFilled.image(field)` first and falls back to `src`.
+
+**Review round 1 found two real defects.**
+- The `gallery` and `about` singletons had no entry in the route resolver, so a Prismic preview of either landed on `/`. Prismic accepts a route for a type it does not have yet; that was checked live before adding it.
+- A Prismic still with blank alt text rendered an `<img>` with no `alt` at all. It now goes through the repo's `withFallbackAlt`.
+- The fix also changes the project pages. Four live projects (`traditional-elegance`, `hipster-barndominium`, `enzos`, `nantucket-farm`) have heroes with null alt, and those heroes now say `alt="background image"` instead of having no alt attribute.
+- Round 2 was minors only. Home's second still now loads lazily, so it does not compete with the LCP. The Vimeo field's narrow link parsing, including the dropped `?h=` an unlisted video needs, is #162.
+
+**The mutation run that lied.** The first run reverted each mutation with `git checkout -- <component> <page> src/lib/hero.ts`. `hero.ts` was untracked, so git refused the whole command, reverted nothing, and the mutations stacked. Mutation 2's "red" result was really mutation 1's. Worse: had the checkout succeeded, it would have reverted the uncommitted feature edits too. The rerun committed the work first and reverted with `git checkout -- .` against that commit. Final suite, 17 tests on `/dev/heroes`, which renders the real page components:
+
+| Mutation | Tests that went red |
+|---|---|
+| Ignore the Prismic image | 4 |
+| Ignore the gallery's Vimeo field | 2 |
+| Render nothing when empty | 5 |
+| Drop the alt | 9 |
+| Drop the round-1 alt fallback | 4 |
+| Drop `priority={false}` | 1 |
+
+Removing the new routes would turn no test red; that is recorded in #163.
