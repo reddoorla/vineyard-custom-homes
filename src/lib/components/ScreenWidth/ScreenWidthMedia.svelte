@@ -2,17 +2,22 @@
   import VimeoGate from "$lib/components/VimeoGate.svelte";
   import placeholder from "../../assets/images/background_placeholder.svg";
   import { PrismicImage } from "@prismicio/svelte";
+  import { isFilled, type ImageField } from "@prismicio/client";
   import Img from "@zerodevx/svelte-img";
   import { cappedWidths } from "@reddoorla/maintenance/images";
+  import { withFallbackAlt } from "$lib/image-alt";
   let {
     src = "",
-    field = undefined,
+    field = undefined as ImageField | undefined,
     altText = "background image",
     placeholderSide = "right",
     vimeoId = "",
     darken = false,
     backdrop = false,
     percentHeight = 80,
+    // Above the fold: fetch a Prismic still first. A hero lower down passes
+    // false, so its still loads lazily instead of competing with the LCP.
+    priority = true,
     class: passedClasses = "",
     children = undefined,
   } = $props();
@@ -32,7 +37,18 @@
       ? `height: ${percentHeight}lvh; min-width: 100%`
       : `width: 100vw; min-height: ${percentHeight}lvh`}
   >
-    {#if !field && typeof src === "string"}
+    <!-- A filled Prismic image wins. An empty one falls back to the bundled
+         `src`, so a hero nobody has given an image looks as it did before. -->
+    {#if isFilled.image(field)}
+      <PrismicImage
+        field={withFallbackAlt(field, altText)}
+        widths={cappedWidths(field)}
+        sizes="100vw"
+        fetchpriority={priority ? "high" : undefined}
+        loading={priority ? "eager" : "lazy"}
+        class="absolute bottom-0 h-full w-full object-cover -z-10 {passedClasses}"
+      />
+    {:else if typeof src === "string" && src}
       <img
         {src}
         alt={altText}
@@ -45,14 +61,6 @@
         alt={altText}
         class="absolute bottom-0 {placeholderSide}-0 h-full w-full object-cover {passedClasses} -z-10
 {src === placeholder ? 'lg:w-[45%] md:h-auto' : ''}"
-      />
-    {:else if field}
-      <PrismicImage
-        {field}
-        widths={cappedWidths(field)}
-        sizes="100vw"
-        fetchpriority="high"
-        class="absolute bottom-0 h-full w-full object-cover -z-10 {passedClasses}"
       />
     {/if}
     {#if vimeoId}

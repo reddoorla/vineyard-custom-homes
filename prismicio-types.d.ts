@@ -47,6 +47,44 @@ type ContentRelationshipFieldWithData<
 }[Exclude<TCustomType[number], string>["id"]];
 
 /**
+ * Content for About page documents
+ */
+interface AboutDocumentData {
+	/**
+	 * Hero image (shown until the video plays; a frame from the video's opening avoids a jump) field in *About page*
+	 *
+	 * - **Field Type**: Image
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: about.hero_image
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/image
+	 */
+	hero_image: prismic.ImageField<never>;
+	
+	/**
+	 * Hero Vimeo ID field in *About page*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: The number in the video's Vimeo link, e.g. 1082670713. Empty keeps today's video.
+	 * - **API ID Path**: about.hero_vimeo_id
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	hero_vimeo_id: prismic.KeyTextField;
+}
+
+/**
+ * About page document from Prismic
+ *
+ * - **API ID**: `about`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type AboutDocument<Lang extends string = string> = prismic.PrismicDocumentWithoutUID<Simplify<AboutDocumentData>, "about", Lang>;
+
+/**
  * Item in *contractor testimonials → testimonials*
  */
 export interface ContractorTestimonialsDocumentDataTestimonialsItem {
@@ -263,6 +301,28 @@ interface GalleryDocumentData {
 	 * - **Documentation**: https://prismic.io/docs/fields/text
 	 */
 	title: prismic.KeyTextField;
+	
+	/**
+	 * Hero image (shown until the video plays; a frame from the video's opening avoids a jump) field in *gallery*
+	 *
+	 * - **Field Type**: Image
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: gallery.hero_image
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/image
+	 */
+	hero_image: prismic.ImageField<never>;
+	
+	/**
+	 * Hero Vimeo ID field in *gallery*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: The number in the video's Vimeo link, e.g. 1092190178. Empty keeps today's video.
+	 * - **API ID Path**: gallery.hero_vimeo_id
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	hero_vimeo_id: prismic.KeyTextField;
 	
 	/**
 	 * project one field in *gallery*
@@ -540,6 +600,39 @@ interface PageDocumentData {
 	 * - **Documentation**: https://prismic.io/docs/fields/rich-text
 	 */
 	title: prismic.RichTextField;
+	
+	/**
+	 * Hero image (home page; shown until the video plays; a frame from the video's opening avoids a jump) field in *Page*
+	 *
+	 * - **Field Type**: Image
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: page.hero_image
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/image
+	 */
+	hero_image: prismic.ImageField<never>;
+	
+	/**
+	 * Hero Vimeo ID (home page) field in *Page*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: The number in the video's Vimeo link, e.g. 1092190178. Empty keeps today's video.
+	 * - **API ID Path**: page.hero_vimeo_id
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	hero_vimeo_id: prismic.KeyTextField;
+	
+	/**
+	 * Second video image (home page, behind 'View our work'; its video is 'vimeo id for video') field in *Page*
+	 *
+	 * - **Field Type**: Image
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: page.second_hero_image
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/image
+	 */
+	second_hero_image: prismic.ImageField<never>;
 	
 	/**
 	 * vimeo id for video field in *Page*
@@ -950,7 +1043,7 @@ interface TestimonialsDocumentData {
  */
 export type TestimonialsDocument<Lang extends string = string> = prismic.PrismicDocumentWithoutUID<Simplify<TestimonialsDocumentData>, "testimonials", Lang>;
 
-export type AllDocumentTypes = ContractorTestimonialsDocument | FormRepliesDocument | GalleryDocument | InstagramFeaturesDocument | PageDocument | ProjectDocument | TestimonialsDocument;
+export type AllDocumentTypes = AboutDocument | ContractorTestimonialsDocument | FormRepliesDocument | GalleryDocument | InstagramFeaturesDocument | PageDocument | ProjectDocument | TestimonialsDocument;
 
 /**
  * Primary content in *ContentWidthMedia → single → Primary*
@@ -1171,6 +1264,8 @@ declare module "@prismicio/client" {
 	
 	namespace Content {
 		export type {
+			AboutDocument,
+			AboutDocumentData,
 			ContractorTestimonialsDocument,
 			ContractorTestimonialsDocumentData,
 			ContractorTestimonialsDocumentDataTestimonialsItem,
