@@ -11,18 +11,25 @@
   import { PrismicImage, PrismicLink } from "@prismicio/svelte";
   import { cappedWidths } from "@reddoorla/maintenance/images";
   import { withFallbackAlt } from "$lib/image-alt";
+  import { vimeoIdOr } from "$lib/hero";
 
   let { data } = $props();
 
   let viewpoortWidth = $state(1024);
 
+  const content = $derived(data.page.data);
   const instaImages = $derived(data.instagram.data.feature);
   const ownerTestimonials = $derived(data.ownerTestimonials.data);
 </script>
 
 <svelte:window bind:innerWidth={viewpoortWidth} />
 
-<ScreenWidthMedia darken vimeoId="1092191048" src={vchVideoThumb}>
+<ScreenWidthMedia
+  darken
+  vimeoId={vimeoIdOr(content.hero_vimeo_id, "1092191048")}
+  field={content.hero_image}
+  src={vchVideoThumb}
+>
   <div class="w-full h-full flex items-center justify-center">
     <img src={vchMark} class="w-24 z-10" alt="vch logomark" />
   </div>
@@ -57,7 +64,12 @@
     </div>
   </ContentWidth>
 </section>
-<ScreenWidthImage vimeoId={data.page.data.vimeo_id_for_video || "1092190178"} src={catThumb}>
+<ScreenWidthImage
+  vimeoId={vimeoIdOr(content.vimeo_id_for_video, "1092190178")}
+  field={content.second_hero_image}
+  priority={false}
+  src={catThumb}
+>
   <DefaultButton
     href="/gallery"
     class="absolute bottom-16 left-1/2 -translate-x-1/2 w-64 text-center bg-white/90"

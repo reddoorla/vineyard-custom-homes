@@ -14,19 +14,26 @@
   import Img from "@zerodevx/svelte-img";
 
   import ScreenWidthMedia from "$lib/components/ScreenWidth/ScreenWidthMedia.svelte";
+  import { vimeoIdOr } from "$lib/hero";
   import ContractorTestimonialSlider from "$lib/components/FullWidth/ContractorTestimonialSlider.svelte";
 
   let viewpoortWidth = $state(1024);
 
   let { data } = $props();
 
+  const hero = $derived(data.page?.data);
   const ownerTestimonials = $derived(data.ownerTestimonials.data);
   const contractorTestimonials = $derived(data.contractorTestimonials.data);
 </script>
 
 <svelte:window bind:innerWidth={viewpoortWidth} />
 
-<ScreenWidthMedia darken vimeoId="1082670713" src={vchVideoThumb}>
+<ScreenWidthMedia
+  darken
+  vimeoId={vimeoIdOr(hero?.hero_vimeo_id, "1082670713")}
+  field={hero?.hero_image}
+  src={vchVideoThumb}
+>
   <div class="w-full h-full flex items-center justify-center">
     <img src={vchMark} class="w-24 z-10" alt="vch logomark" />
   </div>

@@ -22,4 +22,9 @@ export type SmokeRoute = {
   expectStatus?: number;
 };
 
-export const smokeRoutes: SmokeRoute[] = [{ path: "/", name: "home", hydrationMarker: "footer" }];
+export const smokeRoutes: SmokeRoute[] = [
+  { path: "/", name: "home", hydrationMarker: "footer" },
+  // The About hero reads an `about` singleton that may not exist yet; a
+  // missing one must still load the page (its built-in hero).
+  { path: "/about", name: "about", hydrationMarker: "footer" },
+];

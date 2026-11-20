@@ -29,6 +29,17 @@ const routes = [
     type: "project",
     path: "/gallery/:uid",
   },
+  // The two singletons, so a preview of either opens its own page rather than
+  // falling back to "/" (the About type may not exist in Prismic yet; the API
+  // accepts a route for it all the same, checked 2026-11-20).
+  {
+    type: "gallery",
+    path: "/gallery",
+  },
+  {
+    type: "about",
+    path: "/about",
+  },
 ];
 
 /**

@@ -6,6 +6,7 @@
   import type { ProjectDocument } from "../../../../prismicio-types.js";
   import GalleryGrid from "$lib/components/GalleryGrid.svelte";
   import ScreenWidthMedia from "$lib/components/ScreenWidth/ScreenWidthMedia.svelte";
+  import { vimeoIdOr } from "$lib/hero";
 
   let { data } = $props();
 
@@ -43,7 +44,12 @@
 
 <svelte:window bind:innerWidth={viewpoortWidth} />
 
-<ScreenWidthMedia darken vimeoId="1092190178" src={vchVideoThumb}>
+<ScreenWidthMedia
+  darken
+  vimeoId={vimeoIdOr(content.hero_vimeo_id, "1092190178")}
+  field={content.hero_image}
+  src={vchVideoThumb}
+>
   <div class="w-full h-full flex items-center justify-center">
     <img src={vchMark} class="w-24 z-10" alt="vch logomark" />
   </div>
