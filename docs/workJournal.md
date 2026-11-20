@@ -455,3 +455,38 @@ The continuation session that picked #150 up after hand-off ran review round 5 o
 Five rounds in all; the first four were dirty, the fifth clean. No sixth round was needed.
 
 Usage: $2.88 at the time of writing, 1,088/26,474 tokens, 4,478,447/234,584 cache, rate limit allowed (this continuation session only; the review agent's own tokens are not in it).
+
+## 2026-11-20 — Partner testimonials hold long enough to read, and pause on hover (#155 into `staging`, `c15e422`; promote #160)
+
+Tim, Fri 11-20 at 7:56am PT: "slow down this slide show on the about us page so people can read the testimonials". The slider in his screenshot was FROM OUR PARTNERS (`ContractorTestimonialSlider`). It advanced on a flat 5000ms `setInterval` with a 1400ms cross-fade (700ms out, then 700ms in), so every card was fully readable for about 3.6s. The real cards are 71 to 123 words long. The homeowner `TestimonialSlider`, on the same page and the home page, turned out to have no autoplay at all: it moves only on its arrows or a swipe. It was left alone.
+
+**Why a word-count hold rather than a flat delay.** Each card now holds for its words at 200 a minute, with an 8000ms floor, plus the 1400ms fade. A flat 12s would have held a short quote too long and still cut the 123-word card off at about a third. This was measured on the staging branch deploy against the real Prismic content, on a paused fake clock at a 100ms step. Every card advanced exactly when predicted:
+
+| card | words | time between slides |
+| ---- | ----- | ------------------- |
+| 1    | 84    | 26.6s               |
+| 2    | 87    | 27.5s               |
+| 3    | 90    | 28.4s               |
+| 4    | 123   | 38.3s               |
+| 5    | 78    | 24.8s               |
+| 6    | 71    | 22.7s               |
+
+Hover held card 1 for 120s. 60s after the mouse left, the slider was on card 3, as predicted.
+
+**Pausing.** The operator asked mid-session for a pause on hover, "see how we did the rubrik ones". Autoplay now stops under a mouse or a hovering pen, and under `:focus-visible` keyboard focus. Leaving restarts the full hold for the card showing. Touch does not pause it, because touch has no hover. A mouse click on a dot does not pause it either, because the button would keep focus. Under `prefers-reduced-motion` the slider does not autoplay. The timer is now one `setTimeout` per shown card in an `$effect` keyed on the card and the pause state, which also restarts the hold after a dot click or a swipe.
+
+**Belief corrected: the Rubrik slideshow does not pause on hover.** The Rubrik Zero Labs case study on reddoorla.com uses reddoor-website's shared `Slideshow.svelte`. On hover it only _reveals_ its controls (prev/next, dots and a pause button), and the slides keep moving until someone clicks pause. This change builds a real hover pause, takes Rubrik's reduced-motion behaviour, and leaves out Rubrik's visible pause button, because the brief said not to change the look. That button is #156.
+
+**The test instrument lied three times before it was trusted.** The spec, `tests/smoke/testimonial-slider.spec.ts`, drives a `/dev/testimonial-slider` fixture holding 90-, 10- and 50-word cards. Seven mutations were named before the code; each now turns a test red. Getting there took three fixes to the test, not to the slider:
+
+1. **The fleet's shared config emulates reduced motion.** `@reddoorla/maintenance/configs/playwright-a11y` sets `contextOptions: { reducedMotion: "reduce" }` for every site. So the first run had five timing tests failing on a correct slider, and the reduced-motion test passing without testing anything. The timing tests now opt into `no-preference`, and the reduced-motion test sets `reduce` itself.
+2. **A pause checked at 120s proved nothing.** The three fixture cards take 28.4 + 9.4 + 16.4 = 54.2s to cycle, and 120s happens to land back on card 1, so a slider that never paused looked paused. M5 survived on this. Pauses are now checked at 40s or 50s, where an unpaused slider shows card 3.
+3. **`page.clock.install()` alone lets the fake clock tick in real time.** `toHaveClass` retries for up to 5s, which was long enough for a wrong slider to cycle back to the expected card. M2 survived on this. Next, a `pauseAt(now + 1)` taken after load raced the running clock under six workers and failed with "Cannot fast-forward to the past". The clock is now paused before navigation, so `runFor` is the only thing that moves time. The spec then passed 48 of 48 at `--repeat-each=4 --workers=6`.
+
+A fourth trap was in my own live probe, not the spec. With the clock paused, the outgoing card's fade never finishes, so its text stays in the DOM. Reading "the card's text" just after an advance therefore read the previous card. That is also why the spec identifies the current card by its dot rather than by its text.
+
+**Review.** One round of three Opus lenses (wiring, defensive, cut) found minors only, so it was clean. Folded in: a hovering pen pauses too, and the comments now give the right reasons. The first version claimed a tap fires `pointerenter` with no `pointerleave`, which is false under the Pointer Events spec. The fixture's comment claimed the server render shows its cards; the slider copies them in `onMount`, so it shows the placeholders. Filed: #156, no pause control for touch and screen-reader users (WCAG 2.2.2; it predates this change, and a visible button is a design call); #157, a mouse already resting on the slider when the page loads is not seen as hovering; #158, dead toggle code and a label that duplicates the heading. Reduced motion stopping autoplay entirely is a deliberate choice, flagged in #155 as one line to undo.
+
+Locally the full smoke suite passed 140 of 141. The one failure was `text-block.spec.ts` at 390px, which this change does not touch; it passed 3 of 3 run alone.
+
+Usage: $7.32 at the time of writing, 2,743/84,797 tokens, 16,931,693/336,853 cache, rate limit allowed (the whole session, including the three review agents).
