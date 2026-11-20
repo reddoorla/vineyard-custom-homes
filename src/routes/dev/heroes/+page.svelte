@@ -1,7 +1,8 @@
 <script lang="ts">
   // The real gallery, home and About page components, rendered with their
   // hero fields empty (?case=empty), filled (?case=filled), with the Vimeo
-  // field holding a pasted Vimeo link (?case=link), or, for About, with no
+  // field holding a pasted Vimeo link (?case=link), with a still that has no
+  // alt text and no Vimeo ID (?case=no-alt), or, for About, with no
   // About document at all (?case=missing), so a test can see the fallback
   // and the field each win. Pick the page with ?page=gallery|home|about.
   // Tim asked for his own still before the gallery video (2026-11-20, Discord
@@ -32,14 +33,21 @@
         second_hero_image: photo("aJy9gqTt2nPbaSdr", "Second.jpg", "Tim's second still"),
         vimeo_id_for_video: "222222222",
       }
-    : fill === "link"
+    : fill === "no-alt"
       ? {
-          hero_image: {},
-          hero_vimeo_id: " https://vimeo.com/333333333?share=copy ",
-          second_hero_image: {},
-          vimeo_id_for_video: "https://player.vimeo.com/video/444444444",
+          hero_image: photo("aJy9gqTt2nPbaSdq", "Haggettv4.0_7-Photo.jpg", ""),
+          hero_vimeo_id: null,
+          second_hero_image: photo("aJy9gqTt2nPbaSdr", "Second.jpg", ""),
+          vimeo_id_for_video: null,
         }
-      : { hero_image: {}, hero_vimeo_id: null, second_hero_image: {}, vimeo_id_for_video: null };
+      : fill === "link"
+        ? {
+            hero_image: {},
+            hero_vimeo_id: " https://vimeo.com/333333333?share=copy ",
+            second_hero_image: {},
+            vimeo_id_for_video: "https://player.vimeo.com/video/444444444",
+          }
+        : { hero_image: {}, hero_vimeo_id: null, second_hero_image: {}, vimeo_id_for_video: null };
 
   const data = {
     page: fill === "missing" ? null : { data: { ...heroes, title: "Fixture" } },

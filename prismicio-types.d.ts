@@ -602,7 +602,7 @@ interface PageDocumentData {
 	title: prismic.RichTextField;
 	
 	/**
-	 * Hero image (shown until the video plays; a frame from the video's opening avoids a jump) field in *Page*
+	 * Hero image (home page; shown until the video plays; a frame from the video's opening avoids a jump) field in *Page*
 	 *
 	 * - **Field Type**: Image
 	 * - **Placeholder**: *None*
@@ -613,7 +613,7 @@ interface PageDocumentData {
 	hero_image: prismic.ImageField<never>;
 	
 	/**
-	 * Hero Vimeo ID field in *Page*
+	 * Hero Vimeo ID (home page) field in *Page*
 	 *
 	 * - **Field Type**: Text
 	 * - **Placeholder**: The number in the video's Vimeo link, e.g. 1092190178. Empty keeps today's video.

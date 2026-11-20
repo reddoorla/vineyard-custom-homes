@@ -5,6 +5,7 @@
   import { isFilled, type ImageField } from "@prismicio/client";
   import Img from "@zerodevx/svelte-img";
   import { cappedWidths } from "@reddoorla/maintenance/images";
+  import { withFallbackAlt } from "$lib/image-alt";
   let {
     src = "",
     field = undefined as ImageField | undefined,
@@ -14,6 +15,9 @@
     darken = false,
     backdrop = false,
     percentHeight = 80,
+    // Above the fold: fetch a Prismic still first. A hero lower down passes
+    // false, so its still loads lazily instead of competing with the LCP.
+    priority = true,
     class: passedClasses = "",
     children = undefined,
   } = $props();
@@ -37,10 +41,11 @@
          `src`, so a hero nobody has given an image looks as it did before. -->
     {#if isFilled.image(field)}
       <PrismicImage
-        {field}
+        field={withFallbackAlt(field, altText)}
         widths={cappedWidths(field)}
         sizes="100vw"
-        fetchpriority="high"
+        fetchpriority={priority ? "high" : undefined}
+        loading={priority ? "eager" : "lazy"}
         class="absolute bottom-0 h-full w-full object-cover -z-10 {passedClasses}"
       />
     {:else if typeof src === "string" && src}

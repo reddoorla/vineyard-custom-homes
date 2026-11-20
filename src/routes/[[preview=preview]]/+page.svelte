@@ -67,6 +67,7 @@
 <ScreenWidthImage
   vimeoId={vimeoIdOr(content.vimeo_id_for_video, "1092190178")}
   field={content.second_hero_image}
+  priority={false}
   src={catThumb}
 >
   <DefaultButton

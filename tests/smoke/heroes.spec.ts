@@ -11,7 +11,11 @@ const prismicHost = "https://images.prismic.io/vineyard-custom-homes/";
 // Every ScreenWidthMedia hero on the page, in document order.
 const heroes = (page: Page) => page.locator("section:has(> div.aspect-video)");
 
-async function open(page: Page, which: string, fill: "empty" | "filled" | "link" | "missing") {
+async function open(
+  page: Page,
+  which: string,
+  fill: "empty" | "filled" | "link" | "no-alt" | "missing",
+) {
   await page.goto(`/dev/heroes?page=${which}&case=${fill}`, { waitUntil: "load" });
   // The Vimeo iframe mounts only after an interaction (VimeoGate).
   await expect(async () => {
@@ -63,6 +67,16 @@ for (const [which, index, builtIn, filledId, filledAlt] of cases) {
       const img = await still(page, index);
       expect(img.src).not.toContain("images.prismic.io");
       expect(img.src).not.toBe("");
+      expect(img.alt).toBe("background image");
+      expect(await video(page, index)).toBe(`/video/${builtIn}`);
+    });
+
+    test("a still with no alt text gets the fallback alt, and keeps today's video", async ({
+      page,
+    }) => {
+      await open(page, which, "no-alt");
+      const img = await still(page, index);
+      expect(img.src.startsWith(prismicHost)).toBe(true);
       expect(img.alt).toBe("background image");
       expect(await video(page, index)).toBe(`/video/${builtIn}`);
     });
