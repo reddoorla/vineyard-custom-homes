@@ -47,6 +47,44 @@ type ContentRelationshipFieldWithData<
 }[Exclude<TCustomType[number], string>["id"]];
 
 /**
+ * Content for About page documents
+ */
+interface AboutDocumentData {
+	/**
+	 * Hero image (shown until the video plays; a frame from the video's opening avoids a jump) field in *About page*
+	 *
+	 * - **Field Type**: Image
+	 * - **Placeholder**: *None*
+	 * - **API ID Path**: about.hero_image
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/image
+	 */
+	hero_image: prismic.ImageField<never>;
+	
+	/**
+	 * Hero Vimeo ID field in *About page*
+	 *
+	 * - **Field Type**: Text
+	 * - **Placeholder**: The number in the video's Vimeo link, e.g. 1082670713. Empty keeps today's video.
+	 * - **API ID Path**: about.hero_vimeo_id
+	 * - **Tab**: Main
+	 * - **Documentation**: https://prismic.io/docs/fields/text
+	 */
+	hero_vimeo_id: prismic.KeyTextField;
+}
+
+/**
+ * About page document from Prismic
+ *
+ * - **API ID**: `about`
+ * - **Repeatable**: `false`
+ * - **Documentation**: https://prismic.io/docs/content-modeling
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type AboutDocument<Lang extends string = string> = prismic.PrismicDocumentWithoutUID<Simplify<AboutDocumentData>, "about", Lang>;
+
+/**
  * Item in *contractor testimonials → testimonials*
  */
 export interface ContractorTestimonialsDocumentDataTestimonialsItem {
@@ -1005,7 +1043,7 @@ interface TestimonialsDocumentData {
  */
 export type TestimonialsDocument<Lang extends string = string> = prismic.PrismicDocumentWithoutUID<Simplify<TestimonialsDocumentData>, "testimonials", Lang>;
 
-export type AllDocumentTypes = ContractorTestimonialsDocument | FormRepliesDocument | GalleryDocument | InstagramFeaturesDocument | PageDocument | ProjectDocument | TestimonialsDocument;
+export type AllDocumentTypes = AboutDocument | ContractorTestimonialsDocument | FormRepliesDocument | GalleryDocument | InstagramFeaturesDocument | PageDocument | ProjectDocument | TestimonialsDocument;
 
 /**
  * Primary content in *ContentWidthMedia → single → Primary*
@@ -1226,6 +1264,8 @@ declare module "@prismicio/client" {
 	
 	namespace Content {
 		export type {
+			AboutDocument,
+			AboutDocumentData,
 			ContractorTestimonialsDocument,
 			ContractorTestimonialsDocumentData,
 			ContractorTestimonialsDocumentDataTestimonialsItem,

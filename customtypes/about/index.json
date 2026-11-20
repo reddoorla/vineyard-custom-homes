@@ -1,0 +1,26 @@
+{
+  "format": "custom",
+  "id": "about",
+  "label": "About page",
+  "repeatable": false,
+  "status": true,
+  "json": {
+    "Main": {
+      "hero_image": {
+        "type": "Image",
+        "config": {
+          "label": "Hero image (shown until the video plays; a frame from the video's opening avoids a jump)",
+          "constraint": {},
+          "thumbnails": []
+        }
+      },
+      "hero_vimeo_id": {
+        "type": "Text",
+        "config": {
+          "label": "Hero Vimeo ID",
+          "placeholder": "The number in the video's Vimeo link, e.g. 1082670713. Empty keeps today's video."
+        }
+      }
+    }
+  }
+}
