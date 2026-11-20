@@ -6,8 +6,13 @@
   import LandscapeModal from "$lib/components/LandscapeModal.svelte";
   import Nav from "$lib/components/Nav.svelte";
   import Footer from "$lib/components/Footer.svelte";
+  import { onMount } from "svelte";
 
   let { children, data } = $props();
+
+  // Positive evidence for tests that the layout's client code has run: a child's
+  // onMount (PrismicPreview's listeners included) runs before this one.
+  onMount(() => document.documentElement.setAttribute("data-hydrated", ""));
 
   const SITE_NAME = "Vineyard Custom Homes";
   const SITE_URL = "https://www.vineyardconstruction.com";
