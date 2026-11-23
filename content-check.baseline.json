@@ -1,0 +1,240 @@
+{
+  "version": 1,
+  "counts": {
+    "src/lib/components/Buttons/ArrowButton.svelte": {
+      "alt\tlink arrow": 1,
+      "image\twireframe-link-arrow-right.svg": 1
+    },
+    "src/lib/components/ContentWidth/ContentWidthGallerySlider.svelte": {
+      "alt\tbackground image": 1,
+      "alt\tchevron-left": 1,
+      "alt\tchevron-right": 1,
+      "image\tbackground_placeholder.svg": 1,
+      "image\tchevron-left.svg": 1,
+      "image\tchevron-right.svg": 1
+    },
+    "src/lib/components/ExtendedTeam.svelte": {
+      "heading\tThe extended team": 1
+    },
+    "src/lib/components/Footer.svelte": {
+      "address\t12 N. Echohawk Lane, No. 102, Eagle, ID 83616": 1,
+      "alt\tVineyard Custom Homes — custom home builder in Eagle, Idaho": 1,
+      "alt\tvch logomark": 1,
+      "copy\tABOUT VINEYARD": 1,
+      "copy\tCONTACT US": 1,
+      "copy\tCopyright ©": 1,
+      "copy\tCustom home builder serving Eagle & the Treasure Valley, Idaho": 1,
+      "copy\tLet's Connect": 1,
+      "copy\tOur Work": 1,
+      "copy\tVineyard Custom Homes": 2,
+      "heading\tBEGIN YOUR DREAM BUILD.": 1,
+      "image\tvch-mark-lightsvg.svg": 1,
+      "image\tvch_logo.png": 1,
+      "link\t/": 1,
+      "link\t/about": 1,
+      "link\t/contact": 2,
+      "link\t/gallery": 1,
+      "phone\t(208) 724-4034": 1,
+      "phone\ttel:+12087244034": 1
+    },
+    "src/lib/components/FullWidth/Accordian.svelte": {
+      "alt\tchevron right": 1,
+      "image\tchevron-right.svg": 1
+    },
+    "src/lib/components/FullWidth/ContactForm.svelte": {
+      "copy\tEmail address": 1,
+      "copy\tSend Message": 1,
+      "copy\tSending…": 1,
+      "copy\tThanks — your message is on its way. We'll be in touch soon.": 1,
+      "copy\tYour full name": 2,
+      "copy\tYour message": 1,
+      "copy\tYour message...": 1,
+      "copy\tme@company.com": 1
+    },
+    "src/lib/components/FullWidth/ContractorTestimonialSlider.svelte": {
+      "copy\tGo to testimonial ${…}": 1,
+      "copy\tNo testimonials available": 1,
+      "copy\tTestimonials from our partners": 1,
+      "heading\tFROM OUR PARTNERS": 1
+    },
+    "src/lib/components/FullWidth/Slideshow.svelte": {
+      "alt\tslideshow item": 1,
+      "copy\tNo images available": 1,
+      "copy\tslide left": 1,
+      "copy\tslide right": 1,
+      "image\tbackground_placeholder.svg": 1
+    },
+    "src/lib/components/FullWidth/TestimonialSlider.svelte": {
+      "alt\tProfile Placeholder": 1,
+      "copy\tNo testimonials available": 1,
+      "copy\tslide left": 2,
+      "copy\tslide right": 2,
+      "image\tbackground_placeholder.svg": 1
+    },
+    "src/lib/components/LandscapeModal.svelte": {
+      "heading\tPlease Switch to Portrait Mode": 1
+    },
+    "src/lib/components/Nav.svelte": {
+      "alt\thome": 2,
+      "copy\tABOUT US": 2,
+      "copy\tINQUIRE": 2,
+      "copy\tOUR WORK": 2,
+      "copy\tclose menu": 1,
+      "copy\topen menu": 1,
+      "image\tvch_logo.png": 1,
+      "link\t/": 2,
+      "link\t/about": 2,
+      "link\t/contact": 2,
+      "link\t/gallery": 2
+    },
+    "src/lib/components/ProjectImage.svelte": {
+      "copy\tbackground video": 1,
+      "link\t/gallery/": 1
+    },
+    "src/lib/components/ScreenWidth/ScreenWidthGallerySliderLarge.svelte": {
+      "copy\tDev + UX": 1,
+      "copy\tItem 1": 1,
+      "copy\tItem 2": 1,
+      "copy\tItem 3": 1,
+      "copy\tUX + UI": 1,
+      "copy\timage ${…} of ${…}": 1,
+      "image\timage_placeholder.svg": 1
+    },
+    "src/lib/components/ScreenWidth/ScreenWidthGallerySliderSmall.svelte": {
+      "alt\tbackground image": 1,
+      "alt\tchevron-left": 1,
+      "alt\tchevron-right": 1,
+      "image\tbackground_placeholder.svg": 1,
+      "image\tchevron-left.svg": 1,
+      "image\tchevron-right.svg": 1
+    },
+    "src/lib/components/ScreenWidth/ScreenWidthHalfHeightMedia.svelte": {
+      "alt\tbackground image": 1,
+      "copy\tbackground video": 1,
+      "image\tbackground_placeholder.svg": 1
+    },
+    "src/lib/components/ScreenWidth/ScreenWidthImageSlider.svelte": {
+      "alt\tbackground image": 1,
+      "alt\tleft": 1,
+      "alt\tright": 1,
+      "copy\timage ${…} of ${…}": 1,
+      "image\tbackground_placeholder.svg": 1,
+      "image\tchevron-left.svg": 1,
+      "image\tchevron-right.svg": 1
+    },
+    "src/lib/components/ScreenWidth/ScreenWidthMedia.svelte": {
+      "alt\tbackground image": 1,
+      "copy\tbackground video": 1
+    },
+    "src/lib/slices/ContentWidthMedia/index.svelte": {
+      "copy\tbackground video": 3
+    },
+    "src/routes/+error.svelte": {
+      "copy\tBack to home": 1,
+      "copy\tThe page you're looking for doesn't exist or has moved.": 1,
+      "heading\tError": 1,
+      "heading\tPage not found": 1,
+      "heading\tSomething went wrong": 1,
+      "link\t/": 1
+    },
+    "src/routes/+layout.svelte": {
+      "address\t12 N. Echohawk Lane, No. 102": 1,
+      "copy\tVineyard Custom Homes": 1,
+      "heading\t${…} | Custom Home Builder in Eagle, ID": 1,
+      "heading\tAbout | ${…} — Custom Home Builder in Eagle, ID": 1,
+      "heading\tContact | ${…} — Custom Home Builder in Eagle, ID": 1,
+      "heading\tOur Work | Custom Homes in Eagle & the Treasure Valley — ${…}": 1,
+      "phone\t+1-208-724-4034": 1,
+      "social\thttps://www.instagram.com/vineyardcustomhomes/": 1
+    },
+    "src/routes/[[preview=preview]]/+page.svelte": {
+      "alt\tvch logomark": 1,
+      "copy\tFrom intricate woodwork to custom layouts, we embrace complexity and deliver solutions that are both beautiful and lasting. We love rising to the challenge that other builders would avoid. It’s in those details that your home becomes truly yours.": 1,
+      "copy\tGreat homes start with great relationships. We take the time to understand your vision, communicate clearly, and guide you through every step. Our clients become collaborators—and often, friends—because trust is the foundation we build on.": 1,
+      "copy\tLET'S CONNECT": 1,
+      "copy\tTELL ME MORE": 1,
+      "copy\tTell Me More": 1,
+      "copy\tVIEW OUR WORK": 1,
+      "copy\tWith founders who grew up around job sites and craftsmen, we learned the value of doing things the right way—not the easy way. We approach every home as if we were building it for our own family.": 1,
+      "copy\tWith generations of building experience behind us, we know that the best homes are built from a deep understanding of the craft. Every line, joint, and finish is executed with precision—because quality should never be a question.": 1,
+      "copy\tinstagram": 1,
+      "copy\tvch instagram photo": 1,
+      "heading\tBuilding custom homes in the Treasure Valley with the": 1,
+      "heading\tDetails Make the Difference": 1,
+      "heading\tLegacy of Craftsmanship": 1,
+      "heading\tRelationships First, Always": 1,
+      "heading\tVIEW OUR CURRENT PROJECTS": 1,
+      "heading\tand attention to detail": 1,
+      "heading\tutmost care": 1,
+      "image\tvch-mark-lightsvg.svg": 1,
+      "link\t/about": 2,
+      "link\t/contact": 1,
+      "link\t/gallery": 1,
+      "social\thttps://www.instagram.com/vineyardcustomhomes/": 1
+    },
+    "src/routes/[[preview=preview]]/[uid]/+page.server.ts": {
+      "copy\tPage not found": 1
+    },
+    "src/routes/[[preview=preview]]/about/+page.svelte": {
+      "alt\tclipboard": 1,
+      "alt\thouse": 1,
+      "alt\tkey": 1,
+      "alt\tpencil": 1,
+      "alt\tvch logomark": 1,
+      "copy\tAlways caring passionately about every piece of trim and hardware, we ensure our clients with the peace of mind they are in the best possible hands.": 1,
+      "copy\tBoth founders come from a legacy of building, leadership, and craftsmenship, bringing experience that is beyond their years.": 1,
+      "copy\tBuilding is in his blood. As a third-generation builder, he grew up watching his father and grandfather shape homes with their hands and a relentless commitment to doing things the right way. That early exposure to craftsmanship and integrity laid the foundation for everything that came next. Over the years, he went on to lead large corporations, gaining a deep understanding of how businesses operate at every level—from the ground up. But no matter the size or scale, one principle remained constant: success is built on strong relationships and hard work. Today, he brings that full-circle experience to every project. With one foot rooted in old-school values and the other in modern business acumen, he leads with a unique blend of hands-on expertise, strategic thinking, and a genuine care for people.": 1,
+      "copy\tFrom helping find the right lot to handing you the keys, we partner with you through the entire process, ensuring that your custom home exceeds your expectations.": 1,
+      "copy\tJosiah Fredriksen started his construction career at a very young age working with his father a boat builder/marine carpenter/furniture maker/cabinet builder/custom home finish carpenter in his shop and in the field. His career started in custom homes 20 years ago in Southern California along side some of the best builders in the game. His old school skills and knowledge is transformed into a well rounded modern day builder who is always learning in every aspect of the building industry. His passion is in the details and foreseeing minor problems before they become major issues that become costly items for his clients. His involvement will each build is 100% hands on deck with every budget, selection, decision and client meeting to guarantee Vineyards standards are met.": 1,
+      "copy\tWe connect you with trusted architects, designers, and engineers who match your style, needs, and budget: bringing the right people to the table from the start.": 1,
+      "copy\tWe’ll help you find the right lot or provide expert pre-construction insight and budgeting if you already own one: setting your project up for success from day one.": 1,
+      "copy\tWith weekly meetings and regular updates, you’re never left guessing. We keep you informed and confident from groundbreaking to move-in.": 1,
+      "copy\tYour builder is hands-on and involved in every key decision, ensuring quality with clear transparent communication throughout the process.": 1,
+      "heading\tBrad Bentley": 1,
+      "heading\tBuilder-Led": 1,
+      "heading\tCO-OWNER": 2,
+      "heading\tFOUNDERS": 1,
+      "heading\tFrom Day One": 1,
+      "heading\tJosiah Fredriksen": 1,
+      "heading\tOUR PROCESS": 1,
+      "heading\tOur Mission": 1,
+      "heading\tStay in the Loop": 1,
+      "heading\tThe Right Team": 1,
+      "heading\tis to care for each building process as if it were our own": 1,
+      "image\tbrad.jpg": 1,
+      "image\tclipboard.svg": 1,
+      "image\thouse.svg": 1,
+      "image\tjosiah.png": 1,
+      "image\tkey.svg": 1,
+      "image\tpencil.svg": 1,
+      "image\tvch-mark-lightsvg.svg": 1
+    },
+    "src/routes/[[preview=preview]]/contact/+page.svelte": {
+      "address\t12 N. Echohawk Lane, no. 102": 1,
+      "alt\tvch logomark": 1,
+      "copy\tEagle ID 83616": 1,
+      "copy\tWe would love to partner with you on your custom home. We look forward to hearing from you in whatever communication style suits you.": 1,
+      "copy\tto speak directly with Josiah, one of our owners.": 1,
+      "heading\tADDRESS": 1,
+      "heading\tCALL": 1,
+      "heading\tEMAIL": 1,
+      "heading\tGET IN TOUCH": 1,
+      "image\tglade_still.png": 1,
+      "image\tvch-mark-lightsvg.svg": 1,
+      "phone\t208.724.4034": 1,
+      "video\t1082715167": 1
+    },
+    "src/routes/[[preview=preview]]/gallery/+page.svelte": {
+      "alt\tvch logomark": 1,
+      "image\tvch-mark-lightsvg.svg": 1
+    },
+    "src/routes/[[preview=preview]]/gallery/[uid]/+page.server.ts": {
+      "copy\tProject not found": 1
+    },
+    "src/routes/[[preview=preview]]/gallery/[uid]/+page.svelte": {
+      "heading\tBACK TO PROJECTS": 1,
+      "heading\tRELATED PROJECTS": 1,
+      "link\t/gallery": 1
+    }
+  }
+}
