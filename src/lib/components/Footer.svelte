@@ -28,13 +28,13 @@
     <img src={logomark} class="mt-12 mb-32 w-32" alt="vch logomark" />
 
     <div class="w-full flex flex-col gap-5 items-start">
-      <a href="/"
-        ><img
+      <a href="/">
+        <img
           src={logo}
           class="h-6 md:h-9 w-auto hover:opacity-80 transition-opacity mb-5"
           alt="Vineyard Custom Homes — custom home builder in Eagle, Idaho"
-        /></a
-      >
+        />
+      </a>
       <a href="/about" class="text-white hover:text-light transition">ABOUT VINEYARD</a>
       <a href="/gallery" class="text-white hover:text-light transition">Our Work</a>
       <a href="/contact" class="text-white hover:text-light transition">CONTACT US</a>
