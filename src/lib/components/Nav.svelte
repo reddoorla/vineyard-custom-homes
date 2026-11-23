@@ -65,20 +65,20 @@
       <ContentWidth
         class="flex flex-row justify-between items-center border-b-1 py-5 border-white relative"
       >
-        <a href="/" class=""
-          ><img
+        <a href="/" class="">
+          <img
             src={logo}
             class="h-6 md:h-9 w-auto hover:opacity-80 transition-opacity"
             alt="home"
-          /></a
-        >
+          />
+        </a>
 
-        <button onclick={closeMenu} aria-label="close menu" class="z-40 pr-2"
-          ><Menu
+        <button onclick={closeMenu} aria-label="close menu" class="z-40 pr-2">
+          <Menu
             class="size-[2em] text-white hover:text-light active:transition-none active:text-dark transition-colors duration-500"
             strokeWidth={2}
-          /></button
-        >
+          />
+        </button>
 
         <div class="w-[0.75px] h-2.5 bg-white absolute left-0 -bottom-[5px]"></div>
         <div class="w-[0.75px] h-2.5 bg-white absolute right-0 -bottom-[5px]"></div>
@@ -94,16 +94,13 @@
   <ContentWidth
     class="flex flex-row justify-between items-center border-b-1 py-5 border-white relative"
   >
-    <a href="/" class=""
-      ><img
-        src={logo}
-        class="h-6 md:h-9 w-auto hover:opacity-80 transition-opacity"
-        alt="home"
-      /></a
-    >
+    <a href="/" class="">
+      <img src={logo} class="h-6 md:h-9 w-auto hover:opacity-80 transition-opacity" alt="home" />
+    </a>
     <div class=" justify-end gap-9 text-white hidden md:flex">
-      <a href="/gallery" class="hover:text-light transition duration-300 ease-fast-slow">OUR WORK</a
-      >
+      <a href="/gallery" class="hover:text-light transition duration-300 ease-fast-slow">
+        OUR WORK
+      </a>
       <a href="/contact" class="hover:text-light transition duration-300 ease-fast-slow">INQUIRE</a>
       <a href="/about" class="hover:text-light transition duration-300 ease-fast-slow">ABOUT US</a>
     </div>
@@ -114,11 +111,12 @@
       aria-expanded={showMenu}
       aria-controls="mobile-menu"
       class="z-40 pr-2 block md:hidden"
-      ><Menu
+    >
+      <Menu
         class="size-[2em] text-white hover:text-light active:transition-none active:text-dark transition-colors duration-500"
         strokeWidth={2}
-      /></button
-    >
+      />
+    </button>
 
     <div class="w-[0.75px] h-2.5 bg-white absolute left-0 -bottom-[5px]"></div>
     <div class="w-[0.75px] h-2.5 bg-white absolute right-0 -bottom-[5px]"></div>
